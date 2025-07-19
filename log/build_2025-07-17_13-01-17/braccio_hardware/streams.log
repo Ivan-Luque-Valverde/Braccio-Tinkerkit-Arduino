@@ -1,0 +1,57 @@
+[0.012s] Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware -- -j16 -l16
+[0.054s] [35m[1mConsolidate compiler generated dependencies of target braccio_hardware[0m
+[0.070s] [  0%] Built target ament_cmake_python_copy_braccio_hardware
+[0.074s] [ 50%] [32mBuilding CXX object CMakeFiles/braccio_hardware.dir/src/braccio_hardware.cpp.o[0m
+[0.273s] running egg_info
+[0.274s] writing braccio_hardware.egg-info/PKG-INFO
+[0.274s] writing dependency_links to braccio_hardware.egg-info/dependency_links.txt
+[0.274s] writing top-level names to braccio_hardware.egg-info/top_level.txt
+[0.276s] reading manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+[0.276s] writing manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+[0.301s] [ 50%] Built target ament_cmake_python_build_braccio_hardware_egg
+[2.477s] [100%] [32m[1mLinking CXX shared library libbraccio_hardware.so[0m
+[2.588s] [100%] Built target braccio_hardware
+[2.601s] Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware -- -j16 -l16
+[2.602s] Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware
+[2.608s] -- Install configuration: ""
+[2.608s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/braccio_hardware.xml
+[2.608s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/libbraccio_hardware.so
+[2.609s] -- Set runtime path of "/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/libbraccio_hardware.so" to ""
+[2.609s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include
+[2.609s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware
+[2.609s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/visibility_control.hpp
+[2.609s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/braccio_hardware.hpp
+[2.609s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/hardware.hpp
+[2.609s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/arduino_comms.hpp
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/config
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/config/braccio_controllers.yml
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/launch
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/launch/braccio_hardware.launch.py
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/pythonpath.sh
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/pythonpath.dsv
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info
+[2.610s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/top_level.txt
+[2.610s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/PKG-INFO
+[2.610s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/dependency_links.txt
+[2.610s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/SOURCES.txt
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/__init__.py
+[2.610s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/launch_mixin.py
+[2.630s] Listing '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware'...
+[2.633s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/package_run_dependencies/braccio_hardware
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/parent_prefix_path/braccio_hardware
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/ament_prefix_path.sh
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/ament_prefix_path.dsv
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/path.sh
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/path.dsv
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.bash
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.sh
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.zsh
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.dsv
+[2.634s] -- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.dsv
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/packages/braccio_hardware
+[2.634s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/braccio_hardware
+[2.635s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/cmake/braccio_hardwareConfig.cmake
+[2.635s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/cmake/braccio_hardwareConfig-version.cmake
+[2.635s] -- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.xml
+[2.637s] Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware

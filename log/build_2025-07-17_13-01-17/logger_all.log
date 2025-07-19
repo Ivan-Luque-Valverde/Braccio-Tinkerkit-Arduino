@@ -1,0 +1,335 @@
+[0.083s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.083s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x7030174c7640>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x703017694580>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x703017694580>>, mixin_verb=('build',))
+[0.212s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.212s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.212s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.212s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.212s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.212s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.212s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ivan/Escritorio/ROS2_braccio'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.212s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extensions ['ignore', 'ignore_ament_install']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'ignore'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'ignore_ament_install'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extensions ['colcon_pkg']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'colcon_pkg'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extensions ['colcon_meta']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'colcon_meta'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extensions ['ros']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'ros'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extensions ['cmake', 'python']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'cmake'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'python'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extensions ['python_setup_py']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_ROS_Arduino) by extension 'python_setup_py'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extension 'ignore_ament_install'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extensions ['colcon_pkg']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extension 'colcon_pkg'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extensions ['colcon_meta']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extension 'colcon_meta'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extensions ['ros']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_bringup) by extension 'ros'
+[0.224s] DEBUG:colcon.colcon_core.package_identification:Package 'braccio_bringup' with type 'ros.ament_cmake' and name 'braccio_bringup'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extensions ['ignore', 'ignore_ament_install']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extension 'ignore'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extension 'ignore_ament_install'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extensions ['colcon_pkg']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extension 'colcon_pkg'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extensions ['colcon_meta']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extension 'colcon_meta'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extensions ['ros']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_description) by extension 'ros'
+[0.225s] DEBUG:colcon.colcon_core.package_identification:Package 'braccio_description' with type 'ros.ament_cmake' and name 'braccio_description'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extensions ['ignore', 'ignore_ament_install']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extension 'ignore'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extension 'ignore_ament_install'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extensions ['colcon_pkg']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extension 'colcon_pkg'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extensions ['colcon_meta']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extension 'colcon_meta'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extensions ['ros']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_hardware) by extension 'ros'
+[0.225s] DEBUG:colcon.colcon_core.package_identification:Package 'braccio_hardware' with type 'ros.ament_cmake' and name 'braccio_hardware'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extensions ['ignore', 'ignore_ament_install']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extension 'ignore'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extension 'ignore_ament_install'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extensions ['colcon_pkg']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extension 'colcon_pkg'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extensions ['colcon_meta']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extension 'colcon_meta'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extensions ['ros']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(braccio_moveit_config) by extension 'ros'
+[0.226s] DEBUG:colcon.colcon_core.package_identification:Package 'braccio_moveit_config' with type 'ros.ament_cmake' and name 'braccio_moveit_config'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.227s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.227s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.227s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.227s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.227s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.250s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.250s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.252s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 4 installed packages in /home/ivan/Escritorio/ROS2_braccio/install
+[0.254s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 445 installed packages in /opt/ros/humble
+[0.255s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.294s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'cmake_args' from command line to 'None'
+[0.294s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'cmake_target' from command line to 'None'
+[0.294s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'cmake_clean_cache' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'cmake_clean_first' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'cmake_force_configure' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'ament_cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'catkin_cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_description' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.295s] DEBUG:colcon.colcon_core.verb:Building package 'braccio_description' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ivan/Escritorio/ROS2_braccio/build/braccio_description', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description', 'merge_install': False, 'path': '/home/ivan/Escritorio/ROS2_braccio/braccio_description', 'symlink_install': False, 'test_result_base': None}
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'cmake_target' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'cmake_clean_cache' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'cmake_clean_first' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'cmake_force_configure' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'ament_cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'catkin_cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_hardware' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.295s] DEBUG:colcon.colcon_core.verb:Building package 'braccio_hardware' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware', 'merge_install': False, 'path': '/home/ivan/Escritorio/ROS2_braccio/braccio_hardware', 'symlink_install': False, 'test_result_base': None}
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'cmake_target' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'cmake_clean_cache' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'cmake_clean_first' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'cmake_force_configure' from command line to 'False'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'ament_cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'catkin_cmake_args' from command line to 'None'
+[0.295s] Level 5:colcon.colcon_core.verb:set package 'braccio_bringup' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.295s] DEBUG:colcon.colcon_core.verb:Building package 'braccio_bringup' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup', 'merge_install': False, 'path': '/home/ivan/Escritorio/ROS2_braccio/braccio_bringup', 'symlink_install': False, 'test_result_base': None}
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'cmake_args' from command line to 'None'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'cmake_target' from command line to 'None'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'cmake_clean_cache' from command line to 'False'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'cmake_clean_first' from command line to 'False'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'cmake_force_configure' from command line to 'False'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'ament_cmake_args' from command line to 'None'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'catkin_cmake_args' from command line to 'None'
+[0.296s] Level 5:colcon.colcon_core.verb:set package 'braccio_moveit_config' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.296s] DEBUG:colcon.colcon_core.verb:Building package 'braccio_moveit_config' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config', 'merge_install': False, 'path': '/home/ivan/Escritorio/ROS2_braccio/braccio_moveit_config', 'symlink_install': False, 'test_result_base': None}
+[0.296s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.297s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.297s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ivan/Escritorio/ROS2_braccio/braccio_description' with build type 'ament_cmake'
+[0.297s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ivan/Escritorio/ROS2_braccio/braccio_description'
+[0.299s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.299s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.299s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.303s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ivan/Escritorio/ROS2_braccio/braccio_hardware' with build type 'ament_cmake'
+[0.303s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ivan/Escritorio/ROS2_braccio/braccio_hardware'
+[0.303s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.303s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.311s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_description -- -j16 -l16
+[0.316s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware -- -j16 -l16
+[0.606s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_description -- -j16 -l16
+[0.615s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_description
+[0.659s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_description)
+[0.659s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_description
+[0.661s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description' for CMake module files
+[0.661s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description' for CMake config files
+[0.662s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_description', 'cmake_prefix_path')
+[0.662s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/hook/cmake_prefix_path.ps1'
+[0.662s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/hook/cmake_prefix_path.dsv'
+[0.663s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/hook/cmake_prefix_path.sh'
+[0.664s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/bin'
+[0.664s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/lib/pkgconfig/braccio_description.pc'
+[0.664s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/lib/python3.10/site-packages'
+[0.664s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/bin'
+[0.664s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.ps1'
+[0.665s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.dsv'
+[0.665s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.sh'
+[0.666s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.bash'
+[0.666s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.zsh'
+[0.667s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/colcon-core/packages/braccio_description)
+[0.667s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_description)
+[0.668s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description' for CMake module files
+[0.668s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description' for CMake config files
+[0.668s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_description', 'cmake_prefix_path')
+[0.669s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/hook/cmake_prefix_path.ps1'
+[0.669s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/hook/cmake_prefix_path.dsv'
+[0.669s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/hook/cmake_prefix_path.sh'
+[0.670s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/bin'
+[0.670s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/lib/pkgconfig/braccio_description.pc'
+[0.670s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/lib/python3.10/site-packages'
+[0.670s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/bin'
+[0.671s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.ps1'
+[0.671s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.dsv'
+[0.671s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.sh'
+[0.672s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.bash'
+[0.672s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/braccio_description/package.zsh'
+[0.672s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/share/colcon-core/packages/braccio_description)
+[0.673s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ivan/Escritorio/ROS2_braccio/braccio_moveit_config' with build type 'ament_cmake'
+[0.673s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ivan/Escritorio/ROS2_braccio/braccio_moveit_config'
+[0.673s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.673s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.682s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config -- -j16 -l16
+[0.724s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config' returned '0': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config -- -j16 -l16
+[0.726s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config
+[0.737s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_moveit_config)
+[0.738s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config' for CMake module files
+[0.738s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config' returned '0': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_moveit_config
+[0.738s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config' for CMake config files
+[0.739s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_moveit_config', 'cmake_prefix_path')
+[0.739s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/hook/cmake_prefix_path.ps1'
+[0.740s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/hook/cmake_prefix_path.dsv'
+[0.740s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/hook/cmake_prefix_path.sh'
+[0.740s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/bin'
+[0.740s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/lib/pkgconfig/braccio_moveit_config.pc'
+[0.741s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/lib/python3.10/site-packages'
+[0.741s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/bin'
+[0.741s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.ps1'
+[0.741s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.dsv'
+[0.742s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.sh'
+[0.742s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.bash'
+[0.742s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.zsh'
+[0.742s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/colcon-core/packages/braccio_moveit_config)
+[0.743s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_moveit_config)
+[0.743s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config' for CMake module files
+[0.743s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config' for CMake config files
+[0.744s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_moveit_config', 'cmake_prefix_path')
+[0.744s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/hook/cmake_prefix_path.ps1'
+[0.744s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/hook/cmake_prefix_path.dsv'
+[0.744s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/hook/cmake_prefix_path.sh'
+[0.745s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/bin'
+[0.745s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/lib/pkgconfig/braccio_moveit_config.pc'
+[0.745s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/lib/python3.10/site-packages'
+[0.745s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/bin'
+[0.746s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.ps1'
+[0.746s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.dsv'
+[0.746s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.sh'
+[0.747s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.bash'
+[0.747s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/braccio_moveit_config/package.zsh'
+[0.747s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config/share/colcon-core/packages/braccio_moveit_config)
+[2.904s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware -- -j16 -l16
+[2.906s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware
+[2.940s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_hardware)
+[2.940s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware' for CMake module files
+[2.941s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware
+[2.941s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware' for CMake config files
+[2.941s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_hardware', 'cmake_prefix_path')
+[2.941s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/cmake_prefix_path.ps1'
+[2.942s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/cmake_prefix_path.dsv'
+[2.942s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/cmake_prefix_path.sh'
+[2.942s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib'
+[2.943s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_hardware', 'ld_library_path_lib')
+[2.943s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/ld_library_path_lib.ps1'
+[2.943s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/ld_library_path_lib.dsv'
+[2.943s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/ld_library_path_lib.sh'
+[2.943s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/bin'
+[2.943s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/pkgconfig/braccio_hardware.pc'
+[2.944s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/python3.10/site-packages'
+[2.944s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/bin'
+[2.944s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.ps1'
+[2.944s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.dsv'
+[2.944s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.sh'
+[2.945s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.bash'
+[2.945s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.zsh'
+[2.945s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/colcon-core/packages/braccio_hardware)
+[2.945s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_hardware)
+[2.945s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware' for CMake module files
+[2.946s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware' for CMake config files
+[2.946s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_hardware', 'cmake_prefix_path')
+[2.946s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/cmake_prefix_path.ps1'
+[2.946s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/cmake_prefix_path.dsv'
+[2.947s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/cmake_prefix_path.sh'
+[2.947s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib'
+[2.947s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_hardware', 'ld_library_path_lib')
+[2.947s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/ld_library_path_lib.ps1'
+[2.947s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/ld_library_path_lib.dsv'
+[2.947s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/hook/ld_library_path_lib.sh'
+[2.948s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/bin'
+[2.948s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/pkgconfig/braccio_hardware.pc'
+[2.948s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/python3.10/site-packages'
+[2.948s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/bin'
+[2.948s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.ps1'
+[2.948s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.dsv'
+[2.949s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.sh'
+[2.949s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.bash'
+[2.949s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.zsh'
+[2.949s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/colcon-core/packages/braccio_hardware)
+[2.950s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ivan/Escritorio/ROS2_braccio/braccio_bringup' with build type 'ament_cmake'
+[2.950s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ivan/Escritorio/ROS2_braccio/braccio_bringup'
+[2.950s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[2.950s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.958s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup -- -j16 -l16
+[3.181s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup' returned '0': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup -- -j16 -l16
+[3.182s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup
+[3.212s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_bringup)
+[3.213s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup' for CMake module files
+[3.213s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup' returned '0': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware:/home/ivan/Escritorio/ROS2_braccio/install/braccio_description:/home/ivan/Escritorio/ROS2_braccio/install/braccio_moveit_config:/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup
+[3.213s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup' for CMake config files
+[3.214s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_bringup', 'cmake_prefix_path')
+[3.214s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/hook/cmake_prefix_path.ps1'
+[3.214s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/hook/cmake_prefix_path.dsv'
+[3.214s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/hook/cmake_prefix_path.sh'
+[3.215s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/bin'
+[3.215s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/lib/pkgconfig/braccio_bringup.pc'
+[3.215s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/lib/python3.10/site-packages'
+[3.215s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/bin'
+[3.215s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.ps1'
+[3.215s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.dsv'
+[3.215s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.sh'
+[3.216s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.bash'
+[3.216s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.zsh'
+[3.216s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/colcon-core/packages/braccio_bringup)
+[3.216s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(braccio_bringup)
+[3.216s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup' for CMake module files
+[3.217s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup' for CMake config files
+[3.217s] Level 1:colcon.colcon_core.shell:create_environment_hook('braccio_bringup', 'cmake_prefix_path')
+[3.217s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/hook/cmake_prefix_path.ps1'
+[3.217s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/hook/cmake_prefix_path.dsv'
+[3.217s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/hook/cmake_prefix_path.sh'
+[3.218s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/bin'
+[3.218s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/lib/pkgconfig/braccio_bringup.pc'
+[3.218s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/lib/python3.10/site-packages'
+[3.218s] Level 1:colcon.colcon_core.environment:checking '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/bin'
+[3.218s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.ps1'
+[3.218s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.dsv'
+[3.218s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.sh'
+[3.219s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.bash'
+[3.219s] INFO:colcon.colcon_core.shell:Creating package script '/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/braccio_bringup/package.zsh'
+[3.219s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ivan/Escritorio/ROS2_braccio/install/braccio_bringup/share/colcon-core/packages/braccio_bringup)
+[3.219s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[3.219s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[3.219s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[3.219s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[3.222s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[3.222s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[3.222s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[3.229s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[3.229s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ivan/Escritorio/ROS2_braccio/install/local_setup.ps1'
+[3.230s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ivan/Escritorio/ROS2_braccio/install/_local_setup_util_ps1.py'
+[3.231s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ivan/Escritorio/ROS2_braccio/install/setup.ps1'
+[3.231s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ivan/Escritorio/ROS2_braccio/install/local_setup.sh'
+[3.232s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ivan/Escritorio/ROS2_braccio/install/_local_setup_util_sh.py'
+[3.232s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ivan/Escritorio/ROS2_braccio/install/setup.sh'
+[3.234s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ivan/Escritorio/ROS2_braccio/install/local_setup.bash'
+[3.236s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ivan/Escritorio/ROS2_braccio/install/setup.bash'
+[3.236s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ivan/Escritorio/ROS2_braccio/install/local_setup.zsh'
+[3.237s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ivan/Escritorio/ROS2_braccio/install/setup.zsh'

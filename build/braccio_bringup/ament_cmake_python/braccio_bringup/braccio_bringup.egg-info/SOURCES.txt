@@ -1,0 +1,7 @@
+setup.py
+braccio_bringup/__init__.py
+braccio_bringup/launch_mixin.py
+braccio_bringup.egg-info/PKG-INFO
+braccio_bringup.egg-info/SOURCES.txt
+braccio_bringup.egg-info/dependency_links.txt
+braccio_bringup.egg-info/top_level.txt

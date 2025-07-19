@@ -1,0 +1,7 @@
+setup.py
+braccio_description/__init__.py
+braccio_description/launch_mixin.py
+braccio_description.egg-info/PKG-INFO
+braccio_description.egg-info/SOURCES.txt
+braccio_description.egg-info/dependency_links.txt
+braccio_description.egg-info/top_level.txt

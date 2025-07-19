@@ -1,0 +1,1 @@
+braccio_description;braccio_hardware;controller_manager;joint_state_broadcaster;joint_trajectory_controller;xacro;robot_state_publisher;gazebo_ros;gazebo_ros2_control;rviz2;rclpy;ament_lint_auto;ament_lint_common

@@ -1,0 +1,53 @@
+[35m[1mConsolidate compiler generated dependencies of target braccio_hardware[0m
+[  0%] Built target ament_cmake_python_copy_braccio_hardware
+[ 50%] [32mBuilding CXX object CMakeFiles/braccio_hardware.dir/src/braccio_hardware.cpp.o[0m
+running egg_info
+writing braccio_hardware.egg-info/PKG-INFO
+writing dependency_links to braccio_hardware.egg-info/dependency_links.txt
+writing top-level names to braccio_hardware.egg-info/top_level.txt
+reading manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+writing manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+[ 50%] Built target ament_cmake_python_build_braccio_hardware_egg
+[100%] [32m[1mLinking CXX shared library libbraccio_hardware.so[0m
+[100%] Built target braccio_hardware
+-- Install configuration: ""
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/braccio_hardware.xml
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/libbraccio_hardware.so
+-- Set runtime path of "/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/lib/libbraccio_hardware.so" to ""
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/visibility_control.hpp
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/braccio_hardware.hpp
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/hardware.hpp
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/include/braccio_hardware/arduino_comms.hpp
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/config
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/config/braccio_controllers.yml
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/launch
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/launch/braccio_hardware.launch.py
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/pythonpath.sh
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/pythonpath.dsv
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/top_level.txt
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/PKG-INFO
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/dependency_links.txt
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/SOURCES.txt
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/__init__.py
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/launch_mixin.py
+Listing '/home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware'...
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/package_run_dependencies/braccio_hardware
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/parent_prefix_path/braccio_hardware
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/ament_prefix_path.sh
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/path.sh
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/environment/path.dsv
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.bash
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.sh
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.zsh
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/local_setup.dsv
+-- Installing: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.dsv
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/packages/braccio_hardware
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/braccio_hardware
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/cmake/braccio_hardwareConfig.cmake
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/cmake/braccio_hardwareConfig-version.cmake
+-- Up-to-date: /home/ivan/Escritorio/ROS2_braccio/install/braccio_hardware/share/braccio_hardware/package.xml

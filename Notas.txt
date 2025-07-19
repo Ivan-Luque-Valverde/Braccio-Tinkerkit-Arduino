@@ -1,0 +1,12 @@
+cd Escritorio/ROS2_braccio
+colcon build
+source install/setup.bash
+
+Lanzar rviz:  
+ros2 launch braccio_description view_robot.launch.py
+
+Sim Gazebo:  
+ros2 launch braccio_bringup bringup.launch.py sim:=true
+
+Robot real:
+ros2 launch braccio_bringup bringup.launch.py sim:=false
