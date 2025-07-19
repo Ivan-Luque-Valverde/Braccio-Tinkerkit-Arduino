@@ -1,8 +1,8 @@
-# Install script for directory: /home/ivan/Escritorio/ROS2_braccio/braccio_description
+# Install script for directory: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/ivan/Escritorio/ROS2_braccio/install/braccio_description")
+  set(CMAKE_INSTALL_PREFIX "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_description")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -44,49 +44,49 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE DIRECTORY FILES
-    "/home/ivan/Escritorio/ROS2_braccio/braccio_description/config"
-    "/home/ivan/Escritorio/ROS2_braccio/braccio_description/gazebo"
-    "/home/ivan/Escritorio/ROS2_braccio/braccio_description/launch"
-    "/home/ivan/Escritorio/ROS2_braccio/braccio_description/meshes"
-    "/home/ivan/Escritorio/ROS2_braccio/braccio_description/ros2_control"
-    "/home/ivan/Escritorio/ROS2_braccio/braccio_description/urdf"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/config"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/gazebo"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/launch"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/meshes"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/ros2_control"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/urdf"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/braccio_description/braccio_description.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/braccio_description.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/pythonpath.sh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/pythonpath.sh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/pythonpath.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/pythonpath.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/local/lib/python3.10/dist-packages/braccio_description-0.0.0-py3.10.egg-info" TYPE DIRECTORY FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_python/braccio_description/braccio_description.egg-info/")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/local/lib/python3.10/dist-packages/braccio_description-0.0.0-py3.10.egg-info" TYPE DIRECTORY FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_python/braccio_description/braccio_description.egg-info/")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/local/lib/python3.10/dist-packages/braccio_description" TYPE DIRECTORY FILES "/home/ivan/Escritorio/ROS2_braccio/braccio_description/braccio_description/" REGEX "/[^/]*\\.pyc$" EXCLUDE REGEX "/\\_\\_pycache\\_\\_$" EXCLUDE)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/local/lib/python3.10/dist-packages/braccio_description" TYPE DIRECTORY FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/braccio_description/" REGEX "/[^/]*\\.pyc$" EXCLUDE REGEX "/\\_\\_pycache\\_\\_$" EXCLUDE)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   execute_process(
         COMMAND
         "/usr/bin/python3" "-m" "compileall"
-        "/home/ivan/Escritorio/ROS2_braccio/install/braccio_description/local/lib/python3.10/dist-packages/braccio_description"
+        "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_description/local/lib/python3.10/dist-packages/braccio_description"
       )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/braccio_description")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/braccio_description")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/braccio_description")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/braccio_description")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -94,7 +94,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/ament_prefix_path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/ament_prefix_path.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -102,42 +102,42 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/path.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/path.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/local_setup.bash")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/local_setup.bash")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/local_setup.sh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/local_setup.sh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/local_setup.zsh")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/local_setup.zsh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/local_setup.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/local_setup.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_environment_hooks/package.dsv")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_environment_hooks/package.dsv")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_index/share/ament_index/resource_index/packages/braccio_description")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_index/share/ament_index/resource_index/packages/braccio_description")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description/cmake" TYPE FILE FILES
-    "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_core/braccio_descriptionConfig.cmake"
-    "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/ament_cmake_core/braccio_descriptionConfig-version.cmake"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_core/braccio_descriptionConfig.cmake"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/ament_cmake_core/braccio_descriptionConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/ROS2_braccio/braccio_description/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_description" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_description/package.xml")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -148,5 +148,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/ivan/Escritorio/ROS2_braccio/build/braccio_description/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_description/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

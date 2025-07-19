@@ -1,5 +1,5 @@
 CMakeFiles/braccio_hardware.dir/src/braccio_hardware.cpp.o: \
- /home/ivan/Escritorio/ROS2_braccio/braccio_hardware/src/braccio_hardware.cpp \
+ /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/src/braccio_hardware.cpp \
  /usr/include/stdc-predef.h /usr/include/fcntl.h /usr/include/features.h \
  /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -58,7 +58,7 @@ CMakeFiles/braccio_hardware.dir/src/braccio_hardware.cpp.o: \
  /usr/include/c++/11/ext/numeric_traits.h \
  /usr/include/c++/11/bits/cpp_type_traits.h \
  /usr/include/c++/11/ext/type_traits.h \
- /home/ivan/Escritorio/ROS2_braccio/braccio_hardware/include/braccio_hardware/braccio_hardware.hpp \
+ /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/include/braccio_hardware/braccio_hardware.hpp \
  /usr/include/termios.h /usr/include/x86_64-linux-gnu/bits/termios.h \
  /usr/include/x86_64-linux-gnu/bits/termios-struct.h \
  /usr/include/x86_64-linux-gnu/bits/termios-c_cc.h \
@@ -671,9 +671,9 @@ CMakeFiles/braccio_hardware.dir/src/braccio_hardware.cpp.o: \
  /opt/ros/humble/include/rclcpp/rclcpp/wait_set_policies/thread_safe_synchronization.hpp \
  /opt/ros/humble/include/rclcpp/rclcpp/wait_set_policies/detail/write_preferring_read_write_lock.hpp \
  /opt/ros/humble/include/rclcpp/rclcpp/wait_set_template.hpp \
- /home/ivan/Escritorio/ROS2_braccio/braccio_hardware/include/braccio_hardware/visibility_control.hpp \
- /home/ivan/Escritorio/ROS2_braccio/braccio_hardware/include/braccio_hardware/arduino_comms.hpp \
- /home/ivan/Escritorio/ROS2_braccio/braccio_hardware/include/braccio_hardware/hardware.hpp \
+ /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/include/braccio_hardware/visibility_control.hpp \
+ /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/include/braccio_hardware/arduino_comms.hpp \
+ /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/include/braccio_hardware/hardware.hpp \
  /opt/ros/humble/include/hardware_interface/types/hardware_interface_type_values.hpp \
  /opt/ros/humble/include/pluginlib/pluginlib/class_list_macros.hpp \
  /opt/ros/humble/include/class_loader/class_loader/class_loader.hpp \

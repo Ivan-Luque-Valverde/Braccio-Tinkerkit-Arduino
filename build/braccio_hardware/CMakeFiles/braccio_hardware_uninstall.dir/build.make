@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ivan/Escritorio/ROS2_braccio/braccio_hardware
+CMAKE_SOURCE_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware
+CMAKE_BINARY_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware
 
 # Utility rule file for braccio_hardware_uninstall.
 
@@ -67,7 +67,7 @@ include CMakeFiles/braccio_hardware_uninstall.dir/compiler_depend.make
 include CMakeFiles/braccio_hardware_uninstall.dir/progress.make
 
 CMakeFiles/braccio_hardware_uninstall:
-	/usr/bin/cmake -P /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
+	/usr/bin/cmake -P /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
 
 braccio_hardware_uninstall: CMakeFiles/braccio_hardware_uninstall
 braccio_hardware_uninstall: CMakeFiles/braccio_hardware_uninstall.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/braccio_hardware_uninstall.dir/clean:
 .PHONY : CMakeFiles/braccio_hardware_uninstall.dir/clean
 
 CMakeFiles/braccio_hardware_uninstall.dir/depend:
-	cd /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/ROS2_braccio/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware/CMakeFiles/braccio_hardware_uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware/CMakeFiles/braccio_hardware_uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/braccio_hardware_uninstall.dir/depend
 

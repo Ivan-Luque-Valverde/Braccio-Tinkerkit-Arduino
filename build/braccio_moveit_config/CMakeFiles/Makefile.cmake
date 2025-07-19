@@ -7,8 +7,8 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/ivan/Escritorio/ROS2_braccio/braccio_moveit_config/CMakeLists.txt"
-  "/home/ivan/Escritorio/ROS2_braccio/braccio_moveit_config/package.xml"
+  "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/CMakeLists.txt"
+  "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/package.xml"
   "CMakeFiles/3.22.1/CMakeCCompiler.cmake"
   "CMakeFiles/3.22.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.22.1/CMakeSystem.cmake"

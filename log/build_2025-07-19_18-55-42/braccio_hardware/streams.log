@@ -1,0 +1,109 @@
+[0.010s] Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware -DCMAKE_INSTALL_PREFIX=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware
+[0.129s] -- The C compiler identification is GNU 11.4.0
+[0.231s] -- The CXX compiler identification is GNU 11.4.0
+[0.241s] -- Detecting C compiler ABI info
+[0.313s] -- Detecting C compiler ABI info - done
+[0.318s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.319s] -- Detecting C compile features
+[0.319s] -- Detecting C compile features - done
+[0.324s] -- Detecting CXX compiler ABI info
+[0.404s] -- Detecting CXX compiler ABI info - done
+[0.410s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.410s] -- Detecting CXX compile features
+[0.410s] -- Detecting CXX compile features - done
+[0.420s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.570s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.675s] -- Found hardware_interface: 2.51.0 (/opt/ros/humble/share/hardware_interface/cmake)
+[0.733s] -- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.741s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.752s] -- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.768s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.788s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.967s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.969s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.985s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.037s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[1.039s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.051s] -- Found FastRTPS: /opt/ros/humble/include  
+[1.053s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.059s] -- Found TinyXML2 via Config file: TinyXML2_DIR-NOTFOUND
+[1.068s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.075s] -- Looking for pthread.h
+[1.133s] -- Looking for pthread.h - found
+[1.133s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.195s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[1.196s] -- Found Threads: TRUE  
+[1.290s] -- Found ament_lint_auto: 0.12.12 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[1.345s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[1.345s] -- Configured cppcheck include dirs: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/incude;$<BUILD_INTERFACE:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/include>
+[1.345s] -- Configured cppcheck exclude dirs and/or files: 
+[1.345s] -- Added test 'flake8' to check Python code syntax and style conventions
+[1.346s] -- Added test 'lint_cmake' to check CMake code style
+[1.346s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[1.347s] -- Added test 'uncrustify' to check C / C++ code style
+[1.347s] -- Configured uncrustify additional arguments: 
+[1.348s] -- Added test 'xmllint' to check XML markup files
+[1.349s] -- Configuring done
+[1.374s] -- Generating done
+[1.377s] -- Build files have been written to: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware
+[1.385s] Invoked command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware -DCMAKE_INSTALL_PREFIX=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware
+[1.386s] Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware -- -j16 -l16
+[1.430s] [ 50%] [32mBuilding CXX object CMakeFiles/braccio_hardware.dir/src/braccio_hardware.cpp.o[0m
+[1.437s] [ 50%] Built target ament_cmake_python_copy_braccio_hardware
+[1.594s] running egg_info
+[1.594s] creating braccio_hardware.egg-info
+[1.594s] writing braccio_hardware.egg-info/PKG-INFO
+[1.594s] writing dependency_links to braccio_hardware.egg-info/dependency_links.txt
+[1.594s] writing top-level names to braccio_hardware.egg-info/top_level.txt
+[1.594s] writing manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+[1.595s] reading manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+[1.595s] writing manifest file 'braccio_hardware.egg-info/SOURCES.txt'
+[1.619s] [ 50%] Built target ament_cmake_python_build_braccio_hardware_egg
+[3.767s] [100%] [32m[1mLinking CXX shared library libbraccio_hardware.so[0m
+[3.888s] [100%] Built target braccio_hardware
+[3.897s] Invoked command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware -- -j16 -l16
+[3.898s] Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware
+[3.903s] -- Install configuration: ""
+[3.903s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/braccio_hardware.xml
+[3.904s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/lib/libbraccio_hardware.so
+[3.905s] -- Set runtime path of "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/lib/libbraccio_hardware.so" to ""
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/include
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/include/braccio_hardware
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/include/braccio_hardware/visibility_control.hpp
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/include/braccio_hardware/braccio_hardware.hpp
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/include/braccio_hardware/hardware.hpp
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/include/braccio_hardware/arduino_comms.hpp
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/config
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/config/braccio_controllers.yml
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/launch
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/launch/braccio_hardware.launch.py
+[3.905s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/environment/pythonpath.sh
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/environment/pythonpath.dsv
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/top_level.txt
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/PKG-INFO
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/dependency_links.txt
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware-0.0.0-py3.10.egg-info/SOURCES.txt
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/__init__.py
+[3.906s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/launch_mixin.py
+[3.927s] Listing '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware'...
+[3.927s] Compiling '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/__init__.py'...
+[3.927s] Compiling '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages/braccio_hardware/launch_mixin.py'...
+[3.932s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/ament_index/resource_index/package_run_dependencies/braccio_hardware
+[3.932s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/ament_index/resource_index/parent_prefix_path/braccio_hardware
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/environment/ament_prefix_path.sh
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/environment/ament_prefix_path.dsv
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/environment/path.sh
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/environment/path.dsv
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/local_setup.bash
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/local_setup.sh
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/local_setup.zsh
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/local_setup.dsv
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/package.dsv
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/ament_index/resource_index/packages/braccio_hardware
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/ament_index/resource_index/hardware_interface__pluginlib__plugin/braccio_hardware
+[3.933s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/cmake/braccio_hardwareConfig.cmake
+[3.934s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/cmake/braccio_hardwareConfig-version.cmake
+[3.934s] -- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/share/braccio_hardware/package.xml
+[3.936s] Invoked command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware

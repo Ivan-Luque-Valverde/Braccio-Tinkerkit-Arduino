@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ivan/Escritorio/ROS2_braccio/braccio_hardware
+CMAKE_SOURCE_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware
+CMAKE_BINARY_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware
 
 # Utility rule file for ament_cmake_python_copy_braccio_hardware.
 
@@ -67,7 +67,7 @@ include CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/compiler_depend.
 include CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/progress.make
 
 CMakeFiles/ament_cmake_python_copy_braccio_hardware:
-	/usr/bin/cmake -E copy_directory /home/ivan/Escritorio/ROS2_braccio/braccio_hardware/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware/ament_cmake_python/braccio_hardware/braccio_hardware
+	/usr/bin/cmake -E copy_directory /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware/ament_cmake_python/braccio_hardware/braccio_hardware
 
 ament_cmake_python_copy_braccio_hardware: CMakeFiles/ament_cmake_python_copy_braccio_hardware
 ament_cmake_python_copy_braccio_hardware: CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/clean:
 .PHONY : CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/clean
 
 CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/depend:
-	cd /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/ROS2_braccio/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware /home/ivan/Escritorio/ROS2_braccio/build/braccio_hardware/CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware/CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ament_cmake_python_copy_braccio_hardware.dir/depend
 

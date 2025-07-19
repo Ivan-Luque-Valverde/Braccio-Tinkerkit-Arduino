@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ivan/Escritorio/ROS2_braccio/braccio_bringup
+CMAKE_SOURCE_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup
+CMAKE_BINARY_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup
 
 # Utility rule file for braccio_bringup_uninstall.
 
@@ -67,7 +67,7 @@ include CMakeFiles/braccio_bringup_uninstall.dir/compiler_depend.make
 include CMakeFiles/braccio_bringup_uninstall.dir/progress.make
 
 CMakeFiles/braccio_bringup_uninstall:
-	/usr/bin/cmake -P /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
+	/usr/bin/cmake -P /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup/ament_cmake_uninstall_target/ament_cmake_uninstall_target.cmake
 
 braccio_bringup_uninstall: CMakeFiles/braccio_bringup_uninstall
 braccio_bringup_uninstall: CMakeFiles/braccio_bringup_uninstall.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/braccio_bringup_uninstall.dir/clean:
 .PHONY : CMakeFiles/braccio_bringup_uninstall.dir/clean
 
 CMakeFiles/braccio_bringup_uninstall.dir/depend:
-	cd /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/ROS2_braccio/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup/CMakeFiles/braccio_bringup_uninstall.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup/CMakeFiles/braccio_bringup_uninstall.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/braccio_bringup_uninstall.dir/depend
 

@@ -1,0 +1,97 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-87a1b4d56b75028c09b1.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "braccio_hardware",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_braccio_hardware_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_braccio_hardware_egg-650c1951cd9a243bf4ac.json",
+					"name" : "ament_cmake_python_build_braccio_hardware_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_braccio_hardware::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_braccio_hardware-697bd0d8a7579031045f.json",
+					"name" : "ament_cmake_python_copy_braccio_hardware",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "braccio_hardware::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-braccio_hardware-153f9ab5754fe3706089.json",
+					"name" : "braccio_hardware",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "braccio_hardware_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-braccio_hardware_uninstall-cf55eb6bb75d60df1e11.json",
+					"name" : "braccio_hardware_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-0f08fd61c102eaf4233c.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware",
+		"source" : "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_hardware"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

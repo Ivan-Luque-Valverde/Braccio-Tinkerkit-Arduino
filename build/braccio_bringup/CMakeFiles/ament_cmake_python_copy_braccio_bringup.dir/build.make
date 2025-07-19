@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ivan/Escritorio/ROS2_braccio/braccio_bringup
+CMAKE_SOURCE_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup
+CMAKE_BINARY_DIR = /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup
 
 # Utility rule file for ament_cmake_python_copy_braccio_bringup.
 
@@ -67,7 +67,7 @@ include CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/compiler_depend.m
 include CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/progress.make
 
 CMakeFiles/ament_cmake_python_copy_braccio_bringup:
-	/usr/bin/cmake -E copy_directory /home/ivan/Escritorio/ROS2_braccio/braccio_bringup/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup/ament_cmake_python/braccio_bringup/braccio_bringup
+	/usr/bin/cmake -E copy_directory /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup/ament_cmake_python/braccio_bringup/braccio_bringup
 
 ament_cmake_python_copy_braccio_bringup: CMakeFiles/ament_cmake_python_copy_braccio_bringup
 ament_cmake_python_copy_braccio_bringup: CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/build.make
@@ -82,6 +82,6 @@ CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/clean:
 .PHONY : CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/clean
 
 CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/depend:
-	cd /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/ROS2_braccio/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup /home/ivan/Escritorio/ROS2_braccio/build/braccio_bringup/CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup/CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ament_cmake_python_copy_braccio_bringup.dir/depend
 

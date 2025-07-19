@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-cc7d18b6cf14d7675b34.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "braccio_bringup",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_braccio_bringup_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_braccio_bringup_egg-30399af1158f3461ec41.json",
+					"name" : "ament_cmake_python_build_braccio_bringup_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_braccio_bringup::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_braccio_bringup-ada06f636a4b053f3c39.json",
+					"name" : "ament_cmake_python_copy_braccio_bringup",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "braccio_bringup_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-braccio_bringup_uninstall-92ec1cb8be1373788fb0.json",
+					"name" : "braccio_bringup_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-51d9c92f94607de98a17.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup",
+		"source" : "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_bringup"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
