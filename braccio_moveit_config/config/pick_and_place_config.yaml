@@ -1,0 +1,141 @@
+# Configuración de Pick and Place para Braccio
+# Todas las posiciones están en metros y radianes
+
+# Posiciones de joints (en radianes)
+joint_positions:
+  home: [0.0, 1.55, 0.0, 0.0, 0.0]
+  pick_approach: [1.3, 1.55, 1.0, 0.0, 0.0]
+  pick_position: [1.3, 1.3, 0.25, 0.0, 0.0]
+  place_approach: [3.0, 1.55, 0.7, 0.0, 1.8]
+  place_position: [3.0, 1.3, 0.2, 0.0, 1.8]
+
+# Posiciones cartesianas (en metros)
+cartesian_positions:
+  home: [0.0, 0.0, 0.3]
+  object_1: [0.3, 0.0, 0.1]
+  object_2: [0.2, 0.2, 0.1]
+  target_1: [-0.3, 0.0, 0.1]
+  target_2: [-0.2, 0.2, 0.1]
+
+# Configuración del gripper
+gripper:
+  open_position: 0.0    # Gripper completamente abierto
+  closed_position: 0.8  # Gripper cerrado (funciona correctamente)
+  grip_force: 0.5       # Solo para referencia (no se usa)
+  open_time: 2.0        # Tiempo para abrir
+  close_time: 3.0       # Tiempo para cerrar (más tiempo para asegurar cierre)
+
+# Configuración de movimientos
+movement:
+  default_duration: 3.0
+  approach_height: 0.15  # Altura sobre objetos para aproximación
+  pick_height_offset: 0.02  # Offset sobre objeto para pick
+  max_velocity_scaling: 0.1
+  max_acceleration_scaling: 0.1
+  planning_time: 10.0
+  planning_attempts: 10
+
+# Límites del workspace (en metros)
+workspace:
+  x_min: -0.5
+  x_max: 0.5
+  y_min: -0.5
+  y_max: 0.5
+  z_min: 0.0
+  z_max: 0.8
+
+# Configuración de tolerancias
+tolerances:
+  position: 0.02  # 2cm
+  orientation: 0.1  # radianes
+  joint: 0.1  # radianes
+
+# Objetos en la escena
+objects:
+  - name: "objeto1"
+    position: [0.3, 0.0, 0.1]
+    size: [0.05, 0.05, 0.05]  # 5cm x 5cm x 5cm
+  - name: "objeto2"
+    position: [0.2, 0.2, 0.1]
+    size: [0.03, 0.03, 0.08]  # 3cm x 3cm x 8cm
+
+# Obstáculos fijos
+obstacles:
+  - name: "mesa"
+    type: "box"
+    position: [0.0, 0.0, -0.01]
+    size: [0.8, 0.8, 0.02]
+  - name: "pared"
+    type: "box"
+    position: [0.0, 0.5, 0.3]
+    size: [1.0, 0.02, 0.6]
+
+# Secuencias predefinidas
+sequences:
+  basic_demo:
+    - action: "move_joints"
+      target: "home"
+      description: "Ir a posición inicial"
+    - action: "open_gripper"
+      description: "Abrir gripper"
+    - action: "move_joints"
+      target: "pick_approach"
+      description: "Acercarse al objeto"
+    - action: "move_joints"
+      target: "pick_position"
+      description: "Posición de agarre"
+    - action: "close_gripper"
+      description: "Agarrar objeto"
+    - action: "move_joints"
+      target: "pick_approach"
+      description: "Levantar objeto"
+    - action: "move_joints"
+      target: "place_approach"
+      description: "Ir hacia destino"
+    - action: "move_joints"
+      target: "place_position"
+      description: "Posición de colocación"
+    - action: "open_gripper"
+      description: "Soltar objeto"
+    - action: "move_joints"
+      target: "place_approach"
+      description: "Alejarse"
+    - action: "move_joints"
+      target: "home"
+      description: "Volver a home"
+
+  cartesian_demo:
+    - action: "move_cartesian"
+      target: "home"
+      description: "Posición inicial"
+    - action: "open_gripper"
+      description: "Abrir gripper"
+    - action: "move_cartesian"
+      target: "object_1"
+      approach_height: true
+      description: "Acercarse al objeto 1"
+    - action: "move_cartesian"
+      target: "object_1"
+      description: "Bajar al objeto 1"
+    - action: "close_gripper"
+      description: "Agarrar objeto"
+    - action: "move_cartesian"
+      target: "object_1"
+      approach_height: true
+      description: "Levantar objeto"
+    - action: "move_cartesian"
+      target: "target_1"
+      approach_height: true
+      description: "Ir hacia destino 1"
+    - action: "move_cartesian"
+      target: "target_1"
+      description: "Bajar al destino"
+    - action: "open_gripper"
+      description: "Soltar objeto"
+    - action: "move_cartesian"
+      target: "target_1"
+      approach_height: true
+      description: "Alejarse"
+    - action: "move_cartesian"
+      target: "home"
+      description: "Volver a home"

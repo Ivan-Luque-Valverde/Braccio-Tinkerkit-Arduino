@@ -113,6 +113,15 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_moveit_config" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/.setup_assistant")
 endif()
 
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/braccio_moveit_config" TYPE PROGRAM FILES
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/pick_and_place_simple.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/pick_and_place_configurable.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/position_tester.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/gripper_debugger.py"
+    )
+endif()
+
 if(CMAKE_INSTALL_COMPONENT)
   set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
 else()

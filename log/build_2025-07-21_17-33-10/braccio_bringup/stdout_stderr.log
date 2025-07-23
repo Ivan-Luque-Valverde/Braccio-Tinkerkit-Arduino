@@ -1,0 +1,8 @@
+Built target ament_cmake_python_copy_braccio_bringup
+running egg_info
+writing braccio_bringup.egg-info/PKG-INFO
+writing dependency_links to braccio_bringup.egg-info/dependency_links.txt
+writing top-level names to braccio_bringup.egg-info/top_level.txt
+reading manifest file 'braccio_bringup.egg-info/SOURCES.txt'
+writing manifest file 'braccio_bringup.egg-info/SOURCES.txt'
+Built target ament_cmake_python_build_braccio_bringup_egg

@@ -27,9 +27,16 @@ class GazeboMixin:
                     ]
                 )
             ),
+            launch_arguments={
+                "world": PathJoinSubstitution([
+                    FindPackageShare("braccio_description"),
+                    "worlds",
+                    "mundo.world"
+                ])
+            }.items(),
             **kwargs
         )
-    
+
     @staticmethod
     def node_spawn_entity_classic(
         robot_name: Optional[Union[LaunchConfiguration, str]] = None, **kwargs

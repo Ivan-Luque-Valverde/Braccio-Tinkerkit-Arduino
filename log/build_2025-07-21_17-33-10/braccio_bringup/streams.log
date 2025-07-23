@@ -1,0 +1,9 @@
+[0.010s] Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup': CMAKE_PREFIX_PATH=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_description:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_moveit_config:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_bringup:/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup -- -j16 -l16
+[0.050s] Built target ament_cmake_python_copy_braccio_bringup
+[0.200s] running egg_info
+[0.200s] writing braccio_bringup.egg-info/PKG-INFO
+[0.200s] writing dependency_links to braccio_bringup.egg-info/dependency_links.txt
+[0.200s] writing top-level names to braccio_bringup.egg-info/top_level.txt
+[0.202s] reading manifest file 'braccio_bringup.egg-info/SOURCES.txt'
+[0.202s] writing manifest file 'braccio_bringup.egg-info/SOURCES.txt'
+[0.223s] Built target ament_cmake_python_build_braccio_bringup_egg
