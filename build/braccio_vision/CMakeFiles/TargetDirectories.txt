@@ -1,0 +1,11 @@
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/uninstall.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/braccio_vision_uninstall.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/ament_cmake_python_copy_braccio_vision.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/ament_cmake_python_build_braccio_vision_egg.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/test.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/edit_cache.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/rebuild_cache.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/list_install_components.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/install.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/install/local.dir
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/CMakeFiles/install/strip.dir

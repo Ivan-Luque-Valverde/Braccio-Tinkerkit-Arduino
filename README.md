@@ -129,3 +129,115 @@ ros2 run braccio_moveit_config position_tester.py
 ```
 braccio_moveit_config/config/pick_and_place_config.yaml
 ```
+
+## Sistema de Visión 📷
+
+Este repositorio incluye un sistema de visión modular completo que permite al robot Braccio detectar objetos y calcular sus coordenadas para operaciones de pick and place automatizadas.
+
+### Configuración del Sistema de Visión
+
+El sistema de visión está implementado como un paquete completamente modular en:
+```
+braccio_vision/
+```
+
+### Lanzamiento del Sistema de Visión
+
+#### 1. Simulación con Cámara Cenital
+
+Lanza la simulación con una cámara fija posicionada sobre el área de trabajo:
+
+```bash
+ros2 launch braccio_vision vision_simulation.launch.py
+```
+
+Este comando lanza:
+- ✅ Simulación de Gazebo con cámara cenital
+- ✅ Robot Braccio en el mundo de visión
+- ✅ Nodo de detección de objetos
+- ✅ Visor de cámara en tiempo real
+
+#### 2. Componentes del Sistema de Visión
+
+**a) Detector de Objetos (`object_detector.py`)** 🎯
+- Detección de objetos por color (HSV)
+- Cálculo de coordenadas mundo desde píxeles
+- Publicación de coordenadas detectadas
+- Filtrado de ruido y contornos mínimos
+
+**b) Visor de Cámara (`camera_viewer.py`)** 👁️
+- Visualización en tiempo real de la cámara
+- Overlay de detecciones de objetos
+- Debug visual del sistema de detección
+
+**c) Pick and Place con Visión (`vision_pick_and_place.py`)** 🤖
+- Integración completa detección + manipulación
+- Automatización del proceso completo
+- Calibración de coordenadas cámara-robot
+
+### Configuración de Visión
+
+El sistema es completamente configurable mediante:
+```
+braccio_vision/config/vision_config.yaml
+```
+
+**Parámetros principales:**
+- 🎨 Rangos de color HSV para detección
+- 📏 Parámetros de calibración de cámara
+- 🎯 Transformación píxel-a-mundo
+- ⚙️ Filtros de detección (área mínima, etc.)
+
+### Calibración del Sistema de Visión 🔧
+
+Para ajustar la detección de objetos:
+
+1. **Calibrar colores HSV:** Modificar rangos en `vision_config.yaml`
+2. **Calibrar coordenadas:** Usar objetos de referencia conocidos
+3. **Ajustar filtros:** Configurar área mínima y máxima de detección
+
+### Arquitectura del Sistema de Visión
+
+```
+braccio_vision/
+├── braccio_vision/          # Nodos Python
+│   ├── object_detector.py   # Detección de objetos
+│   ├── camera_viewer.py     # Visor de cámara
+│   └── vision_pick_and_place.py  # Pick&place con visión
+├── config/
+│   └── vision_config.yaml  # Configuración del sistema
+├── launch/
+│   ├── vision_simulation.launch.py  # Lanzador principal
+│   └── vision_bringup.launch.py     # Solo nodos de visión
+├── urdf/
+│   └── vision_world.xacro   # Mundo con cámara cenital
+└── scripts/                 # Scripts ejecutables
+```
+
+### Ejecución Paso a Paso del Sistema Completo ⭐
+
+
+```bash
+# Terminal 1: Lanzar simulación con cámara
+ros2 launch braccio_vision vision_simulation.launch.py
+
+# Terminal 2: Ejecutar detector de objetos  
+ros2 run braccio_vision object_detector.py
+
+# Terminal 3: Ver feed de cámara con detecciones
+ros2 run braccio_vision camera_viewer.py
+
+# Terminal 4: Ejecutar pick and place guiado por visión
+ros2 run braccio_vision vision_pick_and_place.py
+```
+
+### Arquitectura Técnica
+
+```
+Sistema de Visión Braccio
+├── Simulación (Gazebo + Camera Plugin)
+├── Detección (OpenCV + HSV)
+├── Transformación (Pixel-to-World)
+├── Manipulación (Trajectory Controllers)
+└── Control (Estado + Secuencias)
+```

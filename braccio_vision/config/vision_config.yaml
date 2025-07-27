@@ -1,0 +1,111 @@
+# Configuración del Sistema de Visión para Braccio
+# Parámetros de calibración y detección de objetos
+
+# Configuración de la cámara
+camera:
+  name: "overhead_camera"
+  topic_image: "/overhead_camera/image_raw"
+  topic_camera_info: "/overhead_camera/camera_info"
+  frame_id: "overhead_camera_optical_frame"
+  
+  # Parámetros intrínsecos (se pueden actualizar con calibración)
+  width: 640
+  height: 480
+  fx: 554.254691191187    # Focal length x
+  fy: 554.254691191187    # Focal length y
+  cx: 320.5               # Center x
+  cy: 240.5               # Center y
+
+# Configuración del workspace de detección
+workspace:
+  # Límites en coordenadas de la cámara (metros)
+  x_min: -0.4
+  x_max: 0.6
+  y_min: -0.4
+  y_max: 0.4
+  z_table: 0.75  # Altura de la mesa/superficie de trabajo
+  
+  # Transformación cámara -> mundo
+  camera_height: 0.8      # Altura de la cámara sobre el workspace (reducida)
+  camera_offset_x: 0.3    # Offset en X de la cámara respecto al centro del robot
+  camera_offset_y: 0.0    # Offset en Y de la cámara respecto al centro
+
+# Configuración de detección de objetos
+object_detection:
+  # Detección por color HSV
+  red_object:
+    enabled: true
+    hsv_lower: [0, 120, 70]      # [H_min, S_min, V_min]
+    hsv_upper: [10, 255, 255]    # [H_max, S_max, V_max]
+    min_area: 100                # Área mínima en píxeles
+    max_area: 5000               # Área máxima en píxeles
+    
+  green_object:
+    enabled: true
+    hsv_lower: [50, 120, 70]     # [H_min, S_min, V_min]
+    hsv_upper: [70, 255, 255]    # [H_max, S_max, V_max]
+    min_area: 100                # Área mínima en píxeles
+    max_area: 5000               # Área máxima en píxeles
+    
+  blue_object:
+    enabled: false
+    hsv_lower: [100, 120, 70]    # [H_min, S_min, V_min]
+    hsv_upper: [130, 255, 255]   # [H_max, S_max, V_max]
+    min_area: 100                # Área mínima en píxeles
+    max_area: 5000               # Área máxima en píxeles
+
+# Filtros de procesamiento de imagen
+image_processing:
+  blur_kernel_size: 5           # Tamaño del kernel de blur
+  erosion_iterations: 2         # Iteraciones de erosión
+  dilation_iterations: 2        # Iteraciones de dilatación
+  contour_approximation: 0.02   # Factor de aproximación de contornos
+
+# Configuración de coordenadas
+coordinate_mapping:
+  # Matriz de transformación pixel -> mundo (se calcula automáticamente)
+  # Basada en la altura de la cámara y parámetros intrínsecos
+  use_automatic_calibration: true
+  
+  # Calibración manual (si use_automatic_calibration es false)
+  pixels_per_meter_x: 800       # Píxeles por metro en X
+  pixels_per_meter_y: 800       # Píxeles por metro en Y
+  origin_pixel_x: 320           # Píxel origen en X
+  origin_pixel_y: 240           # Píxel origen en Y
+
+# Configuración de publicación
+publishing:
+  # Topics de salida
+  detected_objects_topic: "/vision/detected_objects"
+  debug_image_topic: "/vision/debug_image"
+  object_markers_topic: "/vision/object_markers"
+  
+  # Frecuencia de publicación
+  detection_rate: 10.0          # Hz
+  debug_image_rate: 5.0         # Hz
+
+# Configuración de debugging
+debug:
+  show_detection_windows: false  # Mostrar ventanas de OpenCV (solo para desarrollo)
+  save_debug_images: false      # Guardar imágenes de debug
+  verbose_logging: true         # Logging detallado
+  draw_workspace_bounds: true   # Dibujar límites del workspace en imagen debug
+
+# Configuración de pick and place con visión
+vision_pick_and_place:
+  # Prioridades de objetos (orden de pick)
+  object_priority: ["red_object", "green_object", "blue_object"]
+  
+  # Posiciones de destino para cada tipo de objeto
+  target_positions:
+    red_object: [-0.3, 0.0]     # [x, y] en metros
+    green_object: [-0.2, 0.2]   # [x, y] en metros  
+    blue_object: [-0.3, -0.2]   # [x, y] en metros
+  
+  # Configuración de aproximación
+  approach_offset_z: 0.1        # Altura sobre el objeto para aproximación
+  pick_offset_z: 0.02           # Altura sobre el objeto para pick
+  
+  # Tolerancias
+  position_tolerance: 0.02      # Tolerancia de posición en metros
+  detection_confidence: 0.8     # Confianza mínima para considerar detección válida

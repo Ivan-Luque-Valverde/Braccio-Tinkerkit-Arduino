@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-edd6edcee6d4cd998ed8.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "braccio_vision",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_braccio_vision_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_braccio_vision_egg-76851e42ef1c72219ddf.json",
+					"name" : "ament_cmake_python_build_braccio_vision_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_braccio_vision::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_braccio_vision-ec8e88080f77693e9b9a.json",
+					"name" : "ament_cmake_python_copy_braccio_vision",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "braccio_vision_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-braccio_vision_uninstall-19667f2285b059644edf.json",
+					"name" : "braccio_vision_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-af892d3b69f0deb6a394.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision",
+		"source" : "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

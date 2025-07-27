@@ -14,6 +14,5 @@ install(PROGRAMS
   scripts/pick_and_place_simple.py
   scripts/pick_and_place_configurable.py
   scripts/position_tester.py
-  scripts/gripper_debugger.py
   DESTINATION lib/${PROJECT_NAME}
 )

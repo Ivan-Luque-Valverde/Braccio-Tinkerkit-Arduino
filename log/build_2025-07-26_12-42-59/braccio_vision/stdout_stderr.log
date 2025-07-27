@@ -1,0 +1,45 @@
+Built target ament_cmake_python_copy_braccio_vision
+running egg_info
+writing braccio_vision.egg-info/PKG-INFO
+writing dependency_links to braccio_vision.egg-info/dependency_links.txt
+writing top-level names to braccio_vision.egg-info/top_level.txt
+reading manifest file 'braccio_vision.egg-info/SOURCES.txt'
+writing manifest file 'braccio_vision.egg-info/SOURCES.txt'
+Built target ament_cmake_python_build_braccio_vision_egg
+-- Install configuration: ""
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/environment/pythonpath.sh
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/environment/pythonpath.dsv
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision-1.0.0-py3.10.egg-info
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision-1.0.0-py3.10.egg-info/top_level.txt
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision-1.0.0-py3.10.egg-info/PKG-INFO
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision-1.0.0-py3.10.egg-info/dependency_links.txt
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision-1.0.0-py3.10.egg-info/SOURCES.txt
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision/__init__.py
+Listing '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision'...
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/object_detector.py
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/camera_calibrator.py
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/vision_pick_and_place.py
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/camera_viewer.py
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/launch
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/launch/vision_system.launch.py
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/config
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/config/vision_config.yaml
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/urdf
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/urdf/overhead_camera.urdf.xacro
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/urdf/braccio_with_vision.urdf.xacro
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/ament_index/resource_index/package_run_dependencies/braccio_vision
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/ament_index/resource_index/parent_prefix_path/braccio_vision
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/environment/ament_prefix_path.sh
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/environment/ament_prefix_path.dsv
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/environment/path.sh
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/environment/path.dsv
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/local_setup.bash
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/local_setup.sh
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/local_setup.zsh
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/local_setup.dsv
+-- Up-to-date: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/package.dsv
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/ament_index/resource_index/packages/braccio_vision
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/cmake/braccio_visionConfig.cmake
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/cmake/braccio_visionConfig-version.cmake
+-- Installing: /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/package.xml

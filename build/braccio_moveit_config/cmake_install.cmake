@@ -118,7 +118,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/pick_and_place_simple.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/pick_and_place_configurable.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/position_tester.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/gripper_debugger.py"
     )
 endif()
 

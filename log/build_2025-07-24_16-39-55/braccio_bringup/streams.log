@@ -1,0 +1,9 @@
+[0.010s] Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup': AMENT_PREFIX_PATH=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_description:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_description:/opt/ros/humble LD_LIBRARY_PATH=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_hardware/local/lib/python3.10/dist-packages:/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_description/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_bringup -- -j16 -l16
+[0.052s] Built target ament_cmake_python_copy_braccio_bringup
+[0.196s] running egg_info
+[0.197s] writing braccio_bringup.egg-info/PKG-INFO
+[0.197s] writing dependency_links to braccio_bringup.egg-info/dependency_links.txt
+[0.197s] writing top-level names to braccio_bringup.egg-info/top_level.txt
+[0.199s] reading manifest file 'braccio_bringup.egg-info/SOURCES.txt'
+[0.199s] writing manifest file 'braccio_bringup.egg-info/SOURCES.txt'
+[0.223s] Built target ament_cmake_python_build_braccio_bringup_egg

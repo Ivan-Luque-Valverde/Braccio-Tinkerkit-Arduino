@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot name="overhead_camera" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Macro para la cámara cenital -->
+    <xacro:macro name="overhead_camera" params="parent_frame height:=1.0 camera_name:=overhead_camera">
+        
+        <!-- Link de la cámara -->
+        <link name="${camera_name}_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.08 0.08 0.03"/>
+                </geometry>
+                <material name="camera_blue">
+                    <color rgba="0.2 0.4 0.8 1.0"/>
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="0.08 0.08 0.03"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.1"/>
+                <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+            </inertial>
+        </link>
+
+        <!-- Joint fijo para posicionar la cámara -->
+        <joint name="${camera_name}_joint" type="fixed">
+            <origin xyz="0 0 ${height}" rpy="0 ${pi/2} 0"/>
+            <parent link="${parent_frame}"/>
+            <child link="${camera_name}_link"/>
+        </joint>
+
+        <!-- Frame óptico de la cámara -->
+        <link name="${camera_name}_optical_frame"/>
+
+        <joint name="${camera_name}_optical_joint" type="fixed">
+            <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+            <parent link="${camera_name}_link"/>
+            <child link="${camera_name}_optical_frame"/>
+        </joint>
+
+        <!-- Plugin de Gazebo para la cámara -->
+        <gazebo reference="${camera_name}_link">
+            <sensor type="camera" name="${camera_name}">
+                <update_rate>30.0</update_rate>
+                <camera name="head">
+                    <horizontal_fov>1.3962634</horizontal_fov> <!-- 80 grados -->
+                    <image>
+                        <width>640</width>
+                        <height>480</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.02</near>
+                        <far>5.0</far>
+                    </clip>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.007</stddev>
+                    </noise>
+                </camera>
+                <plugin name="${camera_name}_controller" filename="libgazebo_ros_camera.so">
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>0.0</updateRate>
+                    <cameraName>${camera_name}</cameraName>
+                    <imageTopicName>image_raw</imageTopicName>
+                    <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                    <frameName>${camera_name}_optical_frame</frameName>
+                    <hackBaseline>0.07</hackBaseline>
+                    <distortionK1>0.0</distortionK1>
+                    <distortionK2>0.0</distortionK2>
+                    <distortionK3>0.0</distortionK3>
+                    <distortionT1>0.0</distortionT1>
+                    <distortionT2>0.0</distortionT2>
+                </plugin>
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>
