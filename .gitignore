@@ -1,0 +1,18 @@
+# ROS2/colcon build artifacts
+build/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# VSCode settings
+.vscode/
+
+# Otros archivos temporales
+*.swp
+*.swo
+*~
+.DS_Store

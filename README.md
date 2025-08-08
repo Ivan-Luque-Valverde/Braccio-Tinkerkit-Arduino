@@ -216,6 +216,9 @@ braccio_vision/
 
 ### Ejecución Paso a Paso del Sistema Completo ⭐
 
+     cd Escritorio/Braccio-Tinkerkit-Arduino
+     colcon build
+     source install/setup.bash
 
 ```bash
 # Terminal 1: Lanzar simulación con cámara
