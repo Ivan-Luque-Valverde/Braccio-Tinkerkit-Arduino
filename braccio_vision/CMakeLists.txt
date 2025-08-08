@@ -23,7 +23,15 @@ find_package(rclpy REQUIRED)
 # Install Python modules
 ament_python_install_package(${PROJECT_NAME})
 
-# Note: Los scripts Python ahora están incluidos en el módulo principal
+# Install Python scripts as executables
+install(PROGRAMS
+  braccio_vision/object_detector.py
+  braccio_vision/camera_viewer.py
+  braccio_vision/vision_pick_and_place.py
+  braccio_vision/camera_spawner.py
+  braccio_vision/object_spawner.py
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 # Install launch files
 install(DIRECTORY launch/

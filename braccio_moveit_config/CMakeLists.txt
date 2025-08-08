@@ -13,6 +13,5 @@ install(FILES .setup_assistant DESTINATION share/${PROJECT_NAME})
 install(PROGRAMS 
   scripts/pick_and_place_simple.py
   scripts/pick_and_place_configurable.py
-  scripts/position_tester.py
   DESTINATION lib/${PROJECT_NAME}
 )

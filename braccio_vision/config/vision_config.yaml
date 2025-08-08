@@ -8,13 +8,13 @@ camera:
   topic_camera_info: "/overhead_camera/camera_info"
   frame_id: "overhead_camera_optical_frame"
   
-  # Parámetros intrínsecos (se pueden actualizar con calibración)
+  # Parámetros intrínsecos (calculados basados en FOV=60° y resolución 640x480)
   width: 640
   height: 480
-  fx: 554.254691191187    # Focal length x
-  fy: 554.254691191187    # Focal length y
-  cx: 320.5               # Center x
-  cy: 240.5               # Center y
+  fx: 554.382713          # Focal length x (calculado: width/2 / tan(FOV/2))
+  fy: 554.382713          # Focal length y (igual a fx para píxeles cuadrados)
+  cx: 320.0               # Center x (width/2)
+  cy: 240.0               # Center y (height/2)
 
 # Configuración del workspace de detección
 workspace:
@@ -23,12 +23,17 @@ workspace:
   x_max: 0.6
   y_min: -0.4
   y_max: 0.4
-  z_table: 0.75  # Altura de la mesa/superficie de trabajo
+  z_table: 0.0   # Altura del suelo de Gazebo (los objetos están en z=0)
   
-  # Transformación cámara -> mundo
-  camera_height: 0.8      # Altura de la cámara sobre el workspace (reducida)
-  camera_offset_x: 0.3    # Offset en X de la cámara respecto al centro del robot
-  camera_offset_y: 0.0    # Offset en Y de la cámara respecto al centro
+  # Transformación cámara -> mundo (CONFIGURACIÓN ESTABLE)
+  camera_height: 0.6      # Altura de la cámara sobre el workspace (coincide con posición física)
+  camera_offset_x: 0.15   # Offset para centrar en base del robot
+  camera_offset_y: 0.0    # Offset Y
+  
+  # Factores de corrección para transformación de coordenadas
+  coordinate_scale_x: 2.5    # Escala para coordenadas X (valor estable)
+  coordinate_scale_y: 2.5    # Escala para coordenadas Y (valor estable)
+  coordinate_rotation: 0.0   # Sin rotación adicional
 
 # Configuración de detección de objetos
 object_detection:
@@ -63,15 +68,14 @@ image_processing:
 
 # Configuración de coordenadas
 coordinate_mapping:
-  # Matriz de transformación pixel -> mundo (se calcula automáticamente)
-  # Basada en la altura de la cámara y parámetros intrínsecos
-  use_automatic_calibration: true
+  # USAR TRANSFORMACIÓN BÁSICA - más simple y directa
+  use_automatic_calibration: false  # Cambiar a false para usar calibración manual
   
-  # Calibración manual (si use_automatic_calibration es false)
-  pixels_per_meter_x: 800       # Píxeles por metro en X
-  pixels_per_meter_y: 800       # Píxeles por metro en Y
-  origin_pixel_x: 320           # Píxel origen en X
-  origin_pixel_y: 240           # Píxel origen en Y
+  # Calibración manual optimizada para Braccio (VALORES ESTABLES)
+  pixels_per_meter_x: 2000      # Píxeles por metro en X (valor que funcionaba)
+  pixels_per_meter_y: 2000      # Píxeles por metro en Y (valor que funcionaba)
+  origin_pixel_x: 320           # Píxel origen en X (centro de imagen)
+  origin_pixel_y: 240           # Píxel origen en Y (centro de imagen)
 
 # Configuración de publicación
 publishing:

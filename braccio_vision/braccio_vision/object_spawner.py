@@ -66,7 +66,7 @@ class ObjectSpawner(Node):
         
         # Posición del cubo rojo (en el área de trabajo del robot)
         pose = Pose()
-        pose.position.x = 0.4    # Dentro del alcance del robot
+        pose.position.x = 0.2    # Dentro del alcance del robot
         pose.position.y = 0.1    # Ligeramente desplazado en Y
         pose.position.z = 0.025  # Sobre el suelo (mitad del cubo de 0.05m)
         
