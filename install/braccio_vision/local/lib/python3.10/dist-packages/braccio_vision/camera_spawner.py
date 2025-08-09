@@ -31,7 +31,7 @@ class CameraSpawner(Node):
         <sdf version="1.4">
           <model name="overhead_camera">
             <static>true</static>
-            <pose>0.4 0 1.0 0 1.5708 0</pose>
+            <pose>0.4 0 0.6 0 1.5708 0</pose>
             
             <link name="camera_link">
               
@@ -101,7 +101,7 @@ class CameraSpawner(Node):
         pose = Pose()
         pose.position.x = 0.4    # Sobre el área de trabajo del robot
         pose.position.y = 0.0    # Centrado en Y
-        pose.position.z = 1.0    # Altura suficiente para ver área completa
+        pose.position.z = 0.6    # Altura bajada para vista más cercana (era 1.0)
         
         # Orientación: cámara mirando directamente hacia abajo (plano X-Y)
         # Para mirar hacia abajo: rotación de 180° en eje X (roll) o 180° en Z (yaw)

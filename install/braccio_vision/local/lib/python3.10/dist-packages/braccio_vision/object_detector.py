@@ -56,10 +56,16 @@ class ObjectDetector(Node):
             10
         )
         
-        # Publisher para coordenadas del objeto detectado (CRÍTICO para pick and place)
+        # Publishers para coordenadas del objeto detectado (CRÍTICO para pick and place)
         self.coords_publisher = self.create_publisher(
             PointStamped,
             '/detected_object_coords',
+            10
+        )
+        
+        self.vision_coords_publisher = self.create_publisher(
+            PointStamped,
+            '/vision/detected_objects',
             10
         )
         
@@ -172,15 +178,13 @@ class ObjectDetector(Node):
                         cx = int(M["m10"] / M["m00"])
                         cy = int(M["m01"] / M["m00"])
                         
-                        # Convertir píxeles a coordenadas del mundo
-                        world_x, world_y = self.pixel_to_world(cx, cy)
+                        # SOLO píxeles - sin transformación aquí
+                        # La transformación se hace en vision_pick_and_place.py
                         
                         detected_objects.append({
                             'name': obj_name,
-                            'pixel_x': cx,
-                            'pixel_y': cy,
-                            'world_x': world_x,
-                            'world_y': world_y,
+                            'pixel_x': cx,              # Píxeles sin transformar
+                            'pixel_y': cy,              # Píxeles sin transformar
                             'area': area,
                             'contour': contour
                         })
@@ -191,7 +195,7 @@ class ObjectDetector(Node):
                         cv2.putText(debug_image, f'{obj_name}', 
                                    (cx - 50, cy - 10), cv2.FONT_HERSHEY_SIMPLEX, 
                                    0.5, (255, 255, 255), 2)
-                        cv2.putText(debug_image, f'({world_x:.2f}, {world_y:.2f})', 
+                        cv2.putText(debug_image, f'({cx}, {cy}px)', 
                                    (cx - 50, cy + 20), cv2.FONT_HERSHEY_SIMPLEX, 
                                    0.4, (255, 255, 255), 1)
         
@@ -227,7 +231,9 @@ class ObjectDetector(Node):
 
     def create_object_markers(self, detected_objects):
         """Crea markers de visualización para los objetos detectados"""
+        # DESHABILITADO temporalmente - necesita coordenadas del mundo
         marker_array = MarkerArray()
+        return marker_array
         
         for i, obj in enumerate(detected_objects):
             marker = Marker()
@@ -278,8 +284,12 @@ class ObjectDetector(Node):
             debug_msg.header.frame_id = self.config['camera']['frame_id']
             self.debug_image_publisher.publish(debug_msg)
             
+            # Debug: contar objetos detectados
+            self.get_logger().info(f'🔍 Objetos detectados: {len(detected_objects) if detected_objects else 0}')
+            
             # Publicar markers
             if detected_objects:
+                self.get_logger().info(f'📤 Publicando coordenadas para {len(detected_objects)} objetos')
                 markers = self.create_object_markers(detected_objects)
                 self.marker_publisher.publish(markers)
                 
@@ -287,17 +297,23 @@ class ObjectDetector(Node):
                 first_object = detected_objects[0]  # Tomar el primer objeto detectado
                 coords_msg = PointStamped()
                 coords_msg.header.stamp = self.get_clock().now().to_msg()
-                coords_msg.header.frame_id = self.config['camera']['frame_id']
-                coords_msg.point.x = first_object['world_x']
-                coords_msg.point.y = first_object['world_y']
-                coords_msg.point.z = 0.0  # Altura del plano de trabajo
-                self.coords_publisher.publish(coords_msg)
+                coords_msg.header.frame_id = "overhead_camera"
+                coords_msg.point.x = float(first_object['pixel_x'])  # Enviar píxeles directamente
+                coords_msg.point.y = float(first_object['pixel_y'])  # Enviar píxeles directamente
+                coords_msg.point.z = 0.0  # Marca para indicar que son píxeles
                 
-                # Log de objetos detectados
+                # Publicar en ambos topics
+                self.coords_publisher.publish(coords_msg)
+                self.vision_coords_publisher.publish(coords_msg)
+                self.get_logger().info(f'📤 Publicado: píxel({first_object["pixel_x"]}, {first_object["pixel_y"]})')
+                
+                # Log de objetos detectados (ahora en píxeles)
                 for obj in detected_objects:
                     self.get_logger().info(
-                        f'🎯 {obj["name"]}: ({obj["world_x"]:.3f}, {obj["world_y"]:.3f})'
+                        f'🎯 {obj["name"]}: píxel({obj["pixel_x"]}, {obj["pixel_y"]})'
                     )
+            else:
+                self.get_logger().info('⚠️ No se detectaron objetos válidos')
             
         except Exception as e:
             self.get_logger().error(f'Error en detección: {str(e)}')

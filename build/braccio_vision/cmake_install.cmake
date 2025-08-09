@@ -67,6 +67,16 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/braccio_vision" TYPE PROGRAM FILES
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/object_detector.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/camera_viewer.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/vision_pick_and_place.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/camera_spawner.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/object_spawner.py"
+    )
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_vision/launch" TYPE DIRECTORY FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/launch/")
 endif()
 

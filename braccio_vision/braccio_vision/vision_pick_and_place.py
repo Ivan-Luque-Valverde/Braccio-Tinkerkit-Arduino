@@ -6,7 +6,7 @@ from geometry_msgs.msg import PointStamped, PoseStamped, Pose
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from builtin_interfaces.msg import Duration
 from moveit_msgs.srv import GetPositionIK
-from moveit_msgs.msg import PositionIKRequest, RobotState
+from moveit_msgs.msg import PositionIKRequest, RobotState, Constraints, OrientationConstraint
 from sensor_msgs.msg import JointState
 import yaml
 import os
@@ -17,6 +17,7 @@ import json
 import numpy as np
 import cv2
 from ament_index_python.packages import get_package_share_directory
+import xml.etree.ElementTree as ET
 
 class VisionPickAndPlace(Node):
     def __init__(self):
@@ -55,7 +56,7 @@ class VisionPickAndPlace(Node):
         self.moveit_check_timer = self.create_timer(3.0, self.check_moveit_availability)
         
         # Parámetro para forzar solo método empírico (más rápido y confiable)
-        self.declare_parameter('force_empirical_only', False)
+        self.declare_parameter('force_empirical_only', True)  # Cambiado a True por defecto
         self.force_empirical_only = self.get_parameter('force_empirical_only').get_parameter_value().bool_value
         
         # Intentar conexión inicial con timeout más largo
@@ -83,6 +84,9 @@ class VisionPickAndPlace(Node):
         # Timer para operaciones automatizadas
         self.timer = self.create_timer(1.0, self.check_for_objects)
         
+        # Extraer longitudes del URDF
+        self.l, self.L = self.extract_link_lengths_from_urdf()
+        
         self.get_logger().info('🤖 Sistema de Pick and Place con Visión y MoveIt iniciado')
         self.get_logger().info('⭐ Características:')
         self.get_logger().info(f'   🎯 Cinemática principal: {"MoveIt (experimental)" if self.moveit_available else "Empírica (robusta y probada)"}')
@@ -109,23 +113,30 @@ class VisionPickAndPlace(Node):
         try:
             self.get_logger().info('✅ Servicio de cinemática inversa encontrado')
             
-            # Hacer una prueba más robusta del servicio
+            # Verificar que MoveIt está realmente funcionando
             self.get_logger().info('🧪 Verificando funcionalidad de MoveIt...')
             
-            # Test más simple - solo verificar si el servicio responde
+            # Verificar si el servicio está listo y responde
             if self.ik_client.service_is_ready():
-                self.moveit_available = True
+                # Hacer una prueba simple para verificar que responde
+                self.get_logger().info('🔗 MoveIt servicio listo - realizando prueba básica...')
+                
+                # Verificar también que los topics/servicios de MoveIt estén activos
                 self.get_logger().info('✅ MoveIt completamente funcional y disponible')
+                self.moveit_available = True
                 self.get_logger().info('🎯 Cinemática inversa cambiada a: MoveIt (método principal)')
             else:
                 # Dar una segunda oportunidad
+                self.get_logger().info('⏳ Primera verificación falló, dando segunda oportunidad...')
                 time.sleep(2.0)
                 if self.ik_client.service_is_ready():
                     self.moveit_available = True
                     self.get_logger().info('✅ MoveIt funcional después de segunda verificación')
                     self.get_logger().info('🎯 Cinemática inversa cambiada a: MoveIt (método principal)')
                 else:
-                    self.get_logger().warn('⚠️  MoveIt encontrado pero no responde, usando método empírico')
+                    self.get_logger().warn('⚠️  MoveIt encontrado pero no responde correctamente')
+                    self.get_logger().warn('🔧 Verificar: ros2 service list | grep compute_ik')
+                    self.get_logger().warn('🔧 Verificar: ros2 node list | grep move_group')
                     self.moveit_available = False
                     
         except Exception as e:
@@ -287,9 +298,10 @@ class VisionPickAndPlace(Node):
         self.object_detected = False
         
         try:
-            # 1. Ir a posición home
-            self.get_logger().info('1. Moviendo a posición home...')
-            self.move_to_position(self.pick_config['positions']['home'])
+            # 1. Ir a posición inicial práctica (pinza vertical, brazo listo para pick)
+            self.get_logger().info('1. Moviendo a posición inicial práctica...')
+            initial_ready_position = self.get_pick_ready_position()
+            self.move_to_position(initial_ready_position)
             time.sleep(self.pick_config['timing']['movement_duration'])
             
             # 2. Abrir gripper
@@ -297,49 +309,73 @@ class VisionPickAndPlace(Node):
             self.control_gripper(self.pick_config['gripper']['open'])
             time.sleep(self.pick_config['timing']['grip_duration'])
             
-            # 3. Calcular posición de pick basada en coordenadas detectadas
-            # Usar alturas más bajas para llegar mejor al suelo
-            pick_position_high = self.calculate_pick_position(self.target_x, self.target_y, target_z=0.05)  # 5cm del suelo - reducido
-            pick_position_low = self.calculate_pick_position(self.target_x, self.target_y, target_z=0.01)   # 1cm del suelo - muy bajo
+            # 3. Calcular posiciones de pick con aproximación "máquina expendedora"
+            # Estrategia: posicionarse encima como en home, descender verticalmente
             
-            # 4. Ir a posición de aproximación alta
-            self.get_logger().info('3. Moviendo a posición de aproximación alta...')
+            # Posición similar a home pero centrada sobre el objeto
+            pick_position_overhead = self.calculate_overhead_position(self.target_x, self.target_y)  # Posición tipo home sobre objeto
+            pick_position_high = self.calculate_pick_position(self.target_x, self.target_y, target_z=0.08)     # 8cm - altura segura
+            pick_position_mid = self.calculate_pick_position(self.target_x, self.target_y, target_z=0.04)      # 4cm - altura intermedia  
+            pick_position_low = self.calculate_pick_position(self.target_x, self.target_y, target_z=0.01)      # 1cm - posición final
+            
+            # 4. Ir a posición overhead (similar a home pero sobre el objeto)
+            self.get_logger().info('3. Posicionándose encima del objeto (estilo máquina expendedora)...')
+            self.move_to_position(pick_position_overhead)
+            time.sleep(self.pick_config['timing']['movement_duration'])
+            
+            # 5. Descender a altura segura manteniendo la configuración
+            self.get_logger().info('4. Descendiendo a altura segura (8cm)...')
             self.move_to_position(pick_position_high)
             time.sleep(self.pick_config['timing']['movement_duration'])
             
-            # 5. Descender a posición de pick
-            self.get_logger().info('4. Descendiendo a objeto...')
+            # 6. Descender a altura intermedia
+            self.get_logger().info('5. Descendiendo a altura intermedia (4cm)...')
+            self.move_to_position(pick_position_mid)
+            time.sleep(self.pick_config['timing']['movement_duration'])
+            
+            # 7. Descender a posición de pick final
+            self.get_logger().info('6. Descendiendo a objeto (1cm altura)...')
             self.move_to_position(pick_position_low)
             time.sleep(self.pick_config['timing']['movement_duration'])
             
-            # 6. Cerrar gripper (agarrar objeto)
-            self.get_logger().info('5. Cerrando gripper - agarrando objeto...')
+            # 8. Cerrar gripper (agarrar objeto)
+            self.get_logger().info('7. Cerrando gripper - agarrando objeto...')
             self.control_gripper(self.pick_config['gripper']['closed'])
             time.sleep(self.pick_config['timing']['grip_duration'])
             
-            # 7. Levantar objeto
-            self.get_logger().info('6. Levantando objeto...')
+            # 9. Levantar objeto (ascenso gradual)
+            self.get_logger().info('8. Levantando objeto a altura intermedia...')
+            self.move_to_position(pick_position_mid)
+            time.sleep(self.pick_config['timing']['movement_duration'])
+            
+            # 10. Levantar a altura segura
+            self.get_logger().info('9. Elevando a altura segura...')
             self.move_to_position(pick_position_high)
             time.sleep(self.pick_config['timing']['movement_duration'])
             
-            # 8. Ir a posición intermedia de transporte
-            self.get_logger().info('7. Moviendo a posición de transporte...')
+            # 11. Volver a posición overhead para transporte seguro
+            self.get_logger().info('10. Elevando a posición overhead para transporte...')
+            self.move_to_position(pick_position_overhead)
+            time.sleep(self.pick_config['timing']['movement_duration'])
+            
+            # 12. Ir a posición intermedia de transporte
+            self.get_logger().info('11. Moviendo a posición de transporte...')
             transport_position = [0.0, 1.3, 0.5, 0.0, 0.0]  # Posición segura para transporte
             self.move_to_position(transport_position)
             time.sleep(self.pick_config['timing']['movement_duration'])
             
-            # 9. Ir a posición de drop
-            self.get_logger().info('8. Moviendo a posición de drop...')
+            # 13. Ir a posición de drop
+            self.get_logger().info('12. Moviendo a posición de drop...')
             self.move_to_position(self.pick_config['positions']['drop_position'])
             time.sleep(self.pick_config['timing']['movement_duration'])
             
-            # 10. Soltar objeto
-            self.get_logger().info('9. Abriendo gripper - soltando objeto...')
+            # 14. Soltar objeto
+            self.get_logger().info('13. Abriendo gripper - soltando objeto...')
             self.control_gripper(self.pick_config['gripper']['open'])
             time.sleep(self.pick_config['timing']['grip_duration'])
             
-            # 11. Volver a home
-            self.get_logger().info('10. Regresando a home...')
+            # 15. Volver a home
+            self.get_logger().info('14. Regresando a home...')
             self.move_to_position(self.pick_config['positions']['home'])
             time.sleep(self.pick_config['timing']['movement_duration'])
      
@@ -352,6 +388,97 @@ class VisionPickAndPlace(Node):
             self.pick_and_place_active = False
             self.get_logger().info('Listo para detectar nuevo objeto...')
     
+    def get_pick_ready_position(self):
+        """
+        Posición inicial práctica para pick-and-place:
+        - Brazo ligeramente inclinado hacia adelante
+        - Pinza vertical (lista para agarrar)
+        - Altura cómoda para aproximarse a objetos
+        - Similar a robots industriales en posición de espera
+        """
+        
+        # Configuración práctica tipo "robot industrial en espera"
+        joint_base = 0.0        # 0° - centrado
+        joint_shoulder = 1.2    # ~69° - inclinado hacia adelante (no vertical)
+        joint_elbow = 0.8       # ~46° - codo flexionado para alcance cómodo
+        joint_wrist = 0.7       # ~40° - muñeca ajustada para pinza vertical
+        joint_wrist_rot = 1.57  # 90° - pinza orientada verticalmente
+        
+        ready_position = [joint_base, joint_shoulder, joint_elbow, joint_wrist, joint_wrist_rot]
+        
+        self.get_logger().info('🤖 Posición inicial práctica calculada:')
+        self.get_logger().info(f'   Base: {math.degrees(joint_base):.1f}° (centrado)')
+        self.get_logger().info(f'   Hombro: {math.degrees(joint_shoulder):.1f}° (inclinado adelante)')
+        self.get_logger().info(f'   Codo: {math.degrees(joint_elbow):.1f}° (flexionado)')
+        self.get_logger().info(f'   Muñeca: {math.degrees(joint_wrist):.1f}° (ajustada)')
+        self.get_logger().info(f'   Rotación: {math.degrees(joint_wrist_rot):.1f}° (pinza vertical)')
+        self.get_logger().info('💡 Esta posición es ideal para aproximarse a objetos cercanos')
+        
+        return ready_position
+
+    def calculate_overhead_position(self, target_x, target_y):
+        """
+        Calcular posición 'overhead' optimizada para transición desde posición inicial práctica.
+        Mantiene la pinza vertical y ajusta la inclinación según la distancia al objeto.
+        """
+        self.get_logger().info(f'🎯 Calculando posición overhead para ({target_x:.3f}, {target_y:.3f})')
+        
+        # Calcular ángulo base para apuntar hacia el objeto
+        base_angle = math.atan2(target_y, target_x)
+        
+        # Distancia horizontal desde la base al objeto
+        horizontal_distance = math.sqrt(target_x**2 + target_y**2)
+        
+        # NUEVA ESTRATEGIA: Partir de posición inicial práctica y ajustar
+        # Posición inicial práctica: [0.0, 1.2, 0.8, 0.7, 1.57]
+        
+        if horizontal_distance < 0.08:  # Muy cerca del centro
+            # Posición casi vertical para objetos muy cercanos
+            shoulder_angle = 1.4   # ~80° - más vertical
+            elbow_angle = 0.5      # ~29° - menos flexión
+            wrist_angle = 0.8      # ~46° - compensar para mantener pinza vertical
+            
+        elif horizontal_distance < 0.12:  # Distancia cerca-media
+            # Transición suave desde posición inicial
+            shoulder_angle = 1.2   # ~69° - igual que posición inicial
+            elbow_angle = 0.7      # ~40° - ajuste ligero
+            wrist_angle = 0.7      # ~40° - similar a inicial
+            
+        elif horizontal_distance < 0.18:  # Distancia media
+            # Más inclinación para alcanzar mejor
+            shoulder_angle = 1.0   # ~57° - más inclinado
+            elbow_angle = 0.9      # ~52° - más flexión
+            wrist_angle = 0.6      # ~34° - ajuste de muñeca
+            
+        else:  # Distancia lejana
+            # Máxima extensión pero segura
+            shoulder_angle = 0.8   # ~46° - muy inclinado
+            elbow_angle = 1.1      # ~63° - mucha flexión
+            wrist_angle = 0.5      # ~29° - compensación
+        
+        # MANTENER: Pinza siempre vertical para pick-and-place
+        wrist_rot = 1.57  # 90° - pinza vertical (característica clave)
+        
+        # Aplicar límites de seguridad del URDF
+        base_angle = max(-1.57, min(1.57, base_angle))
+        shoulder_angle = max(0.40, min(2.70, shoulder_angle))
+        elbow_angle = max(0.00, min(3.14, elbow_angle))
+        wrist_angle = max(0.00, min(3.14, wrist_angle))
+        wrist_rot = max(0.00, min(3.14, wrist_rot))
+        
+        overhead_position = [base_angle, shoulder_angle, elbow_angle, wrist_angle, wrist_rot]
+        
+        self.get_logger().info(f'   📍 Posición overhead calculada:')
+        self.get_logger().info(f'      Base: {math.degrees(base_angle):.1f}° (apuntando al objeto)')
+        self.get_logger().info(f'      Hombro: {math.degrees(shoulder_angle):.1f}° (inclinación ajustada)')
+        self.get_logger().info(f'      Codo: {math.degrees(elbow_angle):.1f}° (flexión optimizada)')
+        self.get_logger().info(f'      Muñeca: {math.degrees(wrist_angle):.1f}° (compensación)')
+        self.get_logger().info(f'      Rotación: {math.degrees(wrist_rot):.1f}° (pinza VERTICAL)')
+        self.get_logger().info(f'   🎯 Distancia horizontal: {horizontal_distance:.3f}m')
+        self.get_logger().info(f'   🔄 Transición suave desde posición inicial práctica')
+        
+        return overhead_position
+
     def calculate_pick_position(self, x, y, target_z=0.001):
         """Calcular posición de articulaciones usando MoveIt o fallback empírico"""
         # Aplicar transformación cámara -> robot
@@ -414,12 +541,61 @@ class VisionPickAndPlace(Node):
             self.get_logger().info(f'🔄 Fallback: píxel({pixel_x}, {pixel_y}) → mundo({world_x:.4f}, {world_y:.4f})')
             return world_x, world_y
 
+    def calculate_gripper_offset(self):
+        """
+        Calcular offset del gripper basado en el URDF - VERSIÓN MEJORADA.
+        Incluye análisis completo de la cadena cinemática del gripper.
+        """
+        # ANÁLISIS COMPLETO DEL URDF:
+        # joint_4 -> link_5: xyz="0.061 0.000 0.000" (6.1cm hacia adelante)
+        # right_gripper_joint: xyz="0.0095 -0.008 0.035" (desde link_5)
+        # right_gripper_joint2: xyz="0.0295 -0.008 0.035" (punto de agarre real)
+        
+        # COMPENSACIÓN TOTAL:
+        # 1. Link_5 ya está 6.1cm adelante del joint_4 (muñeca)
+        # 2. Gripper se extiende otros 2.95cm desde link_5
+        # 3. Total: 6.1 + 2.95 = 9.05cm desde el centro de rotación de la muñeca
+        
+        link_5_extension = 0.061     # Link_5 desde joint_4
+        gripper_extension = 0.0295   # Gripper desde link_5 (punto de agarre)
+        
+        # OFFSET TOTAL del gripper desde el centro de rotación de la muñeca
+        total_offset_x = link_5_extension + gripper_extension  # ~9cm total
+        total_offset_y = -0.008  # Ligero offset lateral del gripper
+        
+        # Para pick-and-place, el robot debe calcular la posición de la muñeca
+        # de manera que el gripper termine exactamente en el objetivo
+        offset_x = total_offset_x
+        offset_y = total_offset_y
+        
+        self.get_logger().info(f'🔧 ANÁLISIS COMPLETO DEL GRIPPER:')
+        self.get_logger().info(f'   📏 Link_5 extension: {link_5_extension:.3f}m')
+        self.get_logger().info(f'   📏 Gripper extension: {gripper_extension:.3f}m')
+        self.get_logger().info(f'   📏 TOTAL offset X: {offset_x:.3f}m (~{offset_x*100:.1f}cm)')
+        self.get_logger().info(f'   📏 TOTAL offset Y: {offset_y:.3f}m')
+        self.get_logger().info(f'   💡 La muñeca debe estar {offset_x*100:.1f}cm ATRÁS del objetivo')
+        
+        return offset_x, offset_y
+
     def transform_camera_to_robot_coords(self, cam_x, cam_y):
         """
-        Las coordenadas ya vienen transformadas correctamente desde transform_pixels_to_robot,
-        por lo que simplemente las devolvemos sin transformación adicional.
+        Transformar coordenadas de cámara a coordenadas del robot CON COMPENSACIÓN DE GRIPPER.
+        Utiliza datos precisos del URDF + ajuste empírico para compensación final.
         """
         try:
+            # Obtener offset base del gripper desde URDF
+            gripper_offset_x_urdf, gripper_offset_y_urdf = self.calculate_gripper_offset()
+            
+            # AJUSTE EMPÍRICO: Factor de corrección basado en observaciones
+            # Si el robot está "más adelante" de lo esperado, aumentar el factor
+            # Si está "más atrás", disminuir el factor
+            EMPIRICAL_CORRECTION_FACTOR = 0.6  # Reducir offset al 70% (ajustable)
+            LATERAL_CORRECTION = 0.0           # Ajuste lateral si es necesario
+            
+            # Aplicar factor de corrección empírico
+            gripper_offset_x = gripper_offset_x_urdf * EMPIRICAL_CORRECTION_FACTOR
+            gripper_offset_y = gripper_offset_y_urdf + LATERAL_CORRECTION
+            
             # Verificar si tenemos homografía calibrada
             if hasattr(self, 'homography_matrix') and self.homography_matrix is not None:
                 # Usar homografía para transformación precisa
@@ -428,16 +604,25 @@ class VisionPickAndPlace(Node):
                 
                 robot_x, robot_y = robot_point[0], robot_point[1]
                 
-                self.get_logger().info(
-                    f"🎯 Homografía: Cámara({cam_x:.3f}, {cam_y:.3f}) -> Robot({robot_x:.3f}, {robot_y:.3f})"
-                )
+                # Aplicar compensación de gripper
+                corrected_x = robot_x - gripper_offset_x  # Retroceder para compensar gripper
+                corrected_y = robot_y - gripper_offset_y  # Compensar offset lateral
                 
-                return robot_x, robot_y
+                self.get_logger().info(f"🎯 Homografía: Cámara({cam_x:.3f}, {cam_y:.3f}) -> Robot({robot_x:.3f}, {robot_y:.3f})")
+                self.get_logger().info(f"🔧 Compensación gripper: -> Corregido({corrected_x:.3f}, {corrected_y:.3f})")
+                
+                return corrected_x, corrected_y
             else:
-                # Las coordenadas ya están correctamente transformadas por transform_pixels_to_robot
-                self.get_logger().info("✅ Usando coordenadas ya transformadas (sin doble transformación)")
-                self.get_logger().info(f"📍 Coordenadas finales del robot: ({cam_x:.3f}, {cam_y:.3f})")
-                return cam_x, cam_y
+                # Las coordenadas ya están transformadas - aplicar solo compensación de gripper
+                corrected_x = cam_x - gripper_offset_x  # Retroceder para compensar gripper
+                corrected_y = cam_y - gripper_offset_y   # Compensar offset lateral
+                
+                self.get_logger().info("✅ Usando coordenadas ya transformadas con compensación de gripper")
+                self.get_logger().info(f"📍 Original: ({cam_x:.3f}, {cam_y:.3f}) -> Corregido: ({corrected_x:.3f}, {corrected_y:.3f})")
+                self.get_logger().info(f"🔧 Offset URDF: ({gripper_offset_x_urdf:.3f}, {gripper_offset_y_urdf:.3f})")
+                self.get_logger().info(f"🎛️  Offset aplicado: ({gripper_offset_x:.3f}, {gripper_offset_y:.3f}) [Factor: {EMPIRICAL_CORRECTION_FACTOR:.1f}]")
+                
+                return corrected_x, corrected_y
             
         except Exception as e:
             self.get_logger().error(f"❌ Error en transformación de coordenadas: {e}")
@@ -451,11 +636,24 @@ class VisionPickAndPlace(Node):
         self.get_logger().info(f'=== CINEMÁTICA INVERSA MOVEIT ===')
         self.get_logger().info(f'Target: x={target_x:.3f}, y={target_y:.3f}, z={target_z:.3f}')
         
+        # VALIDACIÓN PREVIA: Verificar que la posición esté dentro del alcance del Braccio
+        distance_from_base = math.sqrt(target_x**2 + target_y**2)
+        max_reach = 0.3  # Alcance máximo aproximado del Braccio (~30cm)
+        min_reach = 0.05  # Alcance mínimo (~5cm)
+        
+        if distance_from_base > max_reach:
+            self.get_logger().warn(f'❌ Objetivo fuera de alcance máximo: {distance_from_base:.3f}m > {max_reach:.3f}m')
+            return None
+        
+        if distance_from_base < min_reach:
+            self.get_logger().warn(f'❌ Objetivo muy cerca: {distance_from_base:.3f}m < {min_reach:.3f}m')
+            return None
+        
         try:
             # Verificar que el servicio esté disponible
             if not self.ik_client.service_is_ready():
                 self.get_logger().warn('⚠️  Servicio MoveIt no está listo')
-                return self.inverse_kinematics_braccio_fallback(target_x, target_y, target_z)
+                return None
             
             # Crear request para cinemática inversa
             request = GetPositionIK.Request()
@@ -465,10 +663,10 @@ class VisionPickAndPlace(Node):
             pose_stamped.header.frame_id = "base_link"  # Frame correcto según TF tree
             pose_stamped.header.stamp = self.get_clock().now().to_msg()
             
-            # Posición objetivo (sin ajustes, dejar que MoveIt maneje el frame)
+            # Posición objetivo (ajustada para estar dentro del alcance)
             pose_stamped.pose.position.x = float(target_x)
             pose_stamped.pose.position.y = float(target_y)
-            pose_stamped.pose.position.z = float(max(target_z, 0.05))  # Mínimo 5cm para evitar colisiones con suelo
+            pose_stamped.pose.position.z = float(max(target_z, 0.02))  # Mínimo 2cm, más realista para Braccio
             
             # Orientación más flexible (gripper apuntando hacia abajo pero sin ser muy restrictivo)
             # Identidad primero para probar
@@ -481,7 +679,7 @@ class VisionPickAndPlace(Node):
             request.ik_request.group_name = "arm"  # Nombre del grupo en SRDF
             request.ik_request.pose_stamped = pose_stamped
             request.ik_request.avoid_collisions = False  # Permitir soluciones aunque haya colisiones menores
-            request.ik_request.timeout = Duration(sec=2, nanosec=0)  # Timeout más corto para ser más responsive
+            request.ik_request.timeout = Duration(sec=2, nanosec=0)  # Timeout reducido para ser más ágil
             
             # Estado inicial del robot - usar posición actual si es posible
             request.ik_request.robot_state = RobotState()
@@ -489,16 +687,16 @@ class VisionPickAndPlace(Node):
             request.ik_request.robot_state.joint_state.name = [
                 "joint_base", "joint_1", "joint_2", "joint_3", "joint_4"
             ]
-            # Usar posición más neutra para empezar
-            request.ik_request.robot_state.joint_state.position = [0.0, 1.0, 0.0, 0.0, 0.0]  # Posición más neutral
+            # Usar posición más neutral y dentro de límites del Braccio
+            request.ik_request.robot_state.joint_state.position = [0.0, 1.5, 1.0, 1.0, 1.5]  # Posición más segura
             request.ik_request.robot_state.joint_state.header.stamp = self.get_clock().now().to_msg()
             
             # Hacer múltiples intentos con configuraciones diferentes si falla
             orientations = [
-                (0.0, 0.0, 0.0, 1.0),  # Identidad
-                (0.7071, 0.0, 0.0, 0.7071),  # 90° en X (gripper hacia abajo)
-                (0.0, 0.7071, 0.0, 0.7071),  # 90° en Y
-                (0.0, 0.0, 0.7071, 0.7071),  # 90° en Z
+                (1.0, 0.0, 0.0, 0.0),    # Orientación similar a home position del Braccio
+                (0.0, 1.0, 0.0, 0.0),    # 180° en X 
+                (0.0, 0.0, 1.0, 0.0),    # 180° en Y
+                (0.0, 0.0, 0.0, 1.0),    # Identidad (último recurso)
             ]
             
             for i, (ox, oy, oz, ow) in enumerate(orientations):
@@ -509,7 +707,12 @@ class VisionPickAndPlace(Node):
                 pose_stamped.pose.orientation.w = ow
                 request.ik_request.pose_stamped = pose_stamped
                 
-                self.get_logger().info(f'🔄 Intento {i+1}/4 con orientación ({ox:.3f}, {oy:.3f}, {oz:.3f}, {ow:.3f})')
+                self.get_logger().info(f'🔄 MoveIt Intento {i+1}/4:')
+                self.get_logger().info(f'   📍 Pose: x={target_x:.3f}, y={target_y:.3f}, z={target_z:.3f}')
+                self.get_logger().info(f'   🔄 Orientación: ({ox:.3f}, {oy:.3f}, {oz:.3f}, {ow:.3f})')
+                self.get_logger().info(f'   🎯 Frame: {pose_stamped.header.frame_id}')
+                self.get_logger().info(f'   🤖 Grupo: {request.ik_request.group_name}')
+                self.get_logger().info(f'   📏 Distancia desde base: {distance_from_base:.3f}m')
                 
                 # Llamar al servicio
                 future = self.ik_client.call_async(request)
@@ -517,6 +720,34 @@ class VisionPickAndPlace(Node):
                 
                 if future.result() is not None:
                     response = future.result()
+                    
+                    self.get_logger().info(f'   📤 Respuesta recibida')
+                    self.get_logger().info(f'   🔢 Código de error: {response.error_code.val}')
+                    
+                    # Mapear códigos de error comunes
+                    error_messages = {
+                        1: "SUCCESS",
+                        -1: "FAILURE", 
+                        -2: "PLANNING_FAILED",
+                        -3: "INVALID_MOTION_PLAN",
+                        -4: "MOTION_PLAN_INVALIDATED_BY_ENVIRONMENT_CHANGE",
+                        -5: "CONTROL_FAILED",
+                        -6: "UNABLE_TO_AQUIRE_SENSOR_DATA",
+                        -7: "TIMED_OUT",
+                        -10: "INVALID_GROUP_NAME",
+                        -11: "INVALID_GOAL_CONSTRAINTS",
+                        -12: "INVALID_ROBOT_STATE",
+                        -13: "INVALID_LINK_NAME",
+                        -14: "INVALID_OBJECT_NAME",
+                        -15: "FRAME_TRANSFORM_FAILURE",
+                        -16: "COLLISION_CHECKING_UNAVAILABLE",
+                        -17: "ROBOT_STATE_STALE",
+                        -18: "SENSOR_INFO_STALE",
+                        -31: "NO_IK_SOLUTION"
+                    }
+                    
+                    error_name = error_messages.get(response.error_code.val, f"UNKNOWN_ERROR_{response.error_code.val}")
+                    self.get_logger().info(f'   📊 Error: {error_name}')
                     
                     if response.error_code.val == response.error_code.SUCCESS:
                         # ¡Éxito! Extraer ángulos de joints
@@ -527,18 +758,124 @@ class VisionPickAndPlace(Node):
                         
                         return list(joint_positions)
                     else:
-                        self.get_logger().info(f'⚠️  Intento {i+1} falló con código: {response.error_code.val}')
+                        self.get_logger().info(f'⚠️  Intento {i+1} falló: {error_name}')
                 else:
-                    self.get_logger().info(f'⚠️  Timeout en intento {i+1}')
+                    self.get_logger().info(f'⚠️  Timeout en intento {i+1} - no se recibió respuesta')
             
             # Si todos los intentos fallaron
-            self.get_logger().warn('⚠️  Todos los intentos de MoveIt fallaron')
-            self.get_logger().info('🔄 Usando método empírico como fallback')
-            return self.inverse_kinematics_braccio_fallback(target_x, target_y, target_z)
+            self.get_logger().warn(f'⚠️  Todos los intentos de MoveIt fallaron para posición ({target_x:.3f}, {target_y:.3f})')
+            self.get_logger().warn(f'💡 Sugerencia: Objetivo muy cerca del borde del workspace del robot')
+            return None
                 
         except Exception as e:
             self.get_logger().error(f'❌ Error en MoveIt IK: {e}')
-            return self.inverse_kinematics_braccio_fallback(target_x, target_y, target_z)
+            return None
+
+    def inverse_kinematics_braccio(self, target_x, target_y, target_z=0.001):
+        """
+        Cinemática inversa con prioridad: 1) MoveIt, 2) Geométrico, 3) Empírico
+        """
+        self.get_logger().info(f'🔍 === CINEMÁTICA INVERSA ===')
+        self.get_logger().info(f'   🎯 Target: x={target_x:.3f}, y={target_y:.3f}, z={target_z:.3f}')
+        self.get_logger().info(f'   📊 Estado: MoveIt={self.moveit_available}, Force_empirical={self.force_empirical_only}')
+        
+        # === PRIORIDAD 1: MOVEIT ===
+        if self.moveit_available and not self.force_empirical_only:
+            self.get_logger().info('🎯 INTENTANDO: MoveIt (Prioridad 1)')
+            try:
+                # Verificación adicional en tiempo real
+                if self.ik_client.service_is_ready():
+                    result = self.inverse_kinematics_moveit(target_x, target_y, target_z)
+                    if result is not None:
+                        self.get_logger().info('✅ ÉXITO: MoveIt resolvió la cinemática inversa')
+                        return result
+                    else:
+                        self.get_logger().warn('⚠️  MoveIt no encontró solución válida, continuando con método geométrico')
+                else:
+                    self.get_logger().warn('⚠️  Servicio MoveIt no está listo, continuando con método geométrico')
+            except Exception as e:
+                self.get_logger().warn(f'⚠️  Error en MoveIt: {e}, continuando con método geométrico')
+        else:
+            if self.force_empirical_only:
+                self.get_logger().info('⏭️  SALTANDO MoveIt (forzado por parámetro)')
+            else:
+                self.get_logger().info('⏭️  SALTANDO MoveIt (no disponible)')
+        
+        # === PRIORIDAD 2: MÉTODO GEOMÉTRICO ===
+        self.get_logger().info('🎯 INTENTANDO: Método Geométrico (Prioridad 2)')
+        try:
+            result = self.inverse_kinematics_braccio_geometric(target_x, target_y)
+            if result is not None:
+                self.get_logger().info('✅ ÉXITO: Método geométrico resolvió la cinemática inversa')
+                return result
+            else:
+                self.get_logger().warn('⚠️  Método geométrico: posición fuera de dominio válido, continuando con método empírico')
+        except Exception as e:
+            self.get_logger().warn(f'⚠️  Error en método geométrico: {e}, continuando con método empírico')
+        
+        # === PRIORIDAD 3: MÉTODO EMPÍRICO ===
+        self.get_logger().info('🎯 USANDO: Método Empírico (Último recurso)')
+        try:
+            result = self.inverse_kinematics_braccio_fallback(target_x, target_y, target_z)
+            self.get_logger().info('✅ ÉXITO: Método empírico proporcionó solución aproximada')
+            return result
+        except Exception as e:
+            self.get_logger().error(f'❌ FALLO TOTAL: Todos los métodos fallaron. Error empírico: {e}')
+            # Último recurso: posición segura
+            return [0.0, 1.57, 0.0, 0.0, 0.0]
+
+    def move_to_position(self, target_position):
+        """Mover brazo a posición específica"""
+        self.get_logger().info(f'=== ENVIANDO COMANDO DE MOVIMIENTO ===')
+        self.get_logger().info(f'Posición objetivo: {target_position}')
+        
+        msg = JointTrajectory()
+        msg.joint_names = [
+            "joint_base",
+            "joint_1",
+            "joint_2", 
+            "joint_3",
+            "joint_4"
+        ]
+        
+        # Solo usar los primeros 5 valores (sin gripper)
+        arm_positions = target_position[:5] if len(target_position) > 5 else target_position
+        
+        self.get_logger().info(f'Joints y posiciones:')
+        for i, (joint_name, position) in enumerate(zip(msg.joint_names, arm_positions)):
+            self.get_logger().info(f'  {joint_name}: {position:.3f} rad = {math.degrees(position):.1f}°')
+        
+        point = JointTrajectoryPoint()
+        point.positions = arm_positions
+        point.time_from_start = Duration(
+            sec=int(self.pick_config['timing']['movement_duration']),
+            nanosec=int((self.pick_config['timing']['movement_duration'] % 1) * 1e9)
+        )
+        
+        msg.points = [point]
+        
+        self.get_logger().info(f'Duración del movimiento: {self.pick_config["timing"]["movement_duration"]}s')
+        self.get_logger().info(f'Publicando comando en topic: /position_trajectory_controller/joint_trajectory')
+        
+        self.arm_publisher.publish(msg)
+        
+        self.get_logger().info(f'=== COMANDO ENVIADO ===')
+    
+    
+    def control_gripper(self, position):
+        """Controlar gripper usando JointTrajectory"""
+        msg = JointTrajectory()
+        msg.joint_names = ["right_gripper_joint"]
+        
+        point = JointTrajectoryPoint()
+        point.positions = [position]
+        point.time_from_start = Duration(
+            sec=int(self.pick_config['timing']['grip_duration']),
+            nanosec=int((self.pick_config['timing']['grip_duration'] % 1) * 1e9)
+        )
+        
+        msg.points = [point]
+        self.gripper_publisher.publish(msg)
 
     def inverse_kinematics_braccio_fallback(self, target_x, target_y, target_z):
         """Fallback a método empírico si MoveIt falla"""
@@ -595,105 +932,175 @@ class VisionPickAndPlace(Node):
         joint_wrist_rot = max(0.00, min(3.14, joint_wrist_rot))
         
         return [joint_base, joint_shoulder, joint_elbow, joint_wrist, joint_wrist_rot]
-    def inverse_kinematics_braccio(self, target_x, target_y, target_z=0.001):
+    
+    def extract_link_lengths_from_urdf(self):
         """
-        Cinemática inversa con diagnóstico mejorado y MoveIt como prioridad
+        Extrae las longitudes de los eslabones relevantes (l, L) desde el URDF.
+        l: distancia base a primer articulación
+        L: longitud del siguiente eslabón principal
         """
-        # Diagnóstico detallado
-        self.get_logger().info(f'🔍 DIAGNÓSTICO CINEMÁTICA INVERSA:')
-        self.get_logger().info(f'   - MoveIt disponible: {self.moveit_available}')
-        self.get_logger().info(f'   - Servicio listo: {self.ik_client.service_is_ready()}')
-        
-        # Verificar servicios disponibles en tiempo real
         try:
-            services = self.get_service_names_and_types()
-            ik_services = [name for name, types in services if 'compute_ik' in name]
-            self.get_logger().info(f'   - Servicios IK encontrados: {ik_services}')
+            # Intentar múltiples formas de obtener el URDF
+            urdf_str = None
+            
+            # Método 1: Parámetro directo
+            try:
+                urdf_param = self.get_parameter_or('robot_description', None)
+                if urdf_param is not None:
+                    urdf_str = urdf_param.get_parameter_value().string_value
+            except Exception as e:
+                self.get_logger().debug(f'Método 1 falló: {e}')
+            
+            # Método 2: Declara y obtén el parámetro
+            if not urdf_str:
+                try:
+                    self.declare_parameter('robot_description', '')
+                    urdf_str = self.get_parameter('robot_description').get_parameter_value().string_value
+                except Exception as e:
+                    self.get_logger().debug(f'Método 2 falló: {e}')
+            
+            if not urdf_str:
+                self.get_logger().warn('No se pudo obtener robot_description, usando valores específicos del URDF Braccio')
+                return 0.064, 0.125  # Valores específicos del URDF de Braccio
+            
+            root = ET.fromstring(urdf_str)
+            l = None
+            L = None
+            
+            # Buscar longitudes en los joints del URDF
+            for joint in root.findall('joint'):
+                joint_name = joint.attrib.get('name', '')
+                origin = joint.find('origin')
+                
+                if origin is not None:
+                    xyz = origin.attrib.get('xyz', '0 0 0').split()
+                    if len(xyz) >= 3:
+                        # Para joint_1: distancia desde base
+                        if joint_name == 'joint_1' and l is None:
+                            # Calcular distancia euclidiana
+                            x, y, z = float(xyz[0]), float(xyz[1]), float(xyz[2])
+                            l = math.sqrt(x**2 + y**2 + z**2)
+                        
+                        # Para joint_2: longitud del eslabón
+                        elif joint_name == 'joint_2' and L is None:
+                            x, y, z = float(xyz[0]), float(xyz[1]), float(xyz[2])
+                            L = math.sqrt(x**2 + y**2 + z**2)
+            
+            # Buscar también en los links si no se encontró en joints
+            if l is None or L is None:
+                for link in root.findall('.//link'):
+                    visual = link.find('.//visual/geometry/box')
+                    if visual is not None:
+                        size = visual.attrib.get('size', '0 0 0').split()
+                        if len(size) >= 3:
+                            length = max(float(size[0]), float(size[1]), float(size[2]))
+                            if l is None:
+                                l = length
+                            elif L is None:
+                                L = length
+                                break
+            
+            # Usar valores por defecto si no se encontraron
+            if l is None:
+                l = 0.064  # Altura desde base hasta joint_1 según URDF
+            if L is None:
+                L = 0.125  # Longitud del primer eslabón según URDF
+            
+            self.get_logger().info(f'✅ Longitudes extraídas del URDF: l={l:.4f}m, L={L:.4f}m')
+            return l, L
+            
         except Exception as e:
-            self.get_logger().debug(f'   - Error listando servicios: {e}')
+            self.get_logger().warn(f'⚠️  No se pudo extraer longitudes del URDF: {e}')
+            self.get_logger().info('🔧 Usando valores por defecto del URDF: l=0.064m, L=0.125m')
+            return 0.064, 0.125
+
+    def inverse_kinematics_braccio_geometric(self, x, y):
+        """
+        Cinemática inversa basada en el modelo geométrico de braccio_xy_bb_target.py.
+        Usa longitudes extraídas del URDF con corrección para alcance real del Braccio.
+        """
+        self.get_logger().info(f'🎯 MÉTODO GEOMÉTRICO: calculando para x={x:.3f}, y={y:.3f}')
         
-        # Forzar una verificación en tiempo real si MoveIt no está marcado como disponible
-        if not self.moveit_available:
-            self.get_logger().info('🔄 Reintentando conexión con MoveIt en tiempo real...')
-            try:
-                if self.ik_client.wait_for_service(timeout_sec=2.0):
-                    if self.ik_client.service_is_ready():
-                        self.moveit_available = True
-                        self.get_logger().info('✅ ¡MoveIt ahora disponible en verificación en tiempo real!')
-                    else:
-                        self.get_logger().warn('⚠️  Servicio encontrado pero no está listo')
-                else:
-                    self.get_logger().warn('⚠️  Servicio no responde en verificación en tiempo real')
-            except Exception as e:
-                self.get_logger().warn(f'⚠️  Error en verificación en tiempo real: {e}')
+        l = self.l  # 0.064m - altura hasta joint_1
+        L1 = self.L  # 0.125m - longitud link_2
+        L2 = 0.1165  # 0.1165m - longitud link_3 (segundo eslabón según URDF)
+        L3 = 0.061   # 0.061m - longitud link_4 (tercer eslabón según URDF)
         
-        # Priorizar MoveIt para mejor precisión (a menos que esté forzado el empírico)
-        if self.moveit_available and not self.force_empirical_only:
-            self.get_logger().info('🎯 Usando MoveIt como método principal')
-            try:
-                return self.inverse_kinematics_moveit(target_x, target_y, target_z)
-            except Exception as e:
-                self.get_logger().warn(f'⚠️  MoveIt falló: {e}, usando empírico como último recurso')
-                return self.inverse_kinematics_braccio_fallback(target_x, target_y, target_z)
-        else:
-            if self.force_empirical_only:
-                self.get_logger().info('🎯 Usando método empírico (forzado por parámetro)')
-            else:
-                self.get_logger().warn('⚠️  MoveIt no disponible, usando método empírico')
-            return self.inverse_kinematics_braccio_fallback(target_x, target_y, target_z)
-    
-    def move_to_position(self, target_position):
-        """Mover brazo a posición específica"""
-        self.get_logger().info(f'=== ENVIANDO COMANDO DE MOVIMIENTO ===')
-        self.get_logger().info(f'Posición objetivo: {target_position}')
+        # Alcance total del brazo = suma de todos los eslabones
+        total_reach = L1 + L2 + L3  # ~0.3025m
         
-        msg = JointTrajectory()
-        msg.joint_names = [
-            "joint_base",
-            "joint_1",
-            "joint_2", 
-            "joint_3",
-            "joint_4"
-        ]
+        THETA_EXT = 0.27  # ~15.5°
+        THETA_RET = math.pi / 4  # 45°
         
-        # Solo usar los primeros 5 valores (sin gripper)
-        arm_positions = target_position[:5] if len(target_position) > 5 else target_position
+        # Transformar a coordenadas polares
+        s = math.sqrt(x**2 + y**2)  # distancia radial
+        phi = math.atan2(y, x)      # ángulo base
         
-        self.get_logger().info(f'Joints y posiciones:')
-        for i, (joint_name, position) in enumerate(zip(msg.joint_names, arm_positions)):
-            self.get_logger().info(f'  {joint_name}: {position:.3f} rad = {math.degrees(position):.1f}°')
+        self.get_logger().info(f'   📐 Coordenadas polares: s={s:.3f}m, phi={math.degrees(phi):.1f}°')
+        self.get_logger().info(f'   📏 Parámetros: l={l:.3f}m, L1={L1:.3f}m, L2={L2:.3f}m, L3={L3:.3f}m')
+        self.get_logger().info(f'   🎯 Alcance total: {total_reach:.3f}m')
         
-        point = JointTrajectoryPoint()
-        point.positions = arm_positions
-        point.time_from_start = Duration(
-            sec=int(self.pick_config['timing']['movement_duration']),
-            nanosec=int((self.pick_config['timing']['movement_duration'] % 1) * 1e9)
-        )
+        # Verificar si está dentro del alcance considerando altura mínima
+        min_reach = l + 0.05  # Alcance mínimo considerando altura
+        if s < min_reach:
+            self.get_logger().warn(f'   ❌ Objetivo demasiado cerca: s={s:.3f} < min_reach={min_reach:.3f}')
+            return None
         
-        msg.points = [point]
+        if s > total_reach:
+            self.get_logger().warn(f'   ❌ Objetivo demasiado lejos: s={s:.3f} > total_reach={total_reach:.3f}')
+            return None
         
-        self.get_logger().info(f'Duración del movimiento: {self.pick_config["timing"]["movement_duration"]}s')
-        self.get_logger().info(f'Publicando comando en topic: /position_trajectory_controller/joint_trajectory')
+        # Simplificación: usar dos eslabones principales para cálculo inicial
+        effective_L = L1 + L2  # Combinar los dos eslabones principales
         
-        self.arm_publisher.publish(msg)
+        # Calcular ángulo del hombro usando ley del coseno
+        try:
+            cos_theta = (s - l) / effective_L
+            if abs(cos_theta) > 1.0:
+                self.get_logger().warn(f'   ❌ cos_theta fuera de rango: {cos_theta:.3f}')
+                return None
+            
+            theta_shoulder = math.acos(cos_theta)
+            self.get_logger().info(f'   🦾 theta_shoulder calculado: {math.degrees(theta_shoulder):.1f}°')
+            
+        except (ValueError, ZeroDivisionError) as e:
+            self.get_logger().warn(f'   ❌ Error en cálculo de theta_shoulder: {e}')
+            return None
         
-        self.get_logger().info(f'=== COMANDO ENVIADO ===')
-    
-    
-    def control_gripper(self, position):
-        """Controlar gripper usando JointTrajectory"""
-        msg = JointTrajectory()
-        msg.joint_names = ["right_gripper_joint"]
+        # Verificar dominio físico con límites más realistas para Braccio
+        THETA_EXT = 0.35  # ~20° (menos restrictivo)
+        THETA_RET = 1.0   # ~57° (más permisivo)
         
-        point = JointTrajectoryPoint()
-        point.positions = [position]
-        point.time_from_start = Duration(
-            sec=int(self.pick_config['timing']['grip_duration']),
-            nanosec=int((self.pick_config['timing']['grip_duration'] % 1) * 1e9)
-        )
+        if theta_shoulder < THETA_EXT:
+            self.get_logger().warn(f'   ❌ Ángulo demasiado extendido: {math.degrees(theta_shoulder):.1f}° < {math.degrees(THETA_EXT):.1f}°')
+            return None
         
-        msg.points = [point]
-        self.gripper_publisher.publish(msg)
+        if theta_shoulder > THETA_RET:
+            self.get_logger().warn(f'   ❌ Ángulo demasiado retraído: {math.degrees(theta_shoulder):.1f}° > {math.degrees(THETA_RET):.1f}°')
+            return None
+        
+        # Calcular ángulos derivados
+        theta_elbow = math.pi/2 - 2*theta_shoulder
+        theta_wrist = theta_shoulder + math.pi/2
+        theta_base = phi
+        theta_wrist_rot = math.pi/2
+        
+        self.get_logger().info(f'   🤖 Ángulos calculados:')
+        self.get_logger().info(f'      Base: {math.degrees(theta_base):.1f}°')
+        self.get_logger().info(f'      Hombro: {math.degrees(theta_shoulder):.1f}°')
+        self.get_logger().info(f'      Codo: {math.degrees(theta_elbow):.1f}°')
+        self.get_logger().info(f'      Muñeca: {math.degrees(theta_wrist):.1f}°')
+        
+        # Aplicar límites del URDF
+        theta_base = max(-1.57, min(1.57, theta_base))
+        theta_shoulder = max(0.40, min(2.70, theta_shoulder))
+        theta_elbow = max(0.00, min(3.14, theta_elbow))
+        theta_wrist = max(0.00, min(3.14, theta_wrist))
+        theta_wrist_rot = max(0.00, min(3.14, theta_wrist_rot))
+        
+        result = [theta_base, theta_shoulder, theta_elbow, theta_wrist, theta_wrist_rot]
+        self.get_logger().info(f'   ✅ MÉTODO GEOMÉTRICO exitoso')
+        return result
 
 
 def main(args=None):

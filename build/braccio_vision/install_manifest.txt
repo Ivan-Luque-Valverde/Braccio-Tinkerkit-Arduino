@@ -10,6 +10,11 @@
 /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision/camera_spawner.py
 /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision/object_detector.py
 /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision/object_spawner.py
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/object_detector.py
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/camera_viewer.py
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/vision_pick_and_place.py
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/camera_spawner.py
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/lib/braccio_vision/object_spawner.py
 /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/launch/vision_simulation.launch.py
 /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/config/vision_config.yaml
 /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/share/braccio_vision/urdf/overhead_camera.urdf.xacro

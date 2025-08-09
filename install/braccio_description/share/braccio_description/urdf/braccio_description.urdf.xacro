@@ -569,4 +569,5 @@
             right_gripper_joint_position_lower_limit="${right_gripper_joint_position_lower_limit}"
             right_gripper_joint_position_upper_limit="${right_gripper_joint_position_upper_limit}"/>
     </xacro:macro>
+
 </robot>

@@ -2,107 +2,109 @@
 
 import rclpy
 from rclpy.node import Node
-import cv2
-import yaml
-import os
-from ament_index_python.packages import get_package_share_directory
-
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
+import cv2
+import numpy as np
 
 class CameraViewer(Node):
     def __init__(self):
         super().__init__('camera_viewer')
         
-        # Cargar configuración
-        self.load_config()
-        
-        # Bridge para convertir imágenes
+        # Bridge para convertir mensajes ROS a OpenCV
         self.bridge = CvBridge()
         
-        # Subscriber para imagen raw
-        self.image_subscriber = self.create_subscription(
+        # Subscriber para la imagen raw de la cámara
+        self.image_subscription = self.create_subscription(
             Image,
-            self.config['camera']['topic_image'],
+            '/overhead_camera/image_raw',
             self.image_callback,
             10
         )
         
-        # Subscriber para imagen de debug
-        self.debug_subscriber = self.create_subscription(
+        # Subscriber para la imagen de debug con detecciones
+        self.debug_subscription = self.create_subscription(
             Image,
-            self.config['publishing']['debug_image_topic'],
+            '/vision/debug_image',
             self.debug_callback,
             10
         )
         
-        self.get_logger().info('📺 Camera Viewer iniciado')
-        self.get_logger().info('🎮 Presiona "q" en las ventanas para cerrar')
-
-    def load_config(self):
-        """Carga la configuración básica"""
-        try:
-            pkg_share = get_package_share_directory('braccio_vision')
-            config_path = os.path.join(pkg_share, 'config', 'vision_config.yaml')
-            
-            if not os.path.exists(config_path):
-                config_path = '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/config/vision_config.yaml'
-            
-            with open(config_path, 'r') as file:
-                self.config = yaml.safe_load(file)
-                
-        except Exception as e:
-            self.get_logger().error(f'Error cargando configuración: {str(e)}')
-            self.config = {
-                'camera': {
-                    'topic_image': '/overhead_camera/image_raw'
-                },
-                'publishing': {
-                    'debug_image_topic': '/vision/debug_image'
-                }
-            }
-
+        # Variables para las imágenes
+        self.current_image = None
+        self.debug_image = None
+        self.image_received = False
+        self.debug_received = False
+        
+        # Timer para mostrar imágenes
+        self.timer = self.create_timer(0.1, self.display_images)
+        
+        self.get_logger().info('🖥️ Visor de Cámara iniciado')
+        self.get_logger().info('📷 Esperando imágenes de cámara...')
+        
+        # Configurar ventanas OpenCV
+        cv2.namedWindow('Camara Principal', cv2.WINDOW_AUTOSIZE)
+        cv2.namedWindow('Vision Debug', cv2.WINDOW_AUTOSIZE)
+        
     def image_callback(self, msg):
         """Callback para imagen raw de la cámara"""
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-            
-            # Agregar información a la imagen
-            text = "Camara Cenital - Raw"
-            cv2.putText(cv_image, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
-                       1, (255, 255, 255), 2)
-            
-            # Mostrar imagen
-            cv2.imshow("Overhead Camera - Raw", cv_image)
-            cv2.waitKey(1)
+            # Convertir mensaje ROS a imagen OpenCV
+            cv_image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+            self.current_image = cv_image
+            self.image_received = True
             
         except Exception as e:
-            self.get_logger().error(f'Error mostrando imagen raw: {str(e)}')
-
+            self.get_logger().error(f'Error procesando imagen: {e}')
+    
     def debug_callback(self, msg):
         """Callback para imagen de debug con detecciones"""
         try:
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+            # Convertir mensaje ROS a imagen OpenCV
+            cv_image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
+            self.debug_image = cv_image
+            self.debug_received = True
             
-            # Agregar información a la imagen
-            text = "Deteccion de Objetos"
-            cv2.putText(cv_image, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
-                       1, (0, 255, 0), 2)
+        except Exception as e:
+            self.get_logger().error(f'Error procesando imagen debug: {e}')
+    
+    def display_images(self):
+        """Mostrar las imágenes en ventanas OpenCV"""
+        try:
+            # Mostrar imagen principal si está disponible
+            if self.image_received and self.current_image is not None:
+                # Agregar texto informativo
+                img_display = self.current_image.copy()
+                
+                # Información del sistema
+                cv2.putText(img_display, 'Braccio Vision System', (10, 30), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(img_display, 'Camera Feed', (10, 60), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+                
+                # Estado de debug
+                debug_status = "Debug: ON" if self.debug_received else "Debug: Waiting..."
+                color = (0, 255, 0) if self.debug_received else (0, 0, 255)
+                cv2.putText(img_display, debug_status, (10, 90), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+                
+                cv2.imshow('Camara Principal', img_display)
             
-            # Mostrar imagen
-            cv2.imshow("Object Detection - Debug", cv_image)
+            # Mostrar imagen de debug si está disponible
+            if self.debug_received and self.debug_image is not None:
+                cv2.imshow('Vision Debug', self.debug_image)
             
-            # Verificar si se presionó 'q' para salir
+            # Procesar eventos de ventana
             key = cv2.waitKey(1) & 0xFF
             if key == ord('q'):
                 self.get_logger().info('Cerrando visor de cámara...')
                 rclpy.shutdown()
-            
+                
         except Exception as e:
-            self.get_logger().error(f'Error mostrando imagen debug: {str(e)}')
-
+            self.get_logger().error(f'Error mostrando imágenes: {e}')
+    
     def destroy_node(self):
-        """Limpiar al destruir el nodo"""
+        """Limpiar recursos al cerrar"""
         cv2.destroyAllWindows()
         super().destroy_node()
 
@@ -110,15 +112,17 @@ def main(args=None):
     rclpy.init(args=args)
     
     try:
-        node = CameraViewer()
-        rclpy.spin(node)
+        viewer = CameraViewer()
+        rclpy.spin(viewer)
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        print(f"Error: {e}")
     finally:
-        if 'node' in locals():
-            node.destroy_node()
-        rclpy.shutdown()
+        if 'viewer' in locals():
+            viewer.destroy_node()
         cv2.destroyAllWindows()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
