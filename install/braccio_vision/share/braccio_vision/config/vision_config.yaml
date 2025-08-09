@@ -39,7 +39,7 @@ workspace:
 object_detection:
   # Detección por color HSV
   red_object:
-    enabled: true
+    enabled: false
     hsv_lower: [0, 120, 70]      # [H_min, S_min, V_min]
     hsv_upper: [10, 255, 255]    # [H_max, S_max, V_max]
     min_area: 100                # Área mínima en píxeles
@@ -47,8 +47,8 @@ object_detection:
     
   green_object:
     enabled: true
-    hsv_lower: [50, 120, 70]     # [H_min, S_min, V_min]
-    hsv_upper: [70, 255, 255]    # [H_max, S_max, V_max]
+    hsv_lower: [40, 40, 40]      # [H_min, S_min, V_min] - Rango amplio para detectar verde
+    hsv_upper: [85, 255, 255]    # [H_max, S_max, V_max] - Abarca desde verde oscuro a claro
     min_area: 100                # Área mínima en píxeles
     max_area: 5000               # Área máxima en píxeles
     

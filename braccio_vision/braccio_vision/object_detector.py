@@ -102,25 +102,35 @@ class ObjectDetector(Node):
         """Configuración por defecto"""
         return {
             'camera': {
-                'topic_image': '/overhead_camera/image_raw',
-                'topic_camera_info': '/overhead_camera/camera_info'
+            'topic_image': '/overhead_camera/image_raw',
+            'topic_camera_info': '/overhead_camera/camera_info'
             },
             'publishing': {
-                'debug_image_topic': '/vision/debug_image',
-                'object_markers_topic': '/vision/object_markers',
-                'detection_rate': 10.0
+            'debug_image_topic': '/vision/debug_image',
+            'object_markers_topic': '/vision/object_markers',
+            'detection_rate': 10.0
             },
             'object_detection': {
-                'red_object': {
-                    'enabled': True,
-                    'hsv_lower': [0, 120, 70],
-                    'hsv_upper': [10, 255, 255],
-                    'min_area': 100,
-                    'max_area': 5000
-                }
+            'red_cube': {
+                'enabled': False,
+                'hsv_lower': [0, 100, 70],
+                'hsv_upper': [10, 255, 255],
+                'min_area': 100,
+                'max_area': 5000
+            },
+            'green_cube': {
+                'enabled': True,
+                'hsv_lower': [40, 40, 40],  # Verde típico
+                'hsv_upper': [85, 255, 255],
+                'min_area': 100,
+                'max_area': 5000
+            },
             },
             'workspace': {
-                'camera_height': 1.0
+            'camera_height': 1.0
+            },
+            'debug': {
+            'show_mask': True
             }
         }
 
@@ -140,65 +150,50 @@ class ObjectDetector(Node):
     def detect_objects_by_color(self, image):
         """Detecta objetos por color HSV"""
         detected_objects = []
-        
         # Convertir a HSV
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        
         # Crear imagen de debug
         debug_image = image.copy()
-        
+        show_mask = self.config.get('debug', {}).get('show_mask', False)
         # Detectar cada tipo de objeto configurado
         for obj_name, obj_config in self.config['object_detection'].items():
             if not obj_config.get('enabled', False):
                 continue
-            
             # Crear máscara de color
             lower = np.array(obj_config['hsv_lower'])
             upper = np.array(obj_config['hsv_upper'])
             mask = cv2.inRange(hsv, lower, upper)
-            
             # Aplicar filtros morfológicos
             kernel = np.ones((5, 5), np.uint8)
             mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
             mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
-            
+            # Si está activado, mostrar la máscara en la imagen de debug (canal rojo)
+            if show_mask:
+                mask_bgr = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+                debug_image = cv2.addWeighted(debug_image, 0.7, mask_bgr, 0.3, 0)
             # Encontrar contornos
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
             for contour in contours:
                 area = cv2.contourArea(contour)
-                
                 # Filtrar por área
-                if (area >= obj_config['min_area'] and 
-                    area <= obj_config['max_area']):
-                    
+                if (area >= obj_config['min_area'] and area <= obj_config['max_area']):
                     # Calcular centro del objeto
                     M = cv2.moments(contour)
                     if M["m00"] != 0:
                         cx = int(M["m10"] / M["m00"])
                         cy = int(M["m01"] / M["m00"])
-                        
-                        # SOLO píxeles - sin transformación aquí
-                        # La transformación se hace en vision_pick_and_place.py
-                        
                         detected_objects.append({
                             'name': obj_name,
-                            'pixel_x': cx,              # Píxeles sin transformar
-                            'pixel_y': cy,              # Píxeles sin transformar
+                            'pixel_x': cx,
+                            'pixel_y': cy,
                             'area': area,
                             'contour': contour
                         })
-                        
                         # Dibujar en imagen de debug
-                        cv2.drawContours(debug_image, [contour], -1, (0, 255, 0), 2)
-                        cv2.circle(debug_image, (cx, cy), 5, (255, 0, 0), -1)
-                        cv2.putText(debug_image, f'{obj_name}', 
-                                   (cx - 50, cy - 10), cv2.FONT_HERSHEY_SIMPLEX, 
-                                   0.5, (255, 255, 255), 2)
-                        cv2.putText(debug_image, f'({cx}, {cy}px)', 
-                                   (cx - 50, cy + 20), cv2.FONT_HERSHEY_SIMPLEX, 
-                                   0.4, (255, 255, 255), 1)
-        
+                        cv2.drawContours(debug_image, [contour], -1, (0, 0, 0), 2)
+                        cv2.circle(debug_image, (cx, cy), 2, (255, 0, 0), -1)  # Radio reducido para mayor precisión
+                        cv2.putText(debug_image, f'{obj_name}', (cx - 50, cy - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+                        cv2.putText(debug_image, f'({cx}, {cy}px)', (cx - 50, cy + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
         return detected_objects, debug_image
 
     def pixel_to_world(self, pixel_x, pixel_y):

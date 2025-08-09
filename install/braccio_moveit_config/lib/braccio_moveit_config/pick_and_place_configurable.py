@@ -4,6 +4,7 @@ import rclpy
 from rclpy.node import Node
 import yaml
 import os
+import math
 from ament_index_python.packages import get_package_share_directory
 from geometry_msgs.msg import Pose
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
@@ -34,19 +35,21 @@ class ConfigurablePickAndPlace(Node):
         self.get_logger().info(f'Configuración cargada: {len(self.config.get("sequences", {}))} secuencias disponibles')
 
     def load_config(self):
-        """Carga la configuración desde el archivo YAML"""
+        """Cargar configuración desde archivo YAML"""
         try:
-            pkg_share = get_package_share_directory('braccio_moveit_config')
-            config_path = os.path.join(pkg_share, 'config', 'pick_and_place_config.yaml')
-            
-            if not os.path.exists(config_path):
-                # Buscar en el directorio del workspace
-                config_path = '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/config/pick_and_place_config.yaml'
+            config_path = '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/config/pick_and_place_config.yaml'
             
             with open(config_path, 'r') as file:
                 self.config = yaml.safe_load(file)
             
             self.get_logger().info(f'Configuración cargada desde: {config_path}')
+            
+            # Debug: mostrar las posiciones de pick que se van a usar
+            if 'joint_positions' in self.config:
+                pick_approach = self.config['joint_positions'].get('pick_approach', 'No definido')
+                pick_position = self.config['joint_positions'].get('pick_position', 'No definido')
+                self.get_logger().info(f'🎯 Pick approach: {pick_approach}')
+                self.get_logger().info(f'🎯 Pick position: {pick_position}')
             
         except Exception as e:
             self.get_logger().error(f'Error cargando configuración: {str(e)}')
@@ -211,6 +214,128 @@ class ConfigurablePickAndPlace(Node):
             self.get_logger().info(f'  - {name}: {pos}')
         return list(positions.keys())
 
+    def calculate_push_positions(self, object_x, object_y, target_x, target_y, base_angle):
+        """Calcular posiciones de empuje usando cinemática inversa simple"""
+        try:
+            # Calcular distancias para cinemática inversa
+            object_distance = math.sqrt(object_x**2 + object_y**2)
+            target_distance = math.sqrt(target_x**2 + target_y**2)
+            
+            # Ángulos base (rotación hacia objeto y objetivo)
+            object_base_angle = math.atan2(object_y, object_x)
+            target_base_angle = math.atan2(target_y, target_x)
+            
+            # Cinemática inversa simple para Braccio (asumiendo eslabones de ~20cm cada uno)
+            # Altura del objeto (mesa a ~0cm del suelo del robot)
+            object_height = 0.02  # 2cm altura del cubo
+            
+            # Posiciones de empuje calculadas
+            push_positions = [
+                # 1. Posición inicial segura
+                [0.0, 1.57, 0.0, 0.0, 1.57],  # Home position
+                
+                # 2. Rotar hacia el objeto y elevar
+                [object_base_angle, 1.0, 0.5, 1.5, 1.57],  # Aproximación alta
+                
+                # 3. Bajar hacia el objeto (cinemática inversa simple)
+                [object_base_angle, 1.8, 1.2, 0.8, 1.57],  # Cerca del objeto
+                
+                # 4. Posición de contacto con el objeto
+                [object_base_angle, 2.0, 1.4, 0.6, 1.57],  # Contacto
+                
+                # 5. Empujar hacia la posición objetivo
+                [target_base_angle, 2.0, 1.4, 0.6, 1.57],  # Empuje
+                
+                # 6. Levantar ligeramente después del empuje
+                [target_base_angle, 1.8, 1.2, 0.8, 1.57],  # Alejar
+                
+                # 7. Volver a posición segura
+                [0.0, 1.57, 0.0, 0.0, 1.57],  # Home
+            ]
+            
+            self.get_logger().info(f'📐 Ángulo objeto: {math.degrees(object_base_angle):.1f}°')
+            self.get_logger().info(f'📐 Ángulo objetivo: {math.degrees(target_base_angle):.1f}°')
+            
+            return push_positions
+            
+        except Exception as e:
+            self.get_logger().error(f'❌ Error calculando posiciones de empuje: {e}')
+            return None
+
+    def execute_push_sequence(self, base_angle=0.0, object_x=0.0, object_y=0.0):
+        """Ejecutar secuencia de empuje inteligente basada en posición del objeto"""
+        self.get_logger().info('🔄 === INICIANDO SECUENCIA DE EMPUJE INTELIGENTE ===')
+        self.get_logger().info(f'🎯 Objeto en: ({object_x:.3f}, {object_y:.3f})')
+        
+        # Calcular la distancia del objeto al centro
+        object_distance = math.sqrt(object_x**2 + object_y**2)
+        self.get_logger().info(f'📏 Distancia del objeto: {object_distance:.3f}m')
+        
+        # Determinar dirección del empuje (empujar hacia el centro, zona cómoda)
+        if object_distance > 0.01:  # Evitar división por cero
+            # Vector normalizado desde objeto hacia centro (zona cómoda)
+            push_direction_x = -object_x / object_distance
+            push_direction_y = -object_y / object_distance
+            
+            # Magnitud del empuje (mover ~5cm hacia el centro)
+            push_magnitude = 0.05
+            target_x = object_x + push_direction_x * push_magnitude
+            target_y = object_y + push_direction_y * push_magnitude
+            
+            self.get_logger().info(f'👉 Empujando hacia: ({target_x:.3f}, {target_y:.3f})')
+        else:
+            # Si está muy cerca del centro, empujar ligeramente hacia adelante
+            target_x = object_x + 0.03
+            target_y = object_y
+            self.get_logger().info('👉 Empujando hacia adelante (objeto centrado)')
+        
+        # Calcular posiciones de empuje usando cinemática inversa
+        push_positions = self.calculate_push_positions(object_x, object_y, target_x, target_y, base_angle)
+        
+        if push_positions is None:
+            self.get_logger().error('❌ No se pudieron calcular las posiciones de empuje')
+            return False
+        
+        step_descriptions = [
+            "Posición inicial segura",
+            "Rotando y aproximándose al objeto",
+            "Acercándose al objeto", 
+            "Contacto con objeto",
+            "Empujando hacia zona cómoda",
+            "Alejándose tras empuje",
+            "Retirando a posición segura"
+        ]
+        
+        for i, (position, description) in enumerate(zip(push_positions, step_descriptions)):
+            self.get_logger().info(f'🔄 Paso {i+1}/{len(push_positions)}: {description}')
+            
+            # Enviar comando de movimiento
+            if not self.move_to_joint_position_direct(position):
+                self.get_logger().error(f'❌ Error enviando comando paso {i+1}')
+                return False
+            
+            # Esperar que se complete el movimiento
+            time.sleep(3.5)
+        
+        self.get_logger().info('✅ Secuencia de empuje inteligente completada')
+        return True
+
+    def move_to_joint_position_direct(self, joint_positions):
+        """Mover a posición de articulaciones directamente (para empuje)"""
+        try:
+            # Usar el mismo método que en modo normal para garantizar consistencia
+            duration = 3.0  # Usar la misma duración que en modo normal
+            
+            trajectory = self.create_arm_trajectory(joint_positions, duration)
+            self.arm_publisher.publish(trajectory)
+            
+            self.get_logger().info(f'📤 Comando empuje enviado: {[f"{math.degrees(j):.1f}°" for j in joint_positions]}')
+            return True
+            
+        except Exception as e:
+            self.get_logger().error(f'❌ Error moviendo a posición: {e}')
+            return False
+
 def main(args=None):
     rclpy.init(args=args)
     
@@ -225,7 +350,56 @@ def main(args=None):
         node.list_available_sequences()
         node.list_available_positions()
         
-        # Ejecutar secuencia por defecto
+        # Verificar si necesita empuje (usando archivo flag)
+        push_flag_file = "/tmp/braccio_needs_push.flag"
+        needs_push = os.path.exists(push_flag_file)
+        
+        if needs_push:
+            node.get_logger().info('🔄 MODO EMPUJE + PICK detectado')
+            
+            # Leer ángulo base del archivo si existe
+            base_angle = 0.0
+            angle_file = "/tmp/braccio_push_angle.txt"
+            if os.path.exists(angle_file):
+                try:
+                    with open(angle_file, 'r') as f:
+                        base_angle = float(f.read().strip())
+                    node.get_logger().info(f'📐 Ángulo base leído: {math.degrees(base_angle):.1f}°')
+                except:
+                    node.get_logger().warn('⚠️  Error leyendo ángulo, usando 0°')
+            
+            # Leer coordenadas del objeto si existen
+            object_x, object_y = 0.0, 0.0
+            coords_file = "/tmp/braccio_object_coords.txt"
+            if os.path.exists(coords_file):
+                try:
+                    with open(coords_file, 'r') as f:
+                        coords = f.read().strip().split(',')
+                        object_x = float(coords[0])
+                        object_y = float(coords[1])
+                    node.get_logger().info(f'📍 Coordenadas objeto leídas: ({object_x:.3f}, {object_y:.3f})')
+                except:
+                    node.get_logger().warn('⚠️  Error leyendo coordenadas, usando (0,0)')
+            
+            # Ejecutar secuencia de empuje inteligente
+            if node.execute_push_sequence(base_angle, object_x, object_y):
+                node.get_logger().info('✅ Empuje completado, esperando asentamiento...')
+                time.sleep(3.0)
+                
+                # Limpiar archivos de empuje
+                try:
+                    os.remove(push_flag_file)
+                    if os.path.exists(angle_file):
+                        os.remove(angle_file)
+                    if os.path.exists(coords_file):
+                        os.remove(coords_file)
+                except:
+                    pass
+            else:
+                node.get_logger().error('❌ Error en secuencia de empuje')
+                return
+        
+        # Ejecutar secuencia normal de pick and place
         sequence_to_run = 'basic_demo'  # Cambiar aquí para ejecutar otra secuencia
         
         if sequence_to_run in node.config.get('sequences', {}):

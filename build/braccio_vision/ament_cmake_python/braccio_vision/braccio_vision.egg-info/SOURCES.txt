@@ -2,9 +2,12 @@ setup.py
 braccio_vision/__init__.py
 braccio_vision/camera_spawner.py
 braccio_vision/camera_viewer.py
+braccio_vision/geometric_calibrator.py
 braccio_vision/object_detector.py
 braccio_vision/object_spawner.py
 braccio_vision/vision_demo.py
+braccio_vision/vision_geometric_calibrated.py
+braccio_vision/vision_geometric_improved.py
 braccio_vision/vision_pick_and_place.py
 braccio_vision.egg-info/PKG-INFO
 braccio_vision.egg-info/SOURCES.txt

@@ -23,132 +23,81 @@ class ObjectSpawner(Node):
         self.spawn_test_objects()
         
     def spawn_test_objects(self):
-        """Generar objetos de colores para pruebas"""
-        
-        # Objeto rojo (para detectar)
-        red_cube_sdf = '''
+        """Generar 4 cubos pequeños en las esquinas del workspace"""
+        # Definición del cubo pequeño (5cm)
+        cube_sdf_template = '''
         <?xml version="1.0"?>
         <sdf version="1.4">
-          <model name="red_cube">
+          <model name="{name}">
             <pose>0 0 0 0 0 0</pose>
             <static>false</static>
             <link name="link">
               <collision name="collision">
                 <geometry>
                   <box>
-                    <size>0.05 0.05 0.05</size>
+                    <size>0.03 0.03 0.03</size>
                   </box>
                 </geometry>
               </collision>
               <visual name="visual">
                 <geometry>
                   <box>
-                    <size>0.05 0.05 0.05</size>
+                    <size>0.03 0.03 0.03</size>
                   </box>
                 </geometry>
                 <material>
-                  <ambient>1 0 0 1</ambient>
-                  <diffuse>1 0 0 1</diffuse>
-                </material>
-              </visual>
-              <inertial>
-                <mass>0.1</mass>
-                <inertia>
-                  <ixx>0.000166</ixx>
-                  <iyy>0.000166</iyy>
-                  <izz>0.000166</izz>
-                </inertia>
-              </inertial>
-            </link>
-          </model>
-        </sdf>
-        '''
-        
-        # Posición del cubo rojo (en el área de trabajo del robot)
-        pose = Pose()
-        pose.position.x = 0.2    # Dentro del alcance del robot
-        pose.position.y = 0.1    # Ligeramente desplazado en Y
-        pose.position.z = 0.025  # Sobre el suelo (mitad del cubo de 0.05m)
-        
-        # Spawn del cubo rojo
-        request = SpawnEntity.Request()
-        request.name = 'red_cube_target'
-        request.xml = red_cube_sdf
-        request.robot_namespace = ''
-        request.initial_pose = pose
-        
-        future = self.spawn_client.call_async(request)
-        rclpy.spin_until_future_complete(self, future)
-        
-        if future.result().success:
-            self.get_logger().info('✅ Cubo rojo generado exitosamente')
-        else:
-            self.get_logger().error(f'❌ Error generando cubo rojo: {future.result().status_message}')
-        
-        # Esperar un poco antes del siguiente objeto
-        time.sleep(1.0)
-        
-        # Objeto azul (distractor)
-        blue_sphere_sdf = '''
-        <?xml version="1.0"?>
-        <sdf version="1.4">
-          <model name="blue_sphere">
-            <pose>0 0 0 0 0 0</pose>
-            <static>false</static>
-            <link name="link">
-              <collision name="collision">
-                <geometry>
-                  <sphere>
-                    <radius>0.03</radius>
-                  </sphere>
-                </geometry>
-              </collision>
-              <visual name="visual">
-                <geometry>
-                  <sphere>
-                    <radius>0.03</radius>
-                  </sphere>
-                </geometry>
-                <material>
-                  <ambient>0 0 1 1</ambient>
-                  <diffuse>0 0 1 1</diffuse>
+                  <ambient>{r} {g} {b} 1</ambient>
+                  <diffuse>{r} {g} {b} 1</diffuse>
                 </material>
               </visual>
               <inertial>
                 <mass>0.05</mass>
                 <inertia>
-                  <ixx>0.00018</ixx>
-                  <iyy>0.00018</iyy>
-                  <izz>0.00018</izz>
+                  <ixx>0.00004</ixx>
+                  <iyy>0.00004</iyy>
+                  <izz>0.00004</izz>
                 </inertia>
               </inertial>
             </link>
           </model>
         </sdf>
         '''
-        
-        # Posición de la esfera azul (objeto distractor)
-        pose2 = Pose()
-        pose2.position.x = 0.2   # Cerca pero diferente posición
-        pose2.position.y = -0.2  # En el lado opuesto
-        pose2.position.z = 0.03  # Sobre el suelo (radio de la esfera de 0.03m)
-        
-        # Spawn de la esfera azul
-        request2 = SpawnEntity.Request()
-        request2.name = 'blue_sphere_distractor'
-        request2.xml = blue_sphere_sdf
-        request2.robot_namespace = ''
-        request2.initial_pose = pose2
-        
-        future2 = self.spawn_client.call_async(request2)
-        rclpy.spin_until_future_complete(self, future2)
-        
-        if future2.result().success:
-            self.get_logger().info('✅ Esfera azul generada exitosamente')
-        else:
-            self.get_logger().error(f'❌ Error generando esfera azul: {future2.result().status_message}')
-        
-        self.get_logger().info('🎯 Objetos de prueba generados. El sistema debería detectar el cubo rojo.')
+
+        # Coordenadas de las esquinas (ajusta si tu workspace es diferente)
+        cubes = [
+            # Esquinas más espaciadas para mejor calibración
+            {"name": "corner1", "x": 0.08, "y": -0.12, "z": 0.025, "color": (1, 0, 0)},   # rojo
+            {"name": "corner2", "x": 0.27, "y": -0.12, "z": 0.025, "color": (1, 0, 0)},   # rojo  
+            {"name": "corner3", "x": 0.27, "y": 0.12,  "z": 0.025, "color": (1, 0, 0)},   # rojo
+            {"name": "corner4", "x": 0.08, "y": 0.12,  "z": 0.025, "color": (1, 0, 0)},   # rojo
+            # Cubo verde dentro del workspace
+            {"name": "green_cube", "x": 0.17, "y": 0.0, "z": 0.025, "color": (0, 1, 0)},   # verde
+        ]
+
+        for cube in cubes:
+            sdf = cube_sdf_template.format(
+                name=cube["name"],
+                r=cube["color"][0],
+                g=cube["color"][1],
+                b=cube["color"][2]
+            )
+            pose = Pose()
+            pose.position.x = cube["x"]
+            pose.position.y = cube["y"]
+            pose.position.z = cube["z"]
+            request = SpawnEntity.Request()
+            request.name = cube["name"]
+            request.xml = sdf
+            request.robot_namespace = ''
+            request.initial_pose = pose
+            future = self.spawn_client.call_async(request)
+            rclpy.spin_until_future_complete(self, future)
+            if future.result().success:
+                self.get_logger().info(f'✅ Cubo {cube["name"]} generado exitosamente')
+            else:
+                self.get_logger().error(f'❌ Error generando cubo {cube["name"]}: {future.result().status_message}')
+            time.sleep(0.5)
+        self.get_logger().info('🎯 Cubos de esquina y cubo verde generados. Puedes usarlos para calibrar y para pick and place.')
 
 def main(args=None):
     rclpy.init(args=args)
