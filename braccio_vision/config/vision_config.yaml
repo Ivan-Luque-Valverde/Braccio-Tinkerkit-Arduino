@@ -38,14 +38,14 @@ workspace:
 # Configuración de detección de objetos
 object_detection:
   # Detección por color HSV
-  red_object:
+  red_cube:
     enabled: false
-    hsv_lower: [0, 120, 70]      # [H_min, S_min, V_min]
-    hsv_upper: [10, 255, 255]    # [H_max, S_max, V_max]
+    hsv_lower: [0, 100, 50]      # [H_min, S_min, V_min] - Rango más amplio para rojo
+    hsv_upper: [15, 255, 255]    # [H_max, S_max, V_max] - Expandido para capturar más rojos
     min_area: 100                # Área mínima en píxeles
     max_area: 5000               # Área máxima en píxeles
     
-  green_object:
+  green_cube:
     enabled: true
     hsv_lower: [40, 40, 40]      # [H_min, S_min, V_min] - Rango amplio para detectar verde
     hsv_upper: [85, 255, 255]    # [H_max, S_max, V_max] - Abarca desde verde oscuro a claro

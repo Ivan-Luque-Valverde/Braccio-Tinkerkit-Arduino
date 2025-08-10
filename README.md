@@ -232,6 +232,8 @@ ros2 run braccio_vision camera_viewer.py
 
 # Terminal 4: Ejecutar pick and place guiado por visión
 ros2 run braccio_vision vision_pick_and_place.py
+
+python3 braccio_moveit_config/scripts/vision_auto_pick_and_place.py
 ```
 
 ### Arquitectura Técnica

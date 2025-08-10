@@ -35,8 +35,8 @@ class InverseKinematicsCalculator(Node):
         super().__init__('inverse_kinematics_calculator')
         
         # Parámetros calibrados del Braccio (debes ajustar según tu robot)
-        self.L = 0.125  # Longitud del brazo principal (metros)
-        self.l = 0.095  # Offset desde la base (metros)
+        self.L = 0.3025  # Longitud del brazo principal (metros)
+        self.l = 0.064  # Offset desde la base (metros)
         
         self.get_logger().info('🤖 Calculadora de IK analítica para Braccio iniciada')
         self.get_logger().info(f'📏 Parámetros: L={self.L}m, l={self.l}m')
@@ -170,10 +170,10 @@ class InverseKinematicsCalculator(Node):
         
         return strategy
 
-    def calculate_pick_positions(self, object_x, object_y, object_z, approach_height=0.03):
+    def calculate_pick_positions(self, object_x, object_y, object_z, approach_height=0.05):
         """
         Calcula las posiciones para pick (approach y position)
-        Solo calcula para la posición del objeto detectado
+        Ahora REALMENTE usa la altura Z para calcular diferentes posiciones
         """
         self.get_logger().info('=== CALCULANDO POSICIONES DE PICK ===')
         
@@ -184,21 +184,74 @@ class InverseKinematicsCalculator(Node):
             self.get_logger().error(f'❌ Objeto fuera del workspace: ({object_x:.3f}, {object_y:.3f}, {object_z:.3f})')
             return None
         
-        # 1. Posición de aproximación al objeto
-        pick_approach = self.calculate_ik_xy(object_x, object_y)
+        # 1. Posición de aproximación (más alta que el objeto)
+        approach_z = object_z + approach_height  # Z más alta para aproximación
+        pick_approach = self.calculate_ik_xyz(object_x, object_y, approach_z)
         if pick_approach:
             positions['pick_approach'] = pick_approach
-            self.get_logger().info('✅ Pick approach calculado')
+            self.get_logger().info(f'✅ Pick approach calculado para Z={approach_z:.3f}m')
         else:
-            self.get_logger().error('❌ No se pudo calcular pick_approach')
+            self.get_logger().error(f'❌ No se pudo calcular pick_approach para Z={approach_z:.3f}m')
             return None
         
-        # 2. Posición exacta del objeto (mismos ángulos que approach)
-        positions['pick_position'] = pick_approach.copy()
-        self.get_logger().info('✅ Pick position calculado (igual que approach)')
+        # 2. Posición exacta del objeto (altura real del objeto)
+        pick_position = self.calculate_ik_xyz(object_x, object_y, object_z)
+        if pick_position:
+            positions['pick_position'] = pick_position
+            self.get_logger().info(f'✅ Pick position calculado para Z={object_z:.3f}m')
+        else:
+            self.get_logger().error(f'❌ No se pudo calcular pick_position para Z={object_z:.3f}m')
+            return None
         
         self.get_logger().info('=== CÁLCULOS DE PICK COMPLETADOS ===')
+        self.get_logger().info(f'📏 Diferencia de altura: {approach_height:.3f}m entre approach y position')
+        
         return positions
+
+    def calculate_ik_xyz(self, x, y, z):
+        """
+        Calcula la cinemática inversa para posición (x, y, z)
+        Ajusta el ELBOW según altura Z para controlar altura efectiva
+        """
+        try:
+            # Primero calcular IK básica en 2D
+            base_angles = self.calculate_ik_xy(x, y)
+            if base_angles is None:
+                return None
+            
+            # Extraer ángulos base
+            phi, theta_shoulder, theta_elbow, theta_wrist, theta_gripper = base_angles
+            
+            # Ajustar ELBOW según altura Z (más efectivo que shoulder)
+            # LÓGICA CORRECTA:
+            # Z más baja → elbow más BAJO (ángulo menor) para BAJAR el efector
+            # Z más alta → elbow más ALTO (ángulo mayor) para SUBIR el efector
+            z_nominal = 0.08  # Altura de referencia
+            z_factor = 4.0    # Factor de sensibilidad para el elbow
+            
+            # Calcular ajuste: Z menor debe dar elbow menor para bajar efector
+            z_adjustment = (z - z_nominal) * z_factor  # SIN negativo!
+            theta_elbow_adjusted = theta_elbow + z_adjustment
+            
+            # Limitar elbow a rango válido (0.1 a π-0.1)
+            theta_elbow_adjusted = max(0.1, min(np.pi - 0.1, theta_elbow_adjusted))
+            
+            # Recalcular wrist para mantener orientación (compensar cambio en elbow)
+            theta_wrist_adjusted = theta_shoulder + np.pi/2 + (theta_elbow_adjusted - theta_elbow) * 0.5
+            
+            # Retornar ángulos ajustados
+            adjusted_angles = [phi, theta_shoulder, theta_elbow_adjusted, theta_wrist_adjusted, theta_gripper]
+            
+            self.get_logger().info(f'✅ IK 3D calculado para ({x:.3f}, {y:.3f}, {z:.3f})')
+            self.get_logger().info(f'📐 Ajuste Z: {z_adjustment:.4f} rad ({math.degrees(z_adjustment):.1f}°) en ELBOW')
+            self.get_logger().info(f'📐 Elbow: {math.degrees(theta_elbow):.1f}° → {math.degrees(theta_elbow_adjusted):.1f}°')
+            self.get_logger().info(f'📐 Ángulos: {[f"{math.degrees(a):.1f}°" for a in adjusted_angles]}')
+            
+            return adjusted_angles
+            
+        except Exception as e:
+            self.get_logger().error(f'❌ Error en cálculo IK 3D: {e}')
+            return None
 
     def save_positions_to_config(self, positions, config_file_path):
         """

@@ -66,12 +66,12 @@ class ObjectSpawner(Node):
         # Coordenadas de las esquinas (ajusta si tu workspace es diferente)
         cubes = [
             # Esquinas más espaciadas para mejor calibración
-            {"name": "corner1", "x": 0.08, "y": -0.12, "z": 0.025, "color": (1, 0, 0)},   # rojo
-            {"name": "corner2", "x": 0.27, "y": -0.12, "z": 0.025, "color": (1, 0, 0)},   # rojo  
-            {"name": "corner3", "x": 0.27, "y": 0.12,  "z": 0.025, "color": (1, 0, 0)},   # rojo
-            {"name": "corner4", "x": 0.08, "y": 0.12,  "z": 0.025, "color": (1, 0, 0)},   # rojo
+            {"name": "corner1", "x": -0.35, "y": -0.25, "z": 0.025, "color": (1, 0, 0)},   # rojo
+            {"name": "corner2", "x": 0.35, "y": -0.25, "z": 0.025, "color": (1, 0, 0)},   # rojo  
+            {"name": "corner3", "x": 0.35, "y": 0.25,  "z": 0.025, "color": (1, 0, 0)},   # rojo
+            {"name": "corner4", "x": -0.35, "y": 0.25,  "z": 0.025, "color": (1, 0, 0)},   # rojo
             # Cubo verde dentro del workspace
-            {"name": "green_cube", "x": 0.17, "y": 0.0, "z": 0.025, "color": (0, 1, 0)},   # verde
+             {"name": "green_cube", "x": 0.32, "y": 0.1, "z": 0.025, "color": (0, 1, 0)},   # verde
         ]
 
         for cube in cubes:

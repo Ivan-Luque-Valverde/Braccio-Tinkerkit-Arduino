@@ -8,20 +8,22 @@ import cv2
 import json
 
 # === EDITA AQUÍ TUS PUNTOS ===
-# Puntos en píxeles (x, y) - orden: esquina1, esquina2, esquina3, esquina4
+# Puntos en píxeles (y, x) - orden: esquina1, esquina2, esquina3, esquina4
 pixel_points = [
-    [375, 365],    # esquina1
-    [263, 365],   # esquina2
-    [263, 278],  # esquina3
-    [375, 278],   # esquina4
+    [202, 75],    # esquina1
+    [436, 75],   # esquina2
+    [436, 403],  # esquina3
+    [202, 403],   # esquina4
+    [320, 240],  # centro de la imagen (opcional)
 ]
 
 # Puntos en el mundo real (x, y) en metros - deben corresponder al orden de arriba
 world_points = [
-    [0.08, -0.12],  # esquina1
-    [0.27, -0.12],   # esquina2
-    [0.27, 0.12],    # esquina3
-    [0.08, 0.12],   # esquina4
+    [-0.35, -0.25],  # esquina1
+    [-0.35, 0.25],   # esquina2
+    [0.35, 0.25],    # esquina3
+    [0.35, -0.25],   # esquina4
+    [0.0, 0.0],     # centro de la imagen (opcional)
 ]
 
 # Convertir a np.float32

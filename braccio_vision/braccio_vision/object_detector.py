@@ -112,8 +112,8 @@ class ObjectDetector(Node):
             },
             'object_detection': {
             'red_cube': {
-                'enabled': False,
-                'hsv_lower': [0, 100, 70],
+                'enabled': True,
+                'hsv_lower': [0, 100, 70], # Rojo típico
                 'hsv_upper': [10, 255, 255],
                 'min_area': 100,
                 'max_area': 5000
@@ -162,7 +162,18 @@ class ObjectDetector(Node):
             # Crear máscara de color
             lower = np.array(obj_config['hsv_lower'])
             upper = np.array(obj_config['hsv_upper'])
-            mask = cv2.inRange(hsv, lower, upper)
+            
+            # Para el rojo, necesitamos dos rangos debido a la naturaleza circular del canal H
+            if 'red' in obj_name:
+                # Rango 1: H de 0 a 15 (rojo hacia naranja)
+                mask1 = cv2.inRange(hsv, np.array([0, 100, 50]), np.array([15, 255, 255]))
+                # Rango 2: H de 165 a 180 (rojo hacia magenta)
+                mask2 = cv2.inRange(hsv, np.array([165, 100, 50]), np.array([180, 255, 255]))
+                # Combinar ambas máscaras
+                mask = cv2.bitwise_or(mask1, mask2)
+            else:
+                # Para otros colores, usar rango normal
+                mask = cv2.inRange(hsv, lower, upper)
             # Aplicar filtros morfológicos
             kernel = np.ones((5, 5), np.uint8)
             mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
@@ -189,11 +200,26 @@ class ObjectDetector(Node):
                             'area': area,
                             'contour': contour
                         })
-                        # Dibujar en imagen de debug
+                        
+                        # Dibujar en imagen de debug con colores específicos por tipo
                         cv2.drawContours(debug_image, [contour], -1, (0, 0, 0), 2)
-                        cv2.circle(debug_image, (cx, cy), 2, (255, 0, 0), -1)  # Radio reducido para mayor precisión
-                        cv2.putText(debug_image, f'{obj_name}', (cx - 50, cy - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-                        cv2.putText(debug_image, f'({cx}, {cy}px)', (cx - 50, cy + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
+                        
+                        # Color y visualización específica según el tipo de objeto
+                        if 'red' in obj_name:
+                            # Cubo rojo: círculo rojo y texto rojo
+                            cv2.circle(debug_image, (cx, cy), 2, (0, 0, 255), -1)  # Círculo rojo más grande
+                            cv2.putText(debug_image, f'RED CUBE', (cx - 50, cy - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                            cv2.putText(debug_image, f'({cx}, {cy}px)', (cx - 50, cy + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 2)
+                        elif 'green' in obj_name:
+                            # Cubo verde: círculo verde y texto verde (mantener funcionalidad actual)
+                            cv2.circle(debug_image, (cx, cy), 2, (0, 255, 0), -1)  # Círculo verde más grande
+                            cv2.putText(debug_image, f'GREEN CUBE', (cx - 50, cy - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                            cv2.putText(debug_image, f'({cx}, {cy}px)', (cx - 50, cy + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 2)
+                        else:
+                            # Otros objetos: círculo azul y texto blanco
+                            cv2.circle(debug_image, (cx, cy), 2, (255, 0, 0), -1)
+                            cv2.putText(debug_image, f'{obj_name}', (cx - 50, cy - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+                            cv2.putText(debug_image, f'({cx}, {cy}px)', (cx - 50, cy + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 2)
         return detected_objects, debug_image
 
     def pixel_to_world(self, pixel_x, pixel_y):
@@ -226,10 +252,7 @@ class ObjectDetector(Node):
 
     def create_object_markers(self, detected_objects):
         """Crea markers de visualización para los objetos detectados"""
-        # DESHABILITADO temporalmente - necesita coordenadas del mundo
         marker_array = MarkerArray()
-        return marker_array
-        
         for i, obj in enumerate(detected_objects):
             marker = Marker()
             marker.header.frame_id = "world"
@@ -237,18 +260,16 @@ class ObjectDetector(Node):
             marker.id = i
             marker.type = Marker.CYLINDER
             marker.action = Marker.ADD
-            
-            # Posición
-            marker.pose.position.x = obj['world_x']
-            marker.pose.position.y = obj['world_y']
+            # Convertir píxel a mundo para la posición
+            world_x, world_y = self.pixel_to_world(obj['pixel_x'], obj['pixel_y'])
+            marker.pose.position.x = world_x
+            marker.pose.position.y = world_y
             marker.pose.position.z = 0.025  # Altura del marker
             marker.pose.orientation.w = 1.0
-            
             # Tamaño
             marker.scale.x = 0.05
             marker.scale.y = 0.05
             marker.scale.z = 0.05
-            
             # Color según el tipo de objeto
             if 'red' in obj['name']:
                 marker.color = ColorRGBA(r=1.0, g=0.0, b=0.0, a=0.8)
@@ -258,58 +279,60 @@ class ObjectDetector(Node):
                 marker.color = ColorRGBA(r=0.0, g=0.0, b=1.0, a=0.8)
             else:
                 marker.color = ColorRGBA(r=1.0, g=1.0, b=0.0, a=0.8)
-            
             marker.lifetime.sec = 1  # Duración del marker
             marker_array.markers.append(marker)
-        
         return marker_array
 
     def process_detection(self):
         """Procesa la detección de objetos"""
         if self.latest_image is None:
             return
-        
         try:
             # Detectar objetos
             detected_objects, debug_image = self.detect_objects_by_color(self.latest_image)
-            
             # Publicar imagen de debug
             debug_msg = self.bridge.cv2_to_imgmsg(debug_image, "bgr8")
             debug_msg.header.stamp = self.get_clock().now().to_msg()
             debug_msg.header.frame_id = self.config['camera']['frame_id']
             self.debug_image_publisher.publish(debug_msg)
-            
             # Debug: contar objetos detectados
             self.get_logger().info(f'🔍 Objetos detectados: {len(detected_objects) if detected_objects else 0}')
-            
-            # Publicar markers
+            # Publicar markers para todos los objetos
             if detected_objects:
-                self.get_logger().info(f'📤 Publicando coordenadas para {len(detected_objects)} objetos')
+                self.get_logger().info(f'📤 Publicando markers para {len(detected_objects)} objetos')
                 markers = self.create_object_markers(detected_objects)
                 self.marker_publisher.publish(markers)
                 
-                # Publicar coordenadas del primer objeto detectado (para pick and place)
-                first_object = detected_objects[0]  # Tomar el primer objeto detectado
-                coords_msg = PointStamped()
-                coords_msg.header.stamp = self.get_clock().now().to_msg()
-                coords_msg.header.frame_id = "overhead_camera"
-                coords_msg.point.x = float(first_object['pixel_x'])  # Enviar píxeles directamente
-                coords_msg.point.y = float(first_object['pixel_y'])  # Enviar píxeles directamente
-                coords_msg.point.z = 0.0  # Marca para indicar que son píxeles
+                # Log específico para cubos rojos y verdes
+                red_objs = [obj for obj in detected_objects if 'red' in obj['name']]
+                green_objs = [obj for obj in detected_objects if 'green' in obj['name']]
                 
-                # Publicar en ambos topics
-                self.coords_publisher.publish(coords_msg)
-                self.vision_coords_publisher.publish(coords_msg)
-                self.get_logger().info(f'📤 Publicado: píxel({first_object["pixel_x"]}, {first_object["pixel_y"]})')
+                # Mostrar coordenadas de cubos rojos
+                if red_objs:
+                    self.get_logger().info(f'🔴 CUBOS ROJOS DETECTADOS: {len(red_objs)}')
+                    for i, red_obj in enumerate(red_objs):
+                        self.get_logger().info(f'   🎯 Cubo rojo {i+1}: píxel({red_obj["pixel_x"]}, {red_obj["pixel_y"]})')
                 
-                # Log de objetos detectados (ahora en píxeles)
-                for obj in detected_objects:
-                    self.get_logger().info(
-                        f'🎯 {obj["name"]}: píxel({obj["pixel_x"]}, {obj["pixel_y"]})'
-                    )
+                # Mostrar coordenadas de cubos verdes
+                if green_objs:
+                    self.get_logger().info(f'🟢 CUBOS VERDES DETECTADOS: {len(green_objs)}')
+                    for i, green_obj in enumerate(green_objs):
+                        self.get_logger().info(f'   🎯 Cubo verde {i+1}: píxel({green_obj["pixel_x"]}, {green_obj["pixel_y"]})')
+                
+                # Solo publicar coordenadas del cubo verde para pick and place (mantener funcionalidad)
+                if green_objs:
+                    first_green = green_objs[0]
+                    coords_msg = PointStamped()
+                    coords_msg.header.stamp = self.get_clock().now().to_msg()
+                    coords_msg.header.frame_id = "overhead_camera"
+                    coords_msg.point.x = float(first_green['pixel_x'])
+                    coords_msg.point.y = float(first_green['pixel_y'])
+                    coords_msg.point.z = 0.0
+                    self.coords_publisher.publish(coords_msg)
+                    self.vision_coords_publisher.publish(coords_msg)
+                    self.get_logger().info(f'📤 Publicado para pick and place: píxel({first_green["pixel_x"]}, {first_green["pixel_y"]})')
             else:
                 self.get_logger().info('⚠️ No se detectaron objetos válidos')
-            
         except Exception as e:
             self.get_logger().error(f'Error en detección: {str(e)}')
 
