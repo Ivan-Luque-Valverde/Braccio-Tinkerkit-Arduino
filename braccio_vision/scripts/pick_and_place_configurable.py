@@ -165,28 +165,26 @@ class ConfigurablePickAndPlace(Node):
     def control_gripper(self, open_gripper=True, model2_name="green_cube", link2_name="link"):
         """Controla el gripper y llama a attach/detach si corresponde"""
         gripper_config = self.config['gripper']
-        
         if open_gripper:
             position = gripper_config['open_position']  # 0.0
             duration = gripper_config['open_time']      # 2.0
             action = "Abriendo"
+            self.get_logger().info(f'{action} gripper a posición: {position}')
+            trajectory = self.create_gripper_trajectory(position, duration)
+            self.gripper_publisher.publish(trajectory)
+            time.sleep(0.2)  # Espera 0.2 segundos tras iniciar apertura
+            self.call_detach(model2_name, link2_name)
+            return True
         else:
             position = gripper_config['closed_position'] # 0.8
             duration = gripper_config['close_time']      # 3.0
             action = "Cerrando"
-        
-        self.get_logger().info(f'{action} gripper a posición: {position}')
-        
-        trajectory = self.create_gripper_trajectory(position, duration)
-        self.gripper_publisher.publish(trajectory)
-        
-        time.sleep(duration + 0.5)
-        # Llamar a attach/detach después de mover la pinza
-        if open_gripper:
-            self.call_detach(model2_name, link2_name)
-        else:
+            self.get_logger().info(f'{action} gripper a posición: {position}')
+            trajectory = self.create_gripper_trajectory(position, duration)
+            self.gripper_publisher.publish(trajectory)
+            time.sleep(duration + 0.5)
             self.call_attach(model2_name, link2_name)
-        return True
+            return True
 
     def execute_action(self, action):
         """Ejecuta una acción individual"""

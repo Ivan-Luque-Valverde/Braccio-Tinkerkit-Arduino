@@ -68,11 +68,13 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/braccio_vision" TYPE PROGRAM FILES
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/object_detector.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/camera_viewer.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/vision_pick_and_place.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/camera_spawner.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/object_spawner.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/__init__.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/calculate_homography.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/ik_workspace_tester.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/inverse_kinematics_calculator.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/pick_and_place_configurable.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/test_homography.py"
+    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/vision_auto_pick_and_place.py"
     )
 endif()
 

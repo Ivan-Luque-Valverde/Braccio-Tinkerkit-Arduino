@@ -132,7 +132,7 @@ class VisionBasedPickAndPlace(Node):
         """Ejecutar el calculador de cinemática inversa y detectar estrategia"""
         self.get_logger().info('🧮 Calculando cinemática inversa...')
         
-        script_path = "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/inverse_kinematics_calculator.py"
+        script_path = "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/inverse_kinematics_calculator.py"
         
         try:
             # Cambiar al directorio del workspace
@@ -244,7 +244,7 @@ class VisionBasedPickAndPlace(Node):
 
     def execute_normal_pick_and_place(self):
         """Ejecutar pick and place normal usando el script configurable"""
-        script_path = "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/scripts/pick_and_place_configurable.py"
+        script_path = "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/pick_and_place_configurable.py"
         
         try:
             # Cambiar al directorio del workspace

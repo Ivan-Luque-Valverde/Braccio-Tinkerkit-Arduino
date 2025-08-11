@@ -24,12 +24,10 @@ find_package(rclpy REQUIRED)
 ament_python_install_package(${PROJECT_NAME})
 
 # Install Python scripts as executables
-install(PROGRAMS
-  braccio_vision/object_detector.py
-  braccio_vision/camera_viewer.py
-  braccio_vision/vision_pick_and_place.py
-  braccio_vision/camera_spawner.py
-  braccio_vision/object_spawner.py
+
+# Instalar todos los scripts de la carpeta scripts/
+file(GLOB SCRIPT_FILES scripts/*.py)
+install(PROGRAMS ${SCRIPT_FILES}
   DESTINATION lib/${PROJECT_NAME}
 )
 
