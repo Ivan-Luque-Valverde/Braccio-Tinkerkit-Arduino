@@ -2,6 +2,8 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.task import Future
+from linkattacher_msgs.srv import AttachLink, DetachLink
 import yaml
 import os
 import math
@@ -31,6 +33,10 @@ class ConfigurablePickAndPlace(Node):
             10
         )
         
+        # Cliente para attach/detach
+        self.attach_client = self.create_client(AttachLink, '/ATTACHLINK')
+        self.detach_client = self.create_client(DetachLink, '/DETACHLINK')
+
         self.get_logger().info('Nodo Configurable Pick and Place iniciado')
         self.get_logger().info(f'Configuración cargada: {len(self.config.get("sequences", {}))} secuencias disponibles')
 
@@ -128,8 +134,36 @@ class ConfigurablePickAndPlace(Node):
         time.sleep(duration + 0.5)
         return True
 
-    def control_gripper(self, open_gripper=True):
-        """Controla el gripper"""
+    def call_attach(self, model2_name="green_cube", link2_name="link"):
+        req = AttachLink.Request()
+        req.model1_name = "braccio"
+        req.link1_name = "right_gripper_link"
+        req.model2_name = model2_name
+        req.link2_name = link2_name
+        if not self.attach_client.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn('Servicio /ATTACHLINK no disponible')
+            return False
+        future = self.attach_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
+        self.get_logger().info('Llamado a ATTACHLINK')
+        return True
+
+    def call_detach(self, model2_name="green_cube", link2_name="link"):
+        req = DetachLink.Request()
+        req.model1_name = "braccio"
+        req.link1_name = "right_gripper_link"
+        req.model2_name = model2_name
+        req.link2_name = link2_name
+        if not self.detach_client.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn('Servicio /DETACHLINK no disponible')
+            return False
+        future = self.detach_client.call_async(req)
+        rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
+        self.get_logger().info('Llamado a DETACHLINK')
+        return True
+
+    def control_gripper(self, open_gripper=True, model2_name="green_cube", link2_name="link"):
+        """Controla el gripper y llama a attach/detach si corresponde"""
         gripper_config = self.config['gripper']
         
         if open_gripper:
@@ -147,6 +181,11 @@ class ConfigurablePickAndPlace(Node):
         self.gripper_publisher.publish(trajectory)
         
         time.sleep(duration + 0.5)
+        # Llamar a attach/detach después de mover la pinza
+        if open_gripper:
+            self.call_detach(model2_name, link2_name)
+        else:
+            self.call_attach(model2_name, link2_name)
         return True
 
     def execute_action(self, action):

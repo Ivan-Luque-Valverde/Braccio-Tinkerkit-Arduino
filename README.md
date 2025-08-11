@@ -234,6 +234,7 @@ ros2 run braccio_vision camera_viewer.py
 ros2 run braccio_vision vision_pick_and_place.py
 
 python3 braccio_moveit_config/scripts/vision_auto_pick_and_place.py
+
 ```
 
 ### Arquitectura Técnica

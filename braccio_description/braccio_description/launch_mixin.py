@@ -27,7 +27,13 @@ class GazeboMixin:
                     ]
                 )
             ),
-            # Sin argumentos de world - usar mundo por defecto de Gazebo
+            launch_arguments={
+                "world": PathJoinSubstitution([
+                    FindPackageShare("braccio_description"),
+                    "gazebo",
+                    "braccio.world"
+                ])
+            }.items(),
             **kwargs
         )
 

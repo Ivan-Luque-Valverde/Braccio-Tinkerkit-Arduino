@@ -88,5 +88,12 @@
             <material>Gazebo/Orange</material>
         </gazebo>
 
+        <!-- Plugin LinkAttacher ahora está cargado en el archivo de mundo -->
+        <!-- <gazebo>
+            <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so">
+                <update_rate>10.0</update_rate>
+            </plugin>
+        </gazebo> -->
+
     </xacro:macro>
 </robot>

@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <!-- Ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <!-- Sun -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- Plugin LinkAttacher como plugin del mundo -->
+    <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so">
+      <update_rate>10.0</update_rate>
+    </plugin>
+    
+    <!-- Add any other default elements here -->
+  </world>
+</sdf>
