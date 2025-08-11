@@ -31,7 +31,6 @@ class VisionBasedPickAndPlace(Node):
         self.object_detected = False
         self.pixel_x = 0
         self.pixel_y = 0
-        self.needs_push = False  # Flag para detectar si necesita empuje
         
         # Cargar homografía para transformación píxel -> mundo
         self.load_homography()
@@ -100,28 +99,23 @@ class VisionBasedPickAndPlace(Node):
         """Procesar el objeto detectado y ejecutar pick and place"""
         self.processing = True
         self.object_detected = False
-        
         try:
             self.get_logger().info('🔄 Procesando objeto detectado...')
-            
             # 1. Transformar píxeles a coordenadas del mundo
             object_x, object_y = self.transform_pixels_to_world(self.pixel_x, self.pixel_y)
             object_z = 0.025  # Altura ajustada para cubos pequeños
-            
             self.get_logger().info(f'📍 Objeto localizado en: ({object_x:.3f}, {object_y:.3f}, {object_z:.3f})')
-            
             # 2. Calcular cinemática inversa
-            if self.run_ik_calculation(object_x, object_y, object_z):
-                
-                # 3. Ejecutar pick and place
-                self.get_logger().info('🤖 Iniciando secuencia pick and place...')
-                if self.run_pick_and_place():
-                    self.get_logger().info('🎉 ¡PICK AND PLACE COMPLETADO EXITOSAMENTE!')
-                else:
-                    self.get_logger().error('❌ Error en la ejecución del pick and place')
+            if not self.run_ik_calculation(object_x, object_y, object_z):
+                self.get_logger().error('❌ Error en el cálculo de cinemática inversa. Pick and place cancelado.')
+                print("❌ Error: El objeto está fuera de alcance o la cinemática ha fallado. Pick and place cancelado.")
+                return
+            # 3. Ejecutar pick and place
+            self.get_logger().info('🤖 Iniciando secuencia pick and place...')
+            if self.execute_normal_pick_and_place():
+                self.get_logger().info('🎉 ¡PICK AND PLACE COMPLETADO EXITOSAMENTE!')
             else:
-                self.get_logger().error('❌ Error en el cálculo de cinemática inversa')
-                
+                self.get_logger().error('❌ Error en la ejecución del pick and place')
         except Exception as e:
             self.get_logger().error(f'❌ Error procesando objeto: {e}')
         finally:
@@ -138,108 +132,34 @@ class VisionBasedPickAndPlace(Node):
             # Cambiar al directorio del workspace
             original_dir = os.getcwd()
             os.chdir("/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino")
-            
             # Ejecutar el calculador de IK con auto-guardado
             cmd = [
-                "bash", "-c", 
+                "bash", "-c",
                 f"source install/setup.bash && python3 {script_path} {object_x} {object_y} {object_z}"
             ]
-            
             # Ejecutar y capturar la salida
             result = subprocess.run(cmd, capture_output=True, text=True, input="y\n", timeout=30)
-            
             # Restaurar directorio original
             os.chdir(original_dir)
-            
+            output = result.stdout.lower()
+            # Detectar errores típicos de cinemática
+            if ("fuera de alcance" in output or "no se pudieron calcular las posiciones" in output or
+                "no se pudo calcular" in output or "error" in output):
+                self.get_logger().error('❌ El script de IK indica que el objeto está fuera de alcance o la cinemática ha fallado.')
+                self.get_logger().error(output)
+                return False
             if result.returncode == 0:
                 self.get_logger().info('✅ Cinemática inversa calculada exitosamente')
-                
-                # Analizar la salida para detectar la estrategia
-                output = result.stdout
-                if "ESTRATEGIA: EMPUJE + PICK" in output or "EMPUJE + PICK" in output:
-                    self.get_logger().info('🔄 Estrategia detectada: EMPUJE + PICK')
-                    self.needs_push = True
-                else:
-                    self.get_logger().info('✅ Estrategia detectada: PICK DIRECTO')
-                    self.needs_push = False
-                
                 return True
             else:
                 self.get_logger().error('❌ Error en cálculo de cinemática inversa:')
                 self.get_logger().error(result.stderr)
                 return False
-                
         except subprocess.TimeoutExpired:
             self.get_logger().error('⏰ Timeout en cálculo de cinemática inversa')
             return False
         except Exception as e:
             self.get_logger().error(f'❌ Error ejecutando calculador de IK: {e}')
-            return False
-
-    def run_pick_and_place(self):
-        """Ejecutar la secuencia de pick and place (con o sin empuje)"""
-        
-        if self.needs_push:
-            # Implementar estrategia de empuje directamente
-            self.get_logger().info('🔄 Ejecutando pick and place CON empuje')
-            return self.execute_push_strategy()
-        else:
-            # Usar el sistema configurable normal
-            self.get_logger().info('✅ Ejecutando pick and place DIRECTO')
-            return self.execute_normal_pick_and_place()
-
-    def execute_push_strategy(self):
-        """Ejecutar estrategia de empuje integrada"""
-        try:
-            self.get_logger().info('🔄 === INICIANDO ESTRATEGIA DE EMPUJE ===')
-            
-            # 1. Calcular ángulo base hacia el objeto
-            base_angle = math.atan2(self.pixel_y - 240, self.pixel_x - 320)  # Ángulo desde centro de imagen
-            self.get_logger().info(f'📐 Ángulo base calculado: {math.degrees(base_angle):.1f}°')
-            
-            # 2. Configurar modo empuje
-            if self.execute_push_sequence(base_angle):
-                self.get_logger().info('✅ Modo empuje configurado')
-                
-                # 3. Ejecutar pick_and_place_configurable con empuje integrado
-                self.get_logger().info('🎯 Ejecutando secuencia completa (empuje + pick)...')
-                return self.execute_normal_pick_and_place()
-            else:
-                self.get_logger().error('❌ Error configurando modo empuje')
-                return False
-                
-        except Exception as e:
-            self.get_logger().error(f'❌ Error en estrategia de empuje: {e}')
-            return False
-
-    def execute_push_sequence(self, base_angle):
-        """Crear archivos flag para activar empuje en pick_and_place_configurable"""
-        try:
-            self.get_logger().info('🔄 Configurando modo empuje inteligente...')
-            
-            # Crear archivo flag para indicar que necesita empuje
-            push_flag_file = "/tmp/braccio_needs_push.flag"
-            with open(push_flag_file, 'w') as f:
-                f.write("push_required")
-            
-            # Guardar ángulo base para el empuje
-            angle_file = "/tmp/braccio_push_angle.txt"
-            with open(angle_file, 'w') as f:
-                f.write(str(base_angle))
-            
-            # Guardar coordenadas del objeto para empuje inteligente
-            coords_file = "/tmp/braccio_object_coords.txt"
-            object_x, object_y = self.transform_pixels_to_world(self.pixel_x, self.pixel_y)
-            with open(coords_file, 'w') as f:
-                f.write(f"{object_x},{object_y}")
-            
-            self.get_logger().info(f'✅ Modo empuje configurado:')
-            self.get_logger().info(f'   📐 Ángulo: {math.degrees(base_angle):.1f}°')
-            self.get_logger().info(f'   📍 Objeto: ({object_x:.3f}, {object_y:.3f})')
-            return True
-            
-        except Exception as e:
-            self.get_logger().error(f'❌ Error configurando modo empuje: {e}')
             return False
 
     def execute_normal_pick_and_place(self):

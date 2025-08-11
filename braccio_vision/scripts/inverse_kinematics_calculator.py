@@ -99,76 +99,28 @@ class InverseKinematicsCalculator(Node):
             self.get_logger().error(f'❌ Error en cálculo IK: {e}')
             return None
 
-    def should_push_object(self, x, y):
-        """Determina si el objeto necesita ser empujado basado en IK analítica"""
-        targets = self.calculate_ik_xy(x, y)
-        if targets is None:
-            return True, "No se puede calcular IK"
-        
-        theta_shoulder = targets[1]
-        
-        # Fuera del dominio válido (muy lejos)
-        if theta_shoulder < THETA_EXT:
-            return False, f"Fuera del dominio: theta={math.degrees(theta_shoulder):.1f}° < {math.degrees(THETA_EXT):.1f}°"
-        
-        # Muy cerca, necesita empuje
-        if theta_shoulder > THETA_RET:
-            return True, f"Muy cerca, empujando: theta={math.degrees(theta_shoulder):.1f}° > {math.degrees(THETA_RET):.1f}°"
-        
-        # En rango válido
-        return False, f"En rango válido: theta={math.degrees(theta_shoulder):.1f}°"
 
-    def calculate_push_strategy(self, object_x, object_y, object_z):
+    def calculate_strategy(self, object_x, object_y, object_z):
         """
-        Calcula la estrategia completa: empuje + pick o pick directo
+        Solo calcula pick si el objeto está en rango. Si no, muestra mensaje y no devuelve posiciones.
         """
         self.get_logger().info('=== ANALIZANDO ESTRATEGIA ===')
-        
-        needs_push, reason = self.should_push_object(object_x, object_y)
-        self.get_logger().info(f'📊 Análisis: {reason}')
-        
-        strategy = {
-            'needs_push': needs_push,
-            'reason': reason,
-            'positions': {}
-        }
-        
-        if needs_push:
-            # Calcular posiciones de empuje
-            base_angle = math.atan2(object_y, object_x)
-            strategy['positions']['push_base_angle'] = base_angle
-            strategy['positions']['push_raise'] = [base_angle, 1.15, 0.13, 2.29, np.pi/2]
-            strategy['positions']['push_sequence'] = [
-                [base_angle, 2.7, 0.01, 0.01, np.pi/2],
-                [base_angle, 2.1, 0.01, 0.01, np.pi/2],
-                [base_angle, 0.5, 1.8, 0.1, np.pi/2],
-                [base_angle, 2.1, 0.01, 0.01, np.pi/2],
-                [base_angle, 2.7, 0.01, 0.01, np.pi/2]
-            ]
-            
-            # Estimar nueva posición después del empuje (más cerca de la zona cómoda)
-            rho, phi = cart2pol(object_x, object_y)
-            new_rho = self.l + self.L * np.cos((THETA_EXT + THETA_RET) / 2)  # Posición central
-            new_x, new_y = pol2cart(new_rho, phi)
-            
-            # Calcular pick para la nueva posición
-            pick_positions = self.calculate_pick_positions(new_x, new_y, object_z)
-            if pick_positions:
-                strategy['positions'].update(pick_positions)
-            
-            self.get_logger().info(f'🔄 Estrategia: EMPUJE + PICK')
-            self.get_logger().info(f'📍 Posición original: ({object_x:.3f}, {object_y:.3f})')
-            self.get_logger().info(f'🎯 Posición estimada post-empuje: ({new_x:.3f}, {new_y:.3f})')
-            
-        else:
-            # Pick directo
-            pick_positions = self.calculate_pick_positions(object_x, object_y, object_z)
-            if pick_positions:
-                strategy['positions'].update(pick_positions)
-            
+        pick_positions = self.calculate_pick_positions(object_x, object_y, object_z)
+        if pick_positions:
             self.get_logger().info(f'✅ Estrategia: PICK DIRECTO')
-        
-        return strategy
+            return {
+                'needs_pick': True,
+                'reason': 'En rango válido',
+                'positions': pick_positions
+            }
+        else:
+            self.get_logger().warn('❌ Objeto fuera de alcance. No se puede realizar pick ni empuje.')
+            print("❌ Objeto fuera de alcance. No se puede realizar pick ni empuje.")
+            return {
+                'needs_pick': False,
+                'reason': 'Objeto fuera de alcance',
+                'positions': {}
+            }
 
     def calculate_pick_positions(self, object_x, object_y, object_z, approach_height=0.05):
         """
@@ -300,22 +252,19 @@ class InverseKinematicsCalculator(Node):
         print("ESTRATEGIA CALCULADA")
         print("="*60)
         
-        if strategy['needs_push']:
-            print("🔄 ESTRATEGIA: EMPUJE + PICK")
-            print(f"📋 Razón: {strategy['reason']}")
-            print("\n🔄 SECUENCIA RECOMENDADA:")
-            print("1. Ejecutar secuencia de empuje")
-            print("2. Detectar nueva posición del objeto")
-            print("3. Ejecutar pick desde nueva posición")
-        else:
+        if strategy.get('needs_pick', True):
             print("✅ ESTRATEGIA: PICK DIRECTO")
-            print(f"📋 Razón: {strategy['reason']}")
+            print(f"📋 Razón: {strategy.get('reason', 'Cálculo exitoso')}")
             print("\n✅ SECUENCIA ESTÁNDAR:")
             print("1. pick_approach → pick_position")
             print("2. place_approach → place_position")
+        else:
+            print("❌ ESTRATEGIA: OBJETO FUERA DE ALCANCE")
+            print(f"📋 Razón: {strategy.get('reason', 'No se pudo calcular IK')}")
+            print("\n❌ NO SE PUEDE EJECUTAR PICK AND PLACE")
         
         print("\n📐 POSICIONES CALCULADAS:")
-        for name, pos in strategy['positions'].items():
+        for name, pos in strategy.get('positions', {}).items():
             if isinstance(pos, list) and len(pos) == 5:
                 pos_degrees = [f"{math.degrees(p):.1f}°" for p in pos]
                 print(f"  {name}: {pos_degrees}")
@@ -340,19 +289,15 @@ def main():
             
             print(f"📍 Objeto en: ({object_x}, {object_y}, {object_z})")
             
-            # Calcular estrategia completa
-            strategy = ik_calc.calculate_push_strategy(object_x, object_y, object_z)
-            
+            # Calcular estrategia solo pick
+            strategy = ik_calc.calculate_strategy(object_x, object_y, object_z)
             if strategy['positions']:
-                # Guardar automáticamente cuando se llama desde otro script
                 config_path = '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/config/pick_and_place_config.yaml'
                 if ik_calc.save_positions_to_config(strategy['positions'], config_path):
                     print("✅ ¡Configuración actualizada automáticamente!")
                     ik_calc.print_strategy_summary(strategy)
                 else:
                     print("❌ Error guardando la configuración")
-            else:
-                print("❌ No se pudieron calcular las posiciones")
         
         else:
             # Modo interactivo
