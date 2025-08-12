@@ -1,6 +1,0 @@
-setup.py
-braccio_vision/__init__.py
-braccio_vision.egg-info/PKG-INFO
-braccio_vision.egg-info/SOURCES.txt
-braccio_vision.egg-info/dependency_links.txt
-braccio_vision.egg-info/top_level.txt

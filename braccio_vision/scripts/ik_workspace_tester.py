@@ -34,11 +34,11 @@ def main():
     node = IKWorkspaceTester()
     print('\n=== TESTER DE WORKSPACE DE PICK DIRECTO ===')
     print('x (m)\ty (m)\tResultado\t\tÁngulos (grados)')
-
-    # Rango ampliado: X desde 0.20 hasta 0.35m, Y desde 0 hasta 0.35m
-    x_vals = [round(x, 3) for x in list(frange(0.20, 0.36, 0.01))]
-    y_vals = [round(y, 3) for y in list(frange(0, 0.36, 0.01))]
-    # Rango seguro: X desde 0.20 hasta 0.30m, Y desde 0.17 hasta 0.25m 
+    
+    # Rango ampliado: X desde 0.20 hasta 0.35m, Y desde -0.15 hasta 0.15m
+    x_vals = [round(x, 3) for x in list(frange(0.20, 0.41, 0.01))]
+    y_vals = [round(y, 3) for y in list(frange(-0.15, 0.36, 0.01))]
+    
     pick_directo_count = 0
     total_count = 0
     
@@ -59,6 +59,21 @@ def main():
     print(f'   Porcentaje de éxito: {(pick_directo_count/total_count)*100:.1f}%')
     print('\n🎯 POSICIONES RECOMENDADAS PARA CUBO VERDE:')
     
+    recommended_positions = [
+        (0.25, 0.0),   # Centro del workspace ampliado
+        (0.28, 0.05),  # Hacia la derecha
+        (0.30, -0.03), # Hacia la izquierda
+        (0.22, 0.08),  # Más cerca, lateral
+        (0.33, 0.0),   # Más lejos, centro
+    ]
+    
+    for x, y in recommended_positions:
+        angles, status = node.calculate_ik(x, y)
+        if status == 'OK':
+            angles_deg = [math.degrees(angle) for angle in angles]
+            print(f'   ✅ ({x:.3f}, {y:.3f}) - PICK DIRECTO - Ángulos: [{angles_deg[0]:.1f}°, {angles_deg[1]:.1f}°, {angles_deg[2]:.1f}°, {angles_deg[3]:.1f}°, {angles_deg[4]:.1f}°]')
+        else:
+            print(f'   ❌ ({x:.3f}, {y:.3f}) - {status}')
     
     node.destroy_node()
     rclpy.shutdown()

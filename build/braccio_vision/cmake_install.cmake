@@ -43,47 +43,16 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_vision/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/ament_cmake_environment_hooks/pythonpath.sh")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/braccio_vision/environment" TYPE FILE FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/ament_cmake_environment_hooks/pythonpath.dsv")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/local/lib/python3.10/dist-packages/braccio_vision-1.0.0-py3.10.egg-info" TYPE DIRECTORY FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/ament_cmake_python/braccio_vision/braccio_vision.egg-info/")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/local/lib/python3.10/dist-packages/braccio_vision" TYPE DIRECTORY FILES "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/braccio_vision/" REGEX "/[^/]*\\.pyc$" EXCLUDE REGEX "/\\_\\_pycache\\_\\_$" EXCLUDE)
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  execute_process(
-        COMMAND
-        "/usr/bin/python3" "-m" "compileall"
-        "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/install/braccio_vision/local/lib/python3.10/dist-packages/braccio_vision"
-      )
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/braccio_vision" TYPE PROGRAM FILES
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/__init__.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/calculate_homography.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/camera_spawner.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/camera_viewer.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/cube2_problem_analyzer.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/cube2_tester.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/debug_tools.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/forward_kinematics_checker.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/gazebo_cleaner.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/ik_constraints_analyzer.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/ik_workspace_tester.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/inverse_kinematics_calculator.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/object_detector.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/object_spawner.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/pick_and_place_configurable.py"
-    "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/robot_position_analyzer.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/test_homography.py"
     "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/vision_auto_pick_and_place.py"
     )

@@ -197,32 +197,6 @@ braccio_vision_uninstall/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/braccio_vision_uninstall.dir/build.make CMakeFiles/braccio_vision_uninstall.dir/build
 .PHONY : braccio_vision_uninstall/fast
 
-#=============================================================================
-# Target rules for targets named ament_cmake_python_copy_braccio_vision
-
-# Build rule for target.
-ament_cmake_python_copy_braccio_vision: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ament_cmake_python_copy_braccio_vision
-.PHONY : ament_cmake_python_copy_braccio_vision
-
-# fast build rule for target.
-ament_cmake_python_copy_braccio_vision/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ament_cmake_python_copy_braccio_vision.dir/build.make CMakeFiles/ament_cmake_python_copy_braccio_vision.dir/build
-.PHONY : ament_cmake_python_copy_braccio_vision/fast
-
-#=============================================================================
-# Target rules for targets named ament_cmake_python_build_braccio_vision_egg
-
-# Build rule for target.
-ament_cmake_python_build_braccio_vision_egg: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ament_cmake_python_build_braccio_vision_egg
-.PHONY : ament_cmake_python_build_braccio_vision_egg
-
-# fast build rule for target.
-ament_cmake_python_build_braccio_vision_egg/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/ament_cmake_python_build_braccio_vision_egg.dir/build.make CMakeFiles/ament_cmake_python_build_braccio_vision_egg.dir/build
-.PHONY : ament_cmake_python_build_braccio_vision_egg/fast
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -236,8 +210,6 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... ament_cmake_python_build_braccio_vision_egg"
-	@echo "... ament_cmake_python_copy_braccio_vision"
 	@echo "... braccio_vision_uninstall"
 	@echo "... uninstall"
 .PHONY : help
