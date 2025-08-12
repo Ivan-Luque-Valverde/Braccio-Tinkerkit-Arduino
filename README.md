@@ -41,178 +41,35 @@ In order to test communication with the Arduino, a verbose option is implemented
 
 ## Programas de Pick and Place
 
-Este repositorio incluye programas de pick and place funcionales para el robot Braccio, enfocados en la practicidad y facilidad de configuración.
+- **calculate_homography.py**  
+  Script para calcular la matriz de homografía a partir de puntos conocidos en la imagen y el mundo real. Permite calibrar la cámara para transformar coordenadas de píxeles a coordenadas reales del workspace. El resultado se guarda en `camera_calibration.json`.
 
-### Simulación Básica
+- **camera_spawner.py**  
+  Lanza una cámara cenital virtual en Gazebo para simular la visión superior del workspace. Es útil para pruebas de visión artificial y calibración.
 
-Lanza la simulación en Gazebo Classic sin MoveIt para usar scripts directos:
+- **camera_viewer.py**  
+  Visualiza en tiempo real el feed de la cámara cenital y las imágenes de debug con las detecciones de objetos. Permite comprobar visualmente la detección y calibración.
 
-```bash
-ros2 launch braccio_bringup bringup.launch.py sim:=true
-```
+- **object_detector.py**  
+  Nodo ROS2 que detecta cubos verdes en la imagen de la cámara, publica sus coordenadas y muestra las detecciones en la imagen de debug. Utiliza OpenCV y la configuración de la cámara para segmentar y localizar los objetos.
 
-### Scripts de Pick and Place Disponibles
+- **object_spawner.py**  
+  Genera automáticamente cubos de colores (rojos y verdes) en posiciones conocidas del workspace en Gazebo. Útil para pruebas de calibración y pick and place.
 
-#### 1. Pick and Place Simple (`pick_and_place_simple.py`)
+- **ik_workspace_tester.py**  
+  Herramienta para probar la cinemática inversa del Braccio en todo el workspace, visualizando los límites y posibles errores de alcance.
 
-Programa básico y funcional que usa controladores de trayectoria directamente. **Recomendado para comenzar**.
+- **inverse_kinematics_calculator.py**  
+  Calculadora analítica de cinemática inversa para el Braccio, utilizada por los sistemas de pick and place para convertir posiciones objetivo en ángulos de las articulaciones.
 
-**Características:**
-- ✅ Control directo de trayectorias (funciona siempre)
-- ✅ Secuencia predefinida de movimientos
-- ✅ Control separado del brazo y gripper
-- ✅ Fácil de entender y modificar
-- ✅ No depende de MoveIt
+- **pick_and_place_configurable.py**  
+  Nodo ROS2 que ejecuta secuencias de pick and place configurables mediante YAML. Permite definir trayectorias, posiciones y acciones del gripper de forma flexible.
 
-**Ejecución:**
-```bash
-# Primero lanzar simulación
-ros2 launch braccio_bringup bringup.launch.py sim:=true
+- **vision_auto_pick_and_place.py**  
+  Sistema completo de pick and place basado en visión: detecta cubos verdes, calcula su posición real, ejecuta la secuencia de pick and place y controla el gripper automáticamente.
 
-# En otra terminal
-ros2 run braccio_moveit_config pick_and_place_simple.py
-```
 
-#### 2. Pick and Place Configurable (`pick_and_place_configurable.py`) ⭐
-
-**¡El programa principal!** Completamente configurable mediante archivo YAML. Ideal para personalizar comportamientos.
-
-**Características:**
-- ⭐ Configuración completa mediante archivo YAML
-- ⭐ Secuencias personalizables sin tocar código
-- ⭐ Posiciones nombradas fáciles de modificar
-- ⭐ Múltiples secuencias predefinidas
-- ⭐ Sistema de configuración robusto
-
-**Ejecución:**
-```bash
-# Primero lanzar simulación
-ros2 launch braccio_bringup bringup.launch.py sim:=true
-
-# En otra terminal
-ros2 run braccio_moveit_config pick_and_place_configurable.py
-```
-
-#### 3. Position Tester (`position_tester.py`) 🔧
-
-Herramienta interactiva para probar y calibrar posiciones antes de usarlas en pick and place.
-
-**Características:**
-- 🔧 Modo interactivo para probar posiciones
-- 🔧 Muestra posiciones actuales del robot
-- 🔧 Prueba posiciones individuales del archivo YAML
-- 🔧 Prueba secuencias completas
-- 🔧 Control directo del gripper
-
-**Ejecución:**
-```bash
-# Primero lanzar simulación
-ros2 launch braccio_bringup bringup.launch.py sim:=true
-
-# En otra terminal (modo interactivo)
-ros2 run braccio_moveit_config position_tester.py
-```
-
-**Comandos del Position Tester:**
-- `list` - Ver todas las posiciones disponibles
-- `current` - Mostrar posición actual del robot
-- `test home` - Probar la posición "home"
-- `grip_open` - Abrir gripper
-- `grip_close` - Cerrar gripper
-- `sequence` - Ejecutar secuencia completa
-- `quit` - Salir
-
-### Configuración y Calibración de Posiciones 🎯
-
-**¡Paso más importante!** El archivo de configuración permite personalizar completamente el comportamiento:
-
-```
-braccio_moveit_config/config/pick_and_place_config.yaml
-```
-
-## Sistema de Visión 📷
-
-Este repositorio incluye un sistema de visión modular completo que permite al robot Braccio detectar objetos y calcular sus coordenadas para operaciones de pick and place automatizadas.
-
-### Configuración del Sistema de Visión
-
-El sistema de visión está implementado como un paquete completamente modular en:
-```
-braccio_vision/
-```
-
-### Lanzamiento del Sistema de Visión
-
-#### 1. Simulación con Cámara Cenital
-
-Lanza la simulación con una cámara fija posicionada sobre el área de trabajo:
-
-```bash
-ros2 launch braccio_vision vision_simulation.launch.py
-```
-
-Este comando lanza:
-- ✅ Simulación de Gazebo con cámara cenital
-- ✅ Robot Braccio en el mundo de visión
-- ✅ Nodo de detección de objetos
-- ✅ Visor de cámara en tiempo real
-
-#### 2. Componentes del Sistema de Visión
-
-**a) Detector de Objetos (`object_detector.py`)** 🎯
-- Detección de objetos por color (HSV)
-- Cálculo de coordenadas mundo desde píxeles
-- Publicación de coordenadas detectadas
-- Filtrado de ruido y contornos mínimos
-
-**b) Visor de Cámara (`camera_viewer.py`)** 👁️
-- Visualización en tiempo real de la cámara
-- Overlay de detecciones de objetos
-- Debug visual del sistema de detección
-
-**c) Pick and Place con Visión (`vision_pick_and_place.py`)** 🤖
-- Integración completa detección + manipulación
-- Automatización del proceso completo
-- Calibración de coordenadas cámara-robot
-
-### Configuración de Visión
-
-El sistema es completamente configurable mediante:
-```
-braccio_vision/config/vision_config.yaml
-```
-
-**Parámetros principales:**
-- 🎨 Rangos de color HSV para detección
-- 📏 Parámetros de calibración de cámara
-- 🎯 Transformación píxel-a-mundo
-- ⚙️ Filtros de detección (área mínima, etc.)
-
-### Calibración del Sistema de Visión 🔧
-
-Para ajustar la detección de objetos:
-
-1. **Calibrar colores HSV:** Modificar rangos en `vision_config.yaml`
-2. **Calibrar coordenadas:** Usar objetos de referencia conocidos
-3. **Ajustar filtros:** Configurar área mínima y máxima de detección
-
-### Arquitectura del Sistema de Visión
-
-```
-braccio_vision/
-├── braccio_vision/          # Nodos Python
-│   ├── object_detector.py   # Detección de objetos
-│   ├── camera_viewer.py     # Visor de cámara
-│   └── vision_pick_and_place.py  # Pick&place con visión
-├── config/
-│   └── vision_config.yaml  # Configuración del sistema
-├── launch/
-│   ├── vision_simulation.launch.py  # Lanzador principal
-│   └── vision_bringup.launch.py     # Solo nodos de visión
-├── urdf/
-│   └── vision_world.xacro   # Mundo con cámara cenital
-└── scripts/                 # Scripts ejecutables
-```
+  [Video demostración pick and place 3 cubos](https://drive.google.com/file/d/1wLfVnPr-vZvINre7aAciuyq-dVhB1gt1/view?usp=drive_link "Haz clic para ver el video de demostración")
 
 ### Ejecución Paso a Paso del Sistema Completo ⭐
 
@@ -236,18 +93,5 @@ ros2 launch braccio_vision vision_auto_pick_and_place.launch.py
 # Terminal 5: Pruebas IK
 python3 braccio_vision/scripts/ik_workspace_tester.py
 
-
-rm -rf build/braccio_vision install/braccio_vision && colcon build --packages-select braccio_vision
-
 ```
 
-### Arquitectura Técnica
-
-```
-Sistema de Visión Braccio
-├── Simulación (Gazebo + Camera Plugin)
-├── Detección (OpenCV + HSV)
-├── Transformación (Pixel-to-World)
-├── Manipulación (Trajectory Controllers)
-└── Control (Estado + Secuencias)
-```

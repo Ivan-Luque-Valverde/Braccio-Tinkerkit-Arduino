@@ -107,10 +107,8 @@ obstacles:
 sequences:
   basic_demo:
   - action: move_joints
-    description: "Ir a posici\xF3n inicial"
+    description: Ir a posicion inicial
     target: home
-  - action: open_gripper
-    description: Abrir gripper
   - action: move_joints
     description: Acercarse al objeto
     target: pick_approach
@@ -140,8 +138,6 @@ sequences:
   - action: move_cartesian
     description: "Posici\xF3n inicial"
     target: home
-  - action: open_gripper
-    description: Abrir gripper
   - action: move_cartesian
     approach_height: true
     description: Acercarse al objeto 1
