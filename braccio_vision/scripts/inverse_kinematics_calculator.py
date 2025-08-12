@@ -14,6 +14,10 @@ import time
 THETA_EXT = 0.27  # Ángulo mínimo del shoulder (radianes)
 THETA_RET = np.pi/4  # Ángulo máximo del shoulder (radianes)
 
+# Límites del joint base (de braccio_description.urdf.xacro)
+JOINT_BASE_LOWER_LIMIT = 0.0    # 0°
+JOINT_BASE_UPPER_LIMIT = np.pi  # 180°
+
 def cart2pol(x, y):
     """Convierte coordenadas cartesianas a polares"""
     rho = np.sqrt(x**2 + y**2)
@@ -69,11 +73,40 @@ class InverseKinematicsCalculator(Node):
     def calculate_ik_xy(self, x, y):
         """
         Calcula la cinemática inversa analítica para posición (x, y)
+        Incluye lógica de configuración simétrica para ampliar workspace
         Retorna [phi, theta_shoulder, theta_elbow, theta_wrist, theta_gripper]
         """
         try:
             # Convertir a coordenadas polares
             rho, phi = cart2pol(x, y)
+            
+            # NUEVA LÓGICA: Verificar si phi está dentro de los límites del joint_base
+            phi_original = phi
+            configuration_type = "ORIGINAL"
+            
+            if phi < JOINT_BASE_LOWER_LIMIT or phi > JOINT_BASE_UPPER_LIMIT:
+                # Calcular configuración simétrica corregida
+                # Para ángulos negativos: usar π + |phi| = π - phi (ya que phi es negativo)
+                # Para ángulos > π: usar phi - π (reflejar al otro lado)
+                if phi < 0:
+                    phi_symmetric = np.pi + phi  # Equivale a π - |phi| cuando phi es negativo
+                else:
+                    phi_symmetric = phi - np.pi  # Para ángulos > π
+                
+                # Normalizar a rango [0, 2π] si es necesario
+                while phi_symmetric < 0:
+                    phi_symmetric += 2 * np.pi
+                while phi_symmetric > 2 * np.pi:
+                    phi_symmetric -= 2 * np.pi
+                
+                # Verificar si la configuración simétrica está dentro de límites
+                if JOINT_BASE_LOWER_LIMIT <= phi_symmetric <= JOINT_BASE_UPPER_LIMIT:
+                    phi = phi_symmetric
+                    configuration_type = "SIMÉTRICA"
+                    self.get_logger().info(f'🔄 Configuración simétrica: φ {math.degrees(phi_original):.1f}° → {math.degrees(phi):.1f}°')
+                else:
+                    self.get_logger().error(f'❌ Ninguna configuración válida: φ_orig={math.degrees(phi_original):.1f}°, φ_sim={math.degrees(phi_symmetric):.1f}°')
+                    return None
             
             # Calcular ángulo del shoulder
             cos_theta = (rho - self.l) / self.L
@@ -87,12 +120,28 @@ class InverseKinematicsCalculator(Node):
             
             # Calcular otros ángulos basados en shoulder
             theta_wrist, theta_elbow = get_other_angles(theta_shoulder)
-            theta_gripper = np.pi/2  # Gripper vertical
+            
+            # Gripper vertical (valor por defecto)
+            theta_gripper = np.pi/2
+            
+            # IMPORTANTE: Para configuración simétrica, solo invertir base y shoulder
+            if configuration_type == "SIMÉTRICA":
+                self.get_logger().info(f'🔄 Configuración simétrica: invirtiendo SOLO base y shoulder...')
+                theta_shoulder_original = theta_shoulder
+                theta_shoulder = np.pi - theta_shoulder
+                # Elbow, wrist y gripper se mantienen IGUALES
+                
+                self.get_logger().info(f'🔄 Configuración simétrica aplicada:')
+                self.get_logger().info(f'   Base: {math.degrees(phi_original):.1f}° → {math.degrees(phi):.1f}°')
+                self.get_logger().info(f'   Shoulder: {math.degrees(theta_shoulder_original):.1f}° → {math.degrees(theta_shoulder):.1f}°')
+                self.get_logger().info(f'   Elbow: SIN CAMBIOS ({math.degrees(theta_elbow):.1f}°)')
+                self.get_logger().info(f'   Wrist: SIN CAMBIOS ({math.degrees(theta_wrist):.1f}°)')
+                self.get_logger().info(f'   Gripper: SIN CAMBIOS ({math.degrees(theta_gripper):.1f}°)')
             
             # Retornar ángulos en el orden correcto para el Braccio
             angles = [phi, theta_shoulder, theta_elbow, theta_wrist, theta_gripper]
             
-            self.get_logger().info(f'✅ IK calculado para ({x:.3f}, {y:.3f})')
+            self.get_logger().info(f'✅ IK calculado para ({x:.3f}, {y:.3f}) - Config: {configuration_type}')
             self.get_logger().info(f'📐 Ángulos: {[f"{math.degrees(a):.1f}°" for a in angles]}')
             
             return angles
@@ -179,42 +228,131 @@ class InverseKinematicsCalculator(Node):
             # Extraer ángulos base
             phi, theta_shoulder, theta_elbow, theta_wrist, theta_gripper = base_angles
             
-            # Ajustar ELBOW según altura Z (más efectivo que shoulder)
-            # LÓGICA AJUSTADA PARA ALTURA CORRECTA:
-            # Z más baja → elbow más BAJO (ángulo menor) para BAJAR el efector
-            # Z más alta → elbow más ALTO (ángulo mayor) para SUBIR el efector
-            z_nominal = 0.05  # Altura de referencia más baja (5cm)
+            # Verificar si estamos en configuración simétrica para ajustar la lógica de altura
+            rho, phi_check = cart2pol(x, y)
+            is_symmetric = phi_check < JOINT_BASE_LOWER_LIMIT or phi_check > JOINT_BASE_UPPER_LIMIT
             
-            # Factor de sensibilidad DINÁMICO basado en el ángulo del shoulder
-            # Shoulder más bajo (brazo más extendido) necesita corrección más agresiva
-            shoulder_deg = math.degrees(theta_shoulder)
-            if shoulder_deg < 20.0:  # Shoulder muy bajo (brazo muy extendido)
-                z_factor = 12.0      # Factor más agresivo para posiciones alejadas
-                self.get_logger().info(f'🎯 Shoulder bajo ({shoulder_deg:.1f}°) - usando z_factor agresivo: {z_factor}')
-            elif shoulder_deg < 25.0:  # Shoulder medio-bajo
-                z_factor = 10.0
-                self.get_logger().info(f'🎯 Shoulder medio-bajo ({shoulder_deg:.1f}°) - usando z_factor medio: {z_factor}')
-            else:  # Shoulder más alto (posiciones más cercanas)
-                z_factor = 8.0       # Factor estándar
-                self.get_logger().info(f'🎯 Shoulder normal ({shoulder_deg:.1f}°) - usando z_factor estándar: {z_factor}')
+            if is_symmetric:
+                # Para configuración simétrica, usar altura Z para calcular ajuste dinámico
+                self.get_logger().info(f'🔧 Configuración simétrica detectada - ajuste dinámico basado en Z={z:.3f}m')
+                
+                # Altura de referencia para posición base en configuración simétrica
+                z_reference_symmetric = 0.08  # Altura de referencia aún más alta para simétrica
+                
+                # Factor de ajuste dinámico basado en la altura solicitada
+                # Z más baja requiere MUCHA más reducción del elbow para bajar el efector
+                z_diff = z - z_reference_symmetric
+                base_reduction = 1.0  # Reducción base MUCHO mayor (unos 57°)
+                height_factor = -25.0  # Factor multiplicador MÁS AGRESIVO para diferencias de altura
+                
+                elbow_reduction = base_reduction + (z_diff * height_factor)
+                
+                # Limitar la reducción a rangos seguros pero permitir MÁS reducción
+                elbow_reduction = max(0.3, min(2.0, elbow_reduction))
+                
+                # NUEVO: También ajustar el SHOULDER para bajar más
+                # Para alturas muy bajas, aumentar el shoulder para que el brazo baje más
+                shoulder_adjustment = 0.0
+                if z < 0.06:  # Umbral más alto para activar ajuste (< 6cm)
+                    shoulder_adjustment = (0.06 - z) * 20.0  # Factor MUCHO MÁS AGRESIVO para bajar
+                    shoulder_adjustment = min(shoulder_adjustment, 1.2)  # Limitar a ~69° (mucho más que antes)
+                    self.get_logger().info(f'🔧 Altura baja ({z:.3f}m) - aumentando shoulder AGRESIVAMENTE en {math.degrees(shoulder_adjustment):.1f}°')
+                
+                theta_shoulder_adjusted = theta_shoulder + shoulder_adjustment
+                # Limitar shoulder a rango válido
+                theta_shoulder_adjusted = max(0.1, min(np.pi - 0.1, theta_shoulder_adjusted))
+                
+                # NUEVO ENFOQUE: En lugar de reducir elbow drasticamente, 
+                # hacer que elbow tenga orientación similar al shoulder para bajar correctamente
+                # Para configuración simétrica y alturas bajas, elbow debe seguir al shoulder
+                if z < 0.06:  # Para alturas bajas
+                    # Hacer que elbow tenga orientación similar al shoulder ajustado
+                    # Factor de alineación: 0.0 = elbow independiente, 1.0 = elbow = shoulder
+                    alignment_factor = min(0.8, (0.06 - z) * 12.0)  # Factor más suave para menos rigidez
+                    
+                    # Calcular elbow alineado con shoulder
+                    theta_elbow_aligned = theta_shoulder_adjusted * alignment_factor + theta_elbow * (1.0 - alignment_factor)
+                    theta_elbow_adjusted = theta_elbow_aligned
+                    
+                    self.get_logger().info(f'🔧 Alineando elbow con shoulder: factor={alignment_factor:.2f}')
+                    self.get_logger().info(f'🔧 Elbow alineado: {math.degrees(theta_elbow):.1f}° → {math.degrees(theta_elbow_adjusted):.1f}° (similar a shoulder {math.degrees(theta_shoulder_adjusted):.1f}°)')
+                else:
+                    # Para alturas normales, usar la reducción original pero más moderada
+                    elbow_reduction_moderate = elbow_reduction * 0.3  # Reducir menos agresivamente
+                    theta_elbow_adjusted = theta_elbow - elbow_reduction_moderate
+                    self.get_logger().info(f'🔧 Reducción moderada de elbow: {math.degrees(elbow_reduction_moderate):.1f}°')
+                
+                # Limitar elbow a rango válido
+                theta_elbow_adjusted = max(0.1, min(np.pi - 0.1, theta_elbow_adjusted))
+                
+                # Ajustar wrist para compensar AMBOS cambios (shoulder y elbow alineado)
+                if z < 0.06:
+                    # Para alturas bajas con elbow alineado, wrist debe compensar la nueva configuración
+                    # Y además bajar extra para que el gripper pueda agarrar el objeto
+                    wrist_compensation = (theta_shoulder_adjusted - theta_shoulder) * 0.2 + (theta_elbow_adjusted - theta_elbow) * 0.3
+                    extra_wrist_down = 0.5  # Radianes extra (~29°) para bajar MÁS el gripper
+                    theta_wrist_adjusted = theta_wrist + wrist_compensation + extra_wrist_down
+                    
+                    self.get_logger().info(f'🔧 Wrist bajado extra {math.degrees(extra_wrist_down):.1f}° para mejor agarre')
+                else:
+                    # Para alturas normales, compensación estándar
+                    theta_wrist_adjusted = theta_wrist + elbow_reduction * 0.5 - shoulder_adjustment * 0.3
+                
+                z_adjustment = -(theta_elbow_adjusted - theta_elbow)  # Ajuste basado en cambio real de elbow
+                
+                self.get_logger().info(f'🔧 Z={z:.3f}m, ref={z_reference_symmetric:.3f}m, diff={z_diff:.3f}m')
+                self.get_logger().info(f'🔧 Shoulder: {math.degrees(theta_shoulder):.1f}° → {math.degrees(theta_shoulder_adjusted):.1f}° (ajuste: {math.degrees(shoulder_adjustment):.1f}°)')
+                self.get_logger().info(f'🔧 Elbow reducido en {math.degrees(elbow_reduction):.1f}° (base={math.degrees(base_reduction):.1f}° + altura)')
+                self.get_logger().info(f'🔧 Elbow: {math.degrees(theta_elbow):.1f}° → {math.degrees(theta_elbow_adjusted):.1f}°')
+                
+                # Usar los ángulos ajustados en lugar de los originales
+                phi_final = phi
+                theta_shoulder_final = theta_shoulder_adjusted
+                theta_elbow_final = theta_elbow_adjusted
+                theta_wrist_final = theta_wrist_adjusted
+                theta_gripper_final = theta_gripper
+            else:
+                # Para configuración normal, usar ajustes estándar
+                z_nominal = 0.05  # Altura de referencia estándar
+                # Factor de sensibilidad DINÁMICO basado en el ángulo del shoulder
+                shoulder_deg = math.degrees(theta_shoulder)
+                if shoulder_deg < 20.0:  # Shoulder muy bajo (brazo muy extendido)
+                    z_factor = 12.0      # Factor más agresivo para posiciones alejadas
+                    self.get_logger().info(f'🎯 Shoulder bajo ({shoulder_deg:.1f}°) - usando z_factor agresivo: {z_factor}')
+                elif shoulder_deg < 25.0:  # Shoulder medio-bajo
+                    z_factor = 10.0
+                    self.get_logger().info(f'🎯 Shoulder medio-bajo ({shoulder_deg:.1f}°) - usando z_factor medio: {z_factor}')
+                else:  # Shoulder más alto (posiciones más cercanas)
+                    z_factor = 8.0       # Factor estándar
+                    self.get_logger().info(f'🎯 Shoulder normal ({shoulder_deg:.1f}°) - usando z_factor estándar: {z_factor}')
+                
+                # Calcular ajuste: Z menor debe dar elbow menor para bajar efector
+                z_adjustment = (z - z_nominal) * z_factor
+                theta_elbow_adjusted = theta_elbow + z_adjustment
+                
+                # Limitar elbow a rango válido (0.1 a π-0.1)
+                theta_elbow_adjusted = max(0.1, min(np.pi - 0.1, theta_elbow_adjusted))
+                
+                # Recalcular wrist para mantener orientación (compensar cambio en elbow)
+                theta_wrist_adjusted = theta_shoulder + np.pi/2 + (theta_elbow_adjusted - theta_elbow) * 0.5
+                
+                # Para configuración normal, no ajustar shoulder
+                phi_final = phi
+                theta_shoulder_final = theta_shoulder
+                theta_elbow_final = theta_elbow_adjusted
+                theta_wrist_final = theta_wrist_adjusted
+                theta_gripper_final = theta_gripper
             
-            # Calcular ajuste: Z menor debe dar elbow menor para bajar efector
-            z_adjustment = (z - z_nominal) * z_factor
-            theta_elbow_adjusted = theta_elbow + z_adjustment
+            # Retornar ángulos ajustados usando las variables finales
+            adjusted_angles = [phi_final, theta_shoulder_final, theta_elbow_final, theta_wrist_final, theta_gripper_final]
             
-            # Limitar elbow a rango válido (0.1 a π-0.1)
-            theta_elbow_adjusted = max(0.1, min(np.pi - 0.1, theta_elbow_adjusted))
-            
-            # Recalcular wrist para mantener orientación (compensar cambio en elbow)
-            theta_wrist_adjusted = theta_shoulder + np.pi/2 + (theta_elbow_adjusted - theta_elbow) * 0.5
-            
-            # Retornar ángulos ajustados
-            adjusted_angles = [phi, theta_shoulder, theta_elbow_adjusted, theta_wrist_adjusted, theta_gripper]
-            
-            self.get_logger().info(f'✅ IK 3D calculado para ({x:.3f}, {y:.3f}, {z:.3f})')
-            self.get_logger().info(f'📐 Ajuste Z: {z_adjustment:.4f} rad ({math.degrees(z_adjustment):.1f}°) en ELBOW')
-            self.get_logger().info(f'📐 Elbow: {math.degrees(theta_elbow):.1f}° → {math.degrees(theta_elbow_adjusted):.1f}°')
-            self.get_logger().info(f'📐 Ángulos: {[f"{math.degrees(a):.1f}°" for a in adjusted_angles]}')
+            config_type = "SIMÉTRICA" if is_symmetric else "ORIGINAL"
+            self.get_logger().info(f'✅ IK 3D calculado para ({x:.3f}, {y:.3f}, {z:.3f}) - Config: {config_type}')
+            if is_symmetric:
+                self.get_logger().info(f'📐 Ajuste Z: {z_adjustment:.4f} rad ({math.degrees(z_adjustment):.1f}°) en ELBOW')
+            else:
+                self.get_logger().info(f'📐 Ajuste Z: {z_adjustment:.4f} rad ({math.degrees(z_adjustment):.1f}°) en ELBOW')
+            self.get_logger().info(f'📐 Ángulos finales: {[f"{math.degrees(a):.1f}°" for a in adjusted_angles]}')
             
             return adjusted_angles
             

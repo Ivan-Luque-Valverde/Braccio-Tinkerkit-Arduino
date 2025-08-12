@@ -104,7 +104,12 @@ class VisionBasedPickAndPlace(Node):
             # Generar nombre de modelo basado en posición
             model_name = self.determine_model_name(pixel_x, pixel_y)
             
-            # Verificar si el objeto ya fue procesado
+            # Si no se pudo determinar un modelo válido (ya procesado), ignorar
+            if model_name is None:
+                self.get_logger().info(f'🚫 No se pudo mapear cubo en ({pixel_x}, {pixel_y}) - posiblemente ya procesado')
+                return
+            
+            # Verificar si el objeto ya fue procesado (doble verificación)
             if model_name in self.processed_objects:
                 self.get_logger().info(f'🚫 Cubo {model_name} ya procesado anteriormente, ignorando...')
                 return
@@ -114,21 +119,38 @@ class VisionBasedPickAndPlace(Node):
             self.get_logger().info(f'📋 Total de cubos en lista: {len(self.detected_objects)}')
 
     def determine_model_name(self, pixel_x, pixel_y):
-        """Determinar qué modelo corresponde basado en la posición detectada"""
-        # Transformar a coordenadas del mundo
+        """
+        Determina el nombre del modelo real más cercano a las coordenadas detectadas.
+        Mapea coordenadas detectadas a los nombres reales de los objetos en Gazebo.
+        """
+        # Convertir coordenadas de píxeles a coordenadas del mundo
         world_x, world_y = self.transform_pixels_to_world(pixel_x, pixel_y)
         
-        # Posiciones conocidas de los cubos (de object_spawner.py) - ACTUALIZADAS
-        # green_cube1: x=0.35, y=0.05  (POSICIÓN CORREGIDA)
-        # green_cube2: x=0.28, y=0.18  (POSICIÓN SEGURA)
+        # Lista de objetos reales con sus posiciones (basada en object_spawner.py)
+        real_objects = [
+            {"name": "green_cube1", "x": 0.35, "y": 0.05, "z": 0.025},
+            {"name": "green_cube2", "x": 0.28, "y": 0.18, "z": 0.025}, 
+            {"name": "green_cube3", "x": 0.28, "y": -0.15, "z": 0.025},
+        ]
         
-        distance_to_cube1 = math.sqrt((world_x - 0.35)**2 + (world_y - 0.05)**2)
-        distance_to_cube2 = math.sqrt((world_x - 0.28)**2 + (world_y - 0.18)**2)
+        # Encontrar el objeto más cercano
+        min_distance = float('inf')
+        closest_object = None
         
-        if distance_to_cube1 < distance_to_cube2:
-            return "green_cube1"
-        else:
-            return "green_cube2"
+        for obj in real_objects:
+            # Calcular distancia euclidiana en 2D (X, Y)
+            distance = math.sqrt((world_x - obj["x"])**2 + (world_y - obj["y"])**2)
+            if distance < min_distance:
+                min_distance = distance
+                closest_object = obj["name"]
+        
+        # Verificar que el objeto no esté ya procesado
+        if closest_object in self.processed_objects:
+            self.get_logger().warn(f'⚠️ Objeto más cercano {closest_object} ya fue procesado')
+            return None
+        
+        self.get_logger().info(f'🎯 Coordenadas detectadas ({world_x:.3f}, {world_y:.3f}) → Objeto real: {closest_object} (distancia: {min_distance:.3f}m)')
+        return closest_object
 
     def check_for_objects(self):
         """Procesar el primer objeto de la lista si no estamos ocupados"""
@@ -147,41 +169,12 @@ class VisionBasedPickAndPlace(Node):
             object_x, object_y = self.transform_pixels_to_world(pixel_x, pixel_y)
             object_z = 0.025  # Altura real de los cubos spawneados
             
-            # POSIBLE CORRECCIÓN: Verificar si necesitamos transformar coordenadas para el brazo
-            # El sistema de coordenadas del brazo puede ser diferente al de Gazebo
-            # Nota: Esto es experimental, basado en la observación de que el brazo no llega a la posición correcta
-            
-            # Opción 1: Probar rotación 180° en el plano XY si el brazo va al lado opuesto
-            # object_x_corrected = -object_x
-            # object_y_corrected = -object_y
-            
-            # Opción 2: Probar intercambio de X e Y si hay rotación de 90°
-            # object_x_corrected = object_y
-            # object_y_corrected = object_x
-            
             # Por ahora, usamos las coordenadas originales para el diagnóstico
             object_x_corrected = object_x
             object_y_corrected = object_y
             
             self.get_logger().info(f'📍 Objeto {model_name} localizado en: ({object_x:.3f}, {object_y:.3f}, {object_z:.3f})')
             self.get_logger().info(f'🔧 Coordenadas para IK: ({object_x_corrected:.3f}, {object_y_corrected:.3f}, {object_z:.3f})')
-            
-            # DIAGNÓSTICO: Comparar con posición esperada del spawner - POSICIONES ACTUALIZADAS
-            expected_positions = {
-                "green_cube1": (0.35, 0.05),  # POSICIÓN CORREGIDA
-                "green_cube2": (0.28, 0.18)   # POSICIÓN SEGURA
-            }
-            if model_name in expected_positions:
-                exp_x, exp_y = expected_positions[model_name]
-                error_x = abs(object_x - exp_x)
-                error_y = abs(object_y - exp_y)
-                self.get_logger().info(f'🎯 {model_name} - Esperado del spawner: ({exp_x}, {exp_y}), Detectado: ({object_x:.3f}, {object_y:.3f})')
-                self.get_logger().info(f'📏 Error en X: {error_x:.3f}m, Error en Y: {error_y:.3f}m')
-                
-                if error_x > 0.05 or error_y > 0.05:  # Error mayor a 5cm
-                    self.get_logger().warn(f'⚠️  {model_name}: Error de posición significativo detectado! Posible problema de calibración.')
-                else:
-                    self.get_logger().info(f'✅ {model_name}: Posición detectada dentro del rango esperado')
             
             # 2. Calcular cinemática inversa
             if not self.run_ik_calculation(object_x_corrected, object_y_corrected, object_z):

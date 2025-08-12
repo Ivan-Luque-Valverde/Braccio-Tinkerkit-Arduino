@@ -86,9 +86,9 @@ class ObjectSpawner(Node):
              {"name": "corner3", "x": 0.35, "y": 0.25,  "z": 0.025, "color": (1, 0, 0)},   # rojo
              {"name": "corner4", "x": -0.35, "y": 0.25,  "z": 0.025, "color": (1, 0, 0)},   # rojo
             # Cubos verdes dentro del workspace
-            {"name": "green_cube1", "x": 0.35, "y": 0.05, "z": 0.025, "color": (0, 1, 0)},   # verde - POSICIÓN CORREGIDA
-            # SOLUCION: Posición en lado derecho (Y positiva) dentro del rango válido
-            {"name": "green_cube2", "x": 0.28, "y": 0.18, "z": 0.025, "color": (0, 1, 0)},   # verde - SEGURA
+             {"name": "green_cube1", "x": 0.35, "y": 0.05, "z": 0.025, "color": (0, 1, 0)},   # verde - POSICIÓN CORREGIDA
+             {"name": "green_cube2", "x": 0.28, "y": 0.18, "z": 0.025, "color": (0, 1, 0)},   # verde - SEGURA
+             {"name": "green_cube3", "x": 0.28, "y": -0.15, "z": 0.025, "color": (0, 1, 0)},   # verde - POSICIÓN CORREGIDA
         ]
 
         successful_spawns = 0

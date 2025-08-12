@@ -131,7 +131,7 @@ class ConfigurablePickAndPlace(Node):
         time.sleep(duration + 0.5)
         return True
 
-    def call_attach(self, model2_name="green_cube", link2_name="link"):
+    def call_attach(self, model2_name, link2_name="link"):
         req = AttachLink.Request()
         req.model1_name = "braccio"
         req.link1_name = "right_gripper_link"
@@ -142,10 +142,16 @@ class ConfigurablePickAndPlace(Node):
             return False
         future = self.attach_client.call_async(req)
         rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
-        self.get_logger().info(f'📎 ATTACHLINK ejecutado para modelo: {model2_name}')
+        if future.result() and hasattr(future.result(), 'success'):
+            if future.result().success:
+                self.get_logger().info(f'✅ ATTACHLINK exitoso para modelo: {model2_name}')
+            else:
+                self.get_logger().warn(f'⚠️ ATTACHLINK falló para modelo: {model2_name} - {future.result().message}')
+        else:
+            self.get_logger().info(f'📎 ATTACHLINK ejecutado para modelo: {model2_name}')
         return True
 
-    def call_detach(self, model2_name="green_cube", link2_name="link"):
+    def call_detach(self, model2_name, link2_name="link"):
         req = DetachLink.Request()
         req.model1_name = "braccio"
         req.link1_name = "right_gripper_link"
@@ -156,11 +162,22 @@ class ConfigurablePickAndPlace(Node):
             return False
         future = self.detach_client.call_async(req)
         rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
-        self.get_logger().info(f'🔗 DETACHLINK ejecutado para modelo: {model2_name}')
+        if future.result() and hasattr(future.result(), 'success'):
+            if future.result().success:
+                self.get_logger().info(f'✅ DETACHLINK exitoso para modelo: {model2_name}')
+            else:
+                self.get_logger().warn(f'⚠️ DETACHLINK falló para modelo: {model2_name} - {future.result().message}')
+        else:
+            self.get_logger().info(f'🔗 DETACHLINK ejecutado para modelo: {model2_name}')
         return True
 
-    def control_gripper(self, open_gripper=True, model2_name="green_cube", link2_name="link"):
+    def control_gripper(self, open_gripper=True, model2_name=None, link2_name="link"):
         """Controla el gripper y llama a attach/detach si corresponde"""
+        # Si no se especifica model2_name, usar un valor por defecto
+        if model2_name is None:
+            model2_name = "green_cube"
+            self.get_logger().warn(f'⚠️ No se especificó model2_name, usando por defecto: {model2_name}')
+        
         gripper_config = self.config['gripper']
         if open_gripper:
             position = gripper_config['open_position']  # 0.0
@@ -183,7 +200,7 @@ class ConfigurablePickAndPlace(Node):
             self.call_attach(model2_name, link2_name)
             return True
 
-    def execute_action(self, action, target_model="green_cube"):
+    def execute_action(self, action, target_model=None):
         """Ejecuta una acción individual"""
         action_type = action['action']
         description = action.get('description', '')
@@ -210,7 +227,7 @@ class ConfigurablePickAndPlace(Node):
             self.get_logger().error(f'Acción desconocida: {action_type}')
             return False
 
-    def execute_sequence(self, sequence_name, target_model="green_cube"):
+    def execute_sequence(self, sequence_name, target_model=None):
         """Ejecuta una secuencia completa"""
         if sequence_name not in self.config.get('sequences', {}):
             self.get_logger().error(f'Secuencia {sequence_name} no encontrada')
