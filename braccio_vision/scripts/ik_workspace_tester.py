@@ -32,12 +32,12 @@ class IKWorkspaceTester(Node):
 def main():
     rclpy.init()
     node = IKWorkspaceTester()
-    print('\n=== TESTER DE WORKSPACE DE PICK DIRECTO (SIN EMPUJE) ===')
+    print('\n=== TESTER DE WORKSPACE DE PICK DIRECTO ===')
     print('x (m)\ty (m)\tResultado\t\tÁngulos (grados)')
     
     # Rango ampliado: X desde 0.20 hasta 0.35m, Y desde -0.15 hasta 0.15m
-    x_vals = [round(x, 3) for x in list(frange(0.20, 0.36, 0.01))]
-    y_vals = [round(y, 3) for y in list(frange(-0.15, 0.16, 0.01))]
+    x_vals = [round(x, 3) for x in list(frange(0.20, 0.41, 0.01))]
+    y_vals = [round(y, 3) for y in list(frange(-0.15, 0.36, 0.01))]
     
     pick_directo_count = 0
     total_count = 0

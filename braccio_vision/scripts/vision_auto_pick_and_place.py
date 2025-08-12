@@ -3,7 +3,6 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import PointStamped
-import subprocess
 import time
 import math
 import numpy as np
@@ -12,12 +11,16 @@ import json
 import os
 import sys
 
+# Importar directamente la clase ConfigurablePickAndPlace
+sys.path.append('/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts')
+from pick_and_place_configurable import ConfigurablePickAndPlace
+
 class VisionBasedPickAndPlace(Node):
     def __init__(self):
         super().__init__('vision_based_pick_and_place')
         
-        # NO crear publishers para evitar conflictos
-        # Los comandos se enviarán via subprocess
+        # Crear instancia del nodo de pick and place
+        self.pick_and_place_node = ConfigurablePickAndPlace()
         
         # Subscriber para detección de objetos
         self.object_subscriber = self.create_subscription(
@@ -28,21 +31,21 @@ class VisionBasedPickAndPlace(Node):
         )
         
         # Configuración
-        self.object_detected = False
-        self.pixel_x = 0
-        self.pixel_y = 0
+        self.detected_objects = []  # Lista de objetos detectados con nombres (pixel_x, pixel_y, model_name)
+        self.processed_objects = set()  # Set de objetos ya procesados (model_name)
+        self.processing = False
         
         # Cargar homografía para transformación píxel -> mundo
         self.load_homography()
         
-        # Estado del sistema
-        self.processing = False
-        
         self.get_logger().info('🤖 Vision-Based Pick and Place iniciado')
-        self.get_logger().info('👁️  Esperando detección de cubo verde...')
+        self.get_logger().info('👁️  Esperando detección de cubos verdes...')
         
         # Timer para verificar detecciones periódicamente
         self.timer = self.create_timer(1.0, self.check_for_objects)
+        
+        # Timer para mostrar estadísticas cada 10 segundos
+        self.stats_timer = self.create_timer(10.0, self.show_statistics)
 
     def load_homography(self):
         """Cargar matriz de homografía para transformación píxel -> mundo"""
@@ -82,116 +85,216 @@ class VisionBasedPickAndPlace(Node):
         return x, y
 
     def object_detected_callback(self, msg):
-        """Callback cuando se detecta un objeto"""
-        if not self.processing:
-            self.pixel_x = int(msg.point.x)
-            self.pixel_y = int(msg.point.y)
-            self.object_detected = True
+        """Añadir nueva detección a la lista si no está ya presente"""
+        pixel_x = int(msg.point.x)
+        pixel_y = int(msg.point.y)
+        
+        # Verificar si el objeto ya está en la lista (evitar duplicados)
+        # Usando un umbral de distancia para evitar ruido de detección
+        threshold = 10  # píxeles de tolerancia
+        is_duplicate = False
+        
+        for existing_x, existing_y, _ in self.detected_objects:
+            distance = math.sqrt((pixel_x - existing_x)**2 + (pixel_y - existing_y)**2)
+            if distance < threshold:
+                is_duplicate = True
+                break
+        
+        if not is_duplicate:
+            # Generar nombre de modelo basado en posición
+            model_name = self.determine_model_name(pixel_x, pixel_y)
             
-            self.get_logger().info(f'👁️  Cubo verde detectado en píxeles: ({self.pixel_x}, {self.pixel_y})')
+            # Verificar si el objeto ya fue procesado
+            if model_name in self.processed_objects:
+                self.get_logger().info(f'🚫 Cubo {model_name} ya procesado anteriormente, ignorando...')
+                return
+            
+            self.detected_objects.append((pixel_x, pixel_y, model_name))
+            self.get_logger().info(f'👁️  Nuevo cubo verde detectado: {model_name} en píxeles ({pixel_x}, {pixel_y})')
+            self.get_logger().info(f'📋 Total de cubos en lista: {len(self.detected_objects)}')
+
+    def determine_model_name(self, pixel_x, pixel_y):
+        """Determinar qué modelo corresponde basado en la posición detectada"""
+        # Transformar a coordenadas del mundo
+        world_x, world_y = self.transform_pixels_to_world(pixel_x, pixel_y)
+        
+        # Posiciones conocidas de los cubos (de object_spawner.py) - ACTUALIZADAS
+        # green_cube1: x=0.35, y=0.05  (POSICIÓN CORREGIDA)
+        # green_cube2: x=0.28, y=0.18  (POSICIÓN SEGURA)
+        
+        distance_to_cube1 = math.sqrt((world_x - 0.35)**2 + (world_y - 0.05)**2)
+        distance_to_cube2 = math.sqrt((world_x - 0.28)**2 + (world_y - 0.18)**2)
+        
+        if distance_to_cube1 < distance_to_cube2:
+            return "green_cube1"
+        else:
+            return "green_cube2"
 
     def check_for_objects(self):
-        """Verificar si hay objetos detectados y procesar"""
-        if self.object_detected and not self.processing:
-            self.process_detected_object()
+        """Procesar el primer objeto de la lista si no estamos ocupados"""
+        if self.detected_objects and not self.processing:
+            pixel_x, pixel_y, model_name = self.detected_objects[0]  # Tomar el primer objeto de la lista
+            self.get_logger().info(f'🎯 Procesando cubo {model_name} en posición: ({pixel_x}, {pixel_y})')
+            self.get_logger().info(f'📋 Quedan {len(self.detected_objects)-1} cubos en cola')
+            self.process_detected_object(pixel_x, pixel_y, model_name)
 
-    def process_detected_object(self):
+    def process_detected_object(self, pixel_x, pixel_y, model_name):
         """Procesar el objeto detectado y ejecutar pick and place"""
         self.processing = True
-        self.object_detected = False
         try:
-            self.get_logger().info('🔄 Procesando objeto detectado...')
+            self.get_logger().info(f'🔄 Procesando objeto {model_name}...')
             # 1. Transformar píxeles a coordenadas del mundo
-            object_x, object_y = self.transform_pixels_to_world(self.pixel_x, self.pixel_y)
-            object_z = 0.025  # Altura ajustada para cubos pequeños
-            self.get_logger().info(f'📍 Objeto localizado en: ({object_x:.3f}, {object_y:.3f}, {object_z:.3f})')
+            object_x, object_y = self.transform_pixels_to_world(pixel_x, pixel_y)
+            object_z = 0.025  # Altura real de los cubos spawneados
+            
+            # POSIBLE CORRECCIÓN: Verificar si necesitamos transformar coordenadas para el brazo
+            # El sistema de coordenadas del brazo puede ser diferente al de Gazebo
+            # Nota: Esto es experimental, basado en la observación de que el brazo no llega a la posición correcta
+            
+            # Opción 1: Probar rotación 180° en el plano XY si el brazo va al lado opuesto
+            # object_x_corrected = -object_x
+            # object_y_corrected = -object_y
+            
+            # Opción 2: Probar intercambio de X e Y si hay rotación de 90°
+            # object_x_corrected = object_y
+            # object_y_corrected = object_x
+            
+            # Por ahora, usamos las coordenadas originales para el diagnóstico
+            object_x_corrected = object_x
+            object_y_corrected = object_y
+            
+            self.get_logger().info(f'📍 Objeto {model_name} localizado en: ({object_x:.3f}, {object_y:.3f}, {object_z:.3f})')
+            self.get_logger().info(f'🔧 Coordenadas para IK: ({object_x_corrected:.3f}, {object_y_corrected:.3f}, {object_z:.3f})')
+            
+            # DIAGNÓSTICO: Comparar con posición esperada del spawner - POSICIONES ACTUALIZADAS
+            expected_positions = {
+                "green_cube1": (0.35, 0.05),  # POSICIÓN CORREGIDA
+                "green_cube2": (0.28, 0.18)   # POSICIÓN SEGURA
+            }
+            if model_name in expected_positions:
+                exp_x, exp_y = expected_positions[model_name]
+                error_x = abs(object_x - exp_x)
+                error_y = abs(object_y - exp_y)
+                self.get_logger().info(f'🎯 {model_name} - Esperado del spawner: ({exp_x}, {exp_y}), Detectado: ({object_x:.3f}, {object_y:.3f})')
+                self.get_logger().info(f'📏 Error en X: {error_x:.3f}m, Error en Y: {error_y:.3f}m')
+                
+                if error_x > 0.05 or error_y > 0.05:  # Error mayor a 5cm
+                    self.get_logger().warn(f'⚠️  {model_name}: Error de posición significativo detectado! Posible problema de calibración.')
+                else:
+                    self.get_logger().info(f'✅ {model_name}: Posición detectada dentro del rango esperado')
+            
             # 2. Calcular cinemática inversa
-            if not self.run_ik_calculation(object_x, object_y, object_z):
-                self.get_logger().error('❌ Error en el cálculo de cinemática inversa. Pick and place cancelado.')
-                print("❌ Error: El objeto está fuera de alcance o la cinemática ha fallado. Pick and place cancelado.")
+            if not self.run_ik_calculation(object_x_corrected, object_y_corrected, object_z):
+                self.get_logger().error(f'❌ Error en el cálculo de cinemática inversa para {model_name}. Pick and place cancelado.')
+                print(f"❌ Error: {model_name} está fuera de alcance o la cinemática ha fallado. Pick and place cancelado.")
+                # Eliminar el objeto de la lista aunque falle (objeto inaccesible)
+                if self.detected_objects:
+                    self.detected_objects.pop(0)
+                    self.get_logger().info(f'🗑️  {model_name} eliminado de la lista (fuera de alcance)')
                 return
-            # 3. Ejecutar pick and place
-            self.get_logger().info('🤖 Iniciando secuencia pick and place...')
-            if self.execute_normal_pick_and_place():
-                self.get_logger().info('🎉 ¡PICK AND PLACE COMPLETADO EXITOSAMENTE!')
+            
+            # 3. Ejecutar pick and place usando el nodo configurado
+            self.get_logger().info(f'🤖 Iniciando secuencia pick and place para {model_name}...')
+            if self.pick_and_place_node.execute_pick_and_place_for_target(model_name):
+                self.get_logger().info(f'🎉 ¡PICK AND PLACE COMPLETADO EXITOSAMENTE PARA {model_name}!')
+                # Marcar el objeto como procesado
+                self.processed_objects.add(model_name)
+                # Eliminar el objeto de la lista tras recogerlo exitosamente
+                if self.detected_objects:
+                    self.detected_objects.pop(0)
+                    self.get_logger().info(f'✅ {model_name} recogido y marcado como procesado')
+                    self.get_logger().info(f'📝 Objetos procesados: {list(self.processed_objects)}')
             else:
-                self.get_logger().error('❌ Error en la ejecución del pick and place')
+                self.get_logger().error(f'❌ Error en la ejecución del pick and place para {model_name}')
+                # También eliminar si falla la ejecución (evitar bucle infinito)
+                if self.detected_objects:
+                    self.detected_objects.pop(0)
+                    self.get_logger().info('🗑️  Objeto eliminado de la lista (error en ejecución)')
+                    
         except Exception as e:
             self.get_logger().error(f'❌ Error procesando objeto: {e}')
+            # Eliminar objeto en caso de excepción
+            if self.detected_objects:
+                self.detected_objects.pop(0)
+                self.get_logger().info('🗑️  Objeto eliminado de la lista (excepción)')
         finally:
             self.processing = False
-            self.get_logger().info('✅ Listo para detectar nuevos objetos')
+            if self.detected_objects:
+                self.get_logger().info(f'📋 Objetos restantes en cola: {len(self.detected_objects)}')
+            else:
+                self.get_logger().info('✅ Lista de objetos vacía. Esperando nuevas detecciones...')
 
     def run_ik_calculation(self, object_x, object_y, object_z):
         """Ejecutar el calculador de cinemática inversa y detectar estrategia"""
         self.get_logger().info('🧮 Calculando cinemática inversa...')
         
-        script_path = "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/inverse_kinematics_calculator.py"
-        
         try:
-            # Cambiar al directorio del workspace
-            original_dir = os.getcwd()
-            os.chdir("/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino")
-            # Ejecutar el calculador de IK con auto-guardado
-            cmd = [
-                "bash", "-c",
-                f"source install/setup.bash && python3 {script_path} {object_x} {object_y} {object_z}"
-            ]
-            # Ejecutar y capturar la salida
-            result = subprocess.run(cmd, capture_output=True, text=True, input="y\n", timeout=30)
-            # Restaurar directorio original
-            os.chdir(original_dir)
-            output = result.stdout.lower()
-            # Detectar errores típicos de cinemática
-            if ("fuera de alcance" in output or "no se pudieron calcular las posiciones" in output or
-                "no se pudo calcular" in output or "error" in output):
-                self.get_logger().error('❌ El script de IK indica que el objeto está fuera de alcance o la cinemática ha fallado.')
-                self.get_logger().error(output)
+            # Importar directamente la clase de IK
+            sys.path.append('/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts')
+            from inverse_kinematics_calculator import InverseKinematicsCalculator
+            
+            # Crear instancia y calcular IK
+            ik_calculator = InverseKinematicsCalculator()
+            
+            # Verificar si las coordenadas están en el workspace
+            if not ik_calculator.validate_workspace(object_x, object_y, object_z):
+                self.get_logger().error('❌ Error: Objeto fuera del workspace válido')
                 return False
-            if result.returncode == 0:
-                self.get_logger().info('✅ Cinemática inversa calculada exitosamente')
+            
+            # Calcular las posiciones de pick
+            pick_positions = ik_calculator.calculate_pick_positions(object_x, object_y, object_z, approach_height=0.08)
+            
+            if pick_positions is None:
+                self.get_logger().error('❌ Error: No se pudieron calcular las posiciones de pick')
+                return False
+            
+            # DIAGNÓSTICO: Mostrar posiciones calculadas
+            self.get_logger().info(f'🧮 DIAGNÓSTICO - Posiciones IK calculadas para ({object_x:.3f}, {object_y:.3f}, {object_z:.3f}):')
+            if 'pick_approach' in pick_positions:
+                self.get_logger().info(f'   📍 Pick approach: {[round(x, 4) for x in pick_positions["pick_approach"]]}')
+            if 'pick_position' in pick_positions:
+                self.get_logger().info(f'   📍 Pick position: {[round(x, 4) for x in pick_positions["pick_position"]]}')
+            
+            # Verificar que las posiciones son diferentes para objetos diferentes
+            if hasattr(self, 'last_pick_positions'):
+                if (pick_positions.get('pick_approach') == self.last_pick_positions.get('pick_approach') and
+                    pick_positions.get('pick_position') == self.last_pick_positions.get('pick_position')):
+                    self.get_logger().warn('⚠️  ALERTA: Las posiciones IK son idénticas al objeto anterior!')
+                else:
+                    self.get_logger().info('✅ Las posiciones IK son diferentes al objeto anterior')
+            self.last_pick_positions = pick_positions.copy()
+            
+            # Guardar las posiciones en el archivo de configuración
+            config_path = '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_moveit_config/config/pick_and_place_config.yaml'
+            
+            if ik_calculator.save_positions_to_config(pick_positions, config_path):
+                self.get_logger().info('✅ Cinemática inversa calculada y configuración guardada exitosamente')
+                # CRÍTICO: Tiempo adicional para asegurar escritura completa y estabilización
+                self.get_logger().info('⏳ Esperando estabilización del archivo de configuración...')
+                time.sleep(1.0)  # Tiempo aumentado para evitar problemas de sincronización
                 return True
             else:
-                self.get_logger().error('❌ Error en cálculo de cinemática inversa:')
-                self.get_logger().error(result.stderr)
+                self.get_logger().error('❌ Error: No se pudo guardar la configuración')
                 return False
-        except subprocess.TimeoutExpired:
-            self.get_logger().error('⏰ Timeout en cálculo de cinemática inversa')
-            return False
+                
         except Exception as e:
             self.get_logger().error(f'❌ Error ejecutando calculador de IK: {e}')
             return False
 
-    def execute_normal_pick_and_place(self):
-        """Ejecutar pick and place normal usando el script configurable"""
-        script_path = "/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/braccio_vision/scripts/pick_and_place_configurable.py"
+    def show_statistics(self):
+        """Mostrar estadísticas del sistema cada 10 segundos"""
+        if self.processed_objects:
+            self.get_logger().info(f'📊 ESTADÍSTICAS: {len(self.processed_objects)} objetos procesados: {list(self.processed_objects)}')
+        else:
+            self.get_logger().info('📊 ESTADÍSTICAS: Ningún objeto procesado aún')
         
-        try:
-            # Cambiar al directorio del workspace
-            original_dir = os.getcwd()
-            os.chdir("/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino")
-            
-            # Ejecutar el script configurable
-            cmd = ["bash", "-c", f"source install/setup.bash && python3 {script_path}"]
-            
-            result = subprocess.run(cmd, timeout=120)  # Timeout de 2 minutos
-            
-            # Restaurar directorio original
-            os.chdir(original_dir)
-            
-            if result.returncode == 0:
-                self.get_logger().info('✅ Secuencia ejecutada exitosamente')
-                return True
-            else:
-                self.get_logger().error('❌ Error en ejecución de pick and place')
-                return False
-                
-        except subprocess.TimeoutExpired:
-            self.get_logger().error('⏰ Timeout en ejecución de pick and place')
-            return False
-        except Exception as e:
-            self.get_logger().error(f'❌ Error ejecutando pick and place: {e}')
-            return False
+        if self.detected_objects:
+            self.get_logger().info(f'📊 ESTADÍSTICAS: {len(self.detected_objects)} objetos en cola de procesamiento')
+
+    def reset_processed_objects(self):
+        """Resetear la lista de objetos procesados (útil para pruebas)"""
+        self.processed_objects.clear()
+        self.get_logger().info('🔄 Lista de objetos procesados reseteada')
 
 def main(args=None):
     rclpy.init(args=args)
@@ -201,7 +304,8 @@ def main(args=None):
         
         print("\n🤖 VISION-BASED PICK AND PLACE")
         print("="*50)
-        print("👁️  Escuchando detecciones de cubo verde...")
+        print("👁️  Escuchando detecciones de cubos verdes...")
+        print("📋 Procesará múltiples objetos en orden de detección")
         print("🎯 Destino: Configurado en pick_and_place_config.yaml")
         print("🛑 Ctrl+C para detener")
         print("="*50)

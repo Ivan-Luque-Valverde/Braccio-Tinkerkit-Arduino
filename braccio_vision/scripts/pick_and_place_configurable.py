@@ -50,13 +50,6 @@ class ConfigurablePickAndPlace(Node):
             
             self.get_logger().info(f'Configuración cargada desde: {config_path}')
             
-            # Debug: mostrar las posiciones de pick que se van a usar
-            if 'joint_positions' in self.config:
-                pick_approach = self.config['joint_positions'].get('pick_approach', 'No definido')
-                pick_position = self.config['joint_positions'].get('pick_position', 'No definido')
-                self.get_logger().info(f'🎯 Pick approach: {pick_approach}')
-                self.get_logger().info(f'🎯 Pick position: {pick_position}')
-            
         except Exception as e:
             self.get_logger().error(f'Error cargando configuración: {str(e)}')
             # Configuración por defecto
@@ -74,7 +67,7 @@ class ConfigurablePickAndPlace(Node):
             },
             'gripper': {
                 'open_position': 0.0,
-                'closed_position': 0.8,
+                'closed_position': 0.7,
                 'open_time': 1.0,
                 'close_time': 2.0
             },
@@ -126,10 +119,14 @@ class ConfigurablePickAndPlace(Node):
         if duration is None:
             duration = self.config['movement']['default_duration']
         
-        self.get_logger().info(f'Moviendo a posición: {position_name}')
+        # Crear trayectoria normal
+        traj = self.create_arm_trajectory(positions, duration)
         
-        trajectory = self.create_arm_trajectory(positions, duration)
-        self.arm_publisher.publish(trajectory)
+        # Log del movimiento
+        self.get_logger().info(f'🤖 Moviendo a: {position_name}')
+        self.get_logger().info(f'📐 Posiciones: {positions}')
+        
+        self.arm_publisher.publish(traj)
         
         time.sleep(duration + 0.5)
         return True
@@ -145,7 +142,7 @@ class ConfigurablePickAndPlace(Node):
             return False
         future = self.attach_client.call_async(req)
         rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
-        self.get_logger().info('Llamado a ATTACHLINK')
+        self.get_logger().info(f'📎 ATTACHLINK ejecutado para modelo: {model2_name}')
         return True
 
     def call_detach(self, model2_name="green_cube", link2_name="link"):
@@ -159,7 +156,7 @@ class ConfigurablePickAndPlace(Node):
             return False
         future = self.detach_client.call_async(req)
         rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
-        self.get_logger().info('Llamado a DETACHLINK')
+        self.get_logger().info(f'🔗 DETACHLINK ejecutado para modelo: {model2_name}')
         return True
 
     def control_gripper(self, open_gripper=True, model2_name="green_cube", link2_name="link"):
@@ -186,12 +183,12 @@ class ConfigurablePickAndPlace(Node):
             self.call_attach(model2_name, link2_name)
             return True
 
-    def execute_action(self, action):
+    def execute_action(self, action, target_model="green_cube"):
         """Ejecuta una acción individual"""
         action_type = action['action']
         description = action.get('description', '')
         
-        self.get_logger().info(f'Ejecutando: {description}')
+        self.get_logger().info(f'Ejecutando: {description} (objetivo: {target_model})')
         
         if action_type == 'move_joints':
             target = action['target']
@@ -199,10 +196,10 @@ class ConfigurablePickAndPlace(Node):
             return self.move_joints(target, duration)
         
         elif action_type == 'open_gripper':
-            return self.control_gripper(open_gripper=True)
+            return self.control_gripper(open_gripper=True, model2_name=target_model)
         
         elif action_type == 'close_gripper':
-            return self.control_gripper(open_gripper=False)
+            return self.control_gripper(open_gripper=False, model2_name=target_model)
         
         elif action_type == 'wait':
             wait_time = action.get('time', 1.0)
@@ -213,7 +210,7 @@ class ConfigurablePickAndPlace(Node):
             self.get_logger().error(f'Acción desconocida: {action_type}')
             return False
 
-    def execute_sequence(self, sequence_name):
+    def execute_sequence(self, sequence_name, target_model="green_cube"):
         """Ejecuta una secuencia completa"""
         if sequence_name not in self.config.get('sequences', {}):
             self.get_logger().error(f'Secuencia {sequence_name} no encontrada')
@@ -221,18 +218,18 @@ class ConfigurablePickAndPlace(Node):
         
         sequence = self.config['sequences'][sequence_name]
         
-        self.get_logger().info(f'=== EJECUTANDO SECUENCIA: {sequence_name.upper()} ===')
+        self.get_logger().info(f'=== EJECUTANDO SECUENCIA: {sequence_name.upper()} PARA {target_model} ===')
         
         for i, action in enumerate(sequence):
             self.get_logger().info(f'Paso {i+1}/{len(sequence)}')
             
-            if not self.execute_action(action):
+            if not self.execute_action(action, target_model):
                 self.get_logger().error(f'Error en paso {i+1}, abortando secuencia')
                 return False
             
             time.sleep(0.5)  # Pequeña pausa entre acciones
         
-        self.get_logger().info(f'=== SECUENCIA {sequence_name.upper()} COMPLETADA ===')
+        self.get_logger().info(f'=== SECUENCIA {sequence_name.upper()} COMPLETADA PARA {target_model} ===')
         return True
 
     def list_available_sequences(self):
@@ -250,6 +247,23 @@ class ConfigurablePickAndPlace(Node):
         for name, pos in positions.items():
             self.get_logger().info(f'  - {name}: {pos}')
         return list(positions.keys())
+
+    def execute_pick_and_place_for_target(self, target_model_name, sequence_name='basic_demo'):
+        """Método público para ejecutar pick and place para un modelo específico"""
+        self.get_logger().info(f'🎯 Iniciando pick and place para: {target_model_name}')
+        
+        # IMPORTANTE: Recargar configuración antes de ejecutar
+        self.get_logger().info('🔄 Recargando configuración actualizada...')
+        self.load_config()
+        
+        success = self.execute_sequence(sequence_name, target_model_name)
+        
+        if success:
+            self.get_logger().info(f'✅ Pick and place completado exitosamente para {target_model_name}')
+        else:
+            self.get_logger().error(f'❌ Error durante pick and place para {target_model_name}')
+        
+        return success
 
 def main(args=None):
     rclpy.init(args=args)

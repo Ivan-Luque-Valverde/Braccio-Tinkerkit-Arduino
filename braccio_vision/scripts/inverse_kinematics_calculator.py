@@ -7,6 +7,8 @@ import json
 import sys
 import numpy as np
 import yaml
+import os
+import time
 
 # Constantes del Braccio (basadas en el script original)
 THETA_EXT = 0.27  # Ángulo mínimo del shoulder (radianes)
@@ -122,7 +124,7 @@ class InverseKinematicsCalculator(Node):
                 'positions': {}
             }
 
-    def calculate_pick_positions(self, object_x, object_y, object_z, approach_height=0.05):
+    def calculate_pick_positions(self, object_x, object_y, object_z, approach_height=0.03):
         """
         Calcula las posiciones para pick (approach y position)
         Ahora REALMENTE usa la altura Z para calcular diferentes posiciones
@@ -146,17 +148,20 @@ class InverseKinematicsCalculator(Node):
             self.get_logger().error(f'❌ No se pudo calcular pick_approach para Z={approach_z:.3f}m')
             return None
         
-        # 2. Posición exacta del objeto (altura real del objeto)
-        pick_position = self.calculate_ik_xyz(object_x, object_y, object_z)
+        # 2. Posición de agarre (ligeramente por encima del objeto para evitar empujarlo)
+        pick_z_safe = object_z   
+        pick_position = self.calculate_ik_xyz(object_x, object_y, pick_z_safe)
         if pick_position:
             positions['pick_position'] = pick_position
-            self.get_logger().info(f'✅ Pick position calculado para Z={object_z:.3f}m')
+            self.get_logger().info(f'✅ Pick position calculado para Z={pick_z_safe:.3f}m (objeto en {object_z:.3f}m + 5mm de seguridad)')
         else:
-            self.get_logger().error(f'❌ No se pudo calcular pick_position para Z={object_z:.3f}m')
+            self.get_logger().error(f'❌ No se pudo calcular pick_position para Z={pick_z_safe:.3f}m')
             return None
         
         self.get_logger().info('=== CÁLCULOS DE PICK COMPLETADOS ===')
-        self.get_logger().info(f'📏 Diferencia de altura: {approach_height:.3f}m entre approach y position')
+        actual_height_diff = approach_z - pick_z_safe
+        self.get_logger().info(f'📏 Diferencia de altura: {actual_height_diff:.3f}m entre approach y position')
+        self.get_logger().info(f'📏 Approach Z: {approach_z:.3f}m | Pick Z: {pick_z_safe:.3f}m | Objeto Z: {object_z:.3f}m')
         
         return positions
 
@@ -175,14 +180,26 @@ class InverseKinematicsCalculator(Node):
             phi, theta_shoulder, theta_elbow, theta_wrist, theta_gripper = base_angles
             
             # Ajustar ELBOW según altura Z (más efectivo que shoulder)
-            # LÓGICA CORRECTA:
+            # LÓGICA AJUSTADA PARA ALTURA CORRECTA:
             # Z más baja → elbow más BAJO (ángulo menor) para BAJAR el efector
             # Z más alta → elbow más ALTO (ángulo mayor) para SUBIR el efector
-            z_nominal = 0.08  # Altura de referencia
-            z_factor = 4.0    # Factor de sensibilidad para el elbow
+            z_nominal = 0.05  # Altura de referencia más baja (5cm)
+            
+            # Factor de sensibilidad DINÁMICO basado en el ángulo del shoulder
+            # Shoulder más bajo (brazo más extendido) necesita corrección más agresiva
+            shoulder_deg = math.degrees(theta_shoulder)
+            if shoulder_deg < 20.0:  # Shoulder muy bajo (brazo muy extendido)
+                z_factor = 12.0      # Factor más agresivo para posiciones alejadas
+                self.get_logger().info(f'🎯 Shoulder bajo ({shoulder_deg:.1f}°) - usando z_factor agresivo: {z_factor}')
+            elif shoulder_deg < 25.0:  # Shoulder medio-bajo
+                z_factor = 10.0
+                self.get_logger().info(f'🎯 Shoulder medio-bajo ({shoulder_deg:.1f}°) - usando z_factor medio: {z_factor}')
+            else:  # Shoulder más alto (posiciones más cercanas)
+                z_factor = 8.0       # Factor estándar
+                self.get_logger().info(f'🎯 Shoulder normal ({shoulder_deg:.1f}°) - usando z_factor estándar: {z_factor}')
             
             # Calcular ajuste: Z menor debe dar elbow menor para bajar efector
-            z_adjustment = (z - z_nominal) * z_factor  # SIN negativo!
+            z_adjustment = (z - z_nominal) * z_factor
             theta_elbow_adjusted = theta_elbow + z_adjustment
             
             # Limitar elbow a rango válido (0.1 a π-0.1)
@@ -219,9 +236,14 @@ class InverseKinematicsCalculator(Node):
                 if name in ['pick_approach', 'pick_position'] and isinstance(pos, list):
                     config['joint_positions'][name] = [float(x) for x in pos]
             
-            # Guardar archivo actualizado
+            # Guardar archivo actualizado con flush forzado
             with open(config_file_path, 'w') as file:
                 yaml.dump(config, file, default_flow_style=False, indent=2)
+                file.flush()  # Forzar escritura inmediata
+                os.fsync(file.fileno())  # Sincronizar con disco
+            
+            # Esperar un momento adicional para asegurar escritura completa
+            time.sleep(0.5)
             
             self.get_logger().info(f'✅ Configuración actualizada en: {config_file_path}')
             return True

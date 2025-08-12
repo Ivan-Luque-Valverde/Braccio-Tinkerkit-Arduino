@@ -1,4 +1,0 @@
-Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware -- -j16 -l16
-Invoked command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware -- -j16 -l16
-Invoking command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware
-Invoked command in '/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_hardware

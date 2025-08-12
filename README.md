@@ -231,11 +231,13 @@ ros2 run braccio_vision object_detector.py
 ros2 run braccio_vision camera_viewer.py
 
 # Terminal 4: Ejecutar pick and place guiado por visión
-ros2 run braccio_vision vision_pick_and_place.py
-
-python3 braccio_moveit_config/scripts/vision_auto_pick_and_place.py
-
 ros2 launch braccio_vision vision_auto_pick_and_place.launch.py
+
+# Terminal 5: Pruebas IK
+python3 braccio_vision/scripts/ik_workspace_tester.py
+
+
+rm -rf build/braccio_vision install/braccio_vision && colcon build --packages-select braccio_vision
 
 ```
 
