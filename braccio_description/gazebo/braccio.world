@@ -14,6 +14,300 @@
       <update_rate>10.0</update_rate>
     </plugin>
     
+    <!-- Cilindro hueco como "zona" en el mundo -->
+    <!-- Hexágono hueco hecho de 6 cajas verdes -->
+    <model name="zona_hexagono">
+      <static>true</static>
+      <!-- Cada caja es una "pared" del hexágono -->
+      <!-- Parámetros -->
+      <!-- Centro: -0.25, -0.1, altura media: 0.25 -->
+      <!-- Radio del hexágono: 0.05 m, largo de cada caja: 0.05 m, ancho: 0.01 m, alto: 0.25 m -->
+      <!-- Ángulos: 0, 60, 120, 180, 240, 300 grados -->
+      <!-- Caja 1 -->
+      <link name="wall1">
+        <pose>-0.20 -0.1 0.05 0 0 1.5708</pose>
+        <visual name="wall1_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1.0</ambient>
+            <diffuse>0.0 1.0 0.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall1_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 2 -->
+      <link name="wall2">
+        <pose>-0.225 -0.057 0.05 0 0 2.61799</pose> <!-- 150 grados -->
+        <visual name="wall2_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1.0</ambient>
+            <diffuse>0.0 1.0 0.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall2_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 3 -->
+      <link name="wall3">
+        <pose>-0.275 -0.057 0.05 0 0 3.66519</pose> <!-- 210 grados -->
+        <visual name="wall3_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1.0</ambient>
+            <diffuse>0.0 1.0 0.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall3_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 4 -->
+      <link name="wall4">
+        <pose>-0.30 -0.1 0.05 0 0 4.71239</pose> <!-- 270 grados -->
+        <visual name="wall4_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1.0</ambient>
+            <diffuse>0.0 1.0 0.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall4_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 5 -->
+      <link name="wall5">
+        <pose>-0.275 -0.143 0.05 0 0 5.75959</pose> <!-- 330 grados -->
+        <visual name="wall5_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1.0</ambient>
+            <diffuse>0.0 1.0 0.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall5_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 6 -->
+      <link name="wall6">
+        <pose>-0.225 -0.143 0.05 0 0 0.523599</pose> <!-- 30 grados -->
+        <visual name="wall6_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1.0</ambient>
+            <diffuse>0.0 1.0 0.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall6_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    <!-- Hexágono hueco hecho de 6 cajas azules en y=0.1 -->
+    <model name="zona_hexagono_azul">
+      <static>true</static>
+      <!-- Cada caja es una "pared" del hexágono azul -->
+      <!-- Centro: -0.25, 0.1, altura media: 0.05 -->
+      <!-- Radio del hexágono: 0.05 m, largo de cada caja: 0.05 m, ancho: 0.01 m, alto: 0.1 m -->
+      <!-- Caja 1 -->
+      <link name="wall1">
+        <pose>-0.20 0.1 0.05 0 0 1.5708</pose>
+        <visual name="wall1_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 1.0 1.0</ambient>
+            <diffuse>0.0 0.0 1.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall1_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 2 -->
+      <link name="wall2">
+        <pose>-0.225 0.143 0.05 0 0 2.61799</pose>
+        <visual name="wall2_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 1.0 1.0</ambient>
+            <diffuse>0.0 0.0 1.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall2_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 3 -->
+      <link name="wall3">
+        <pose>-0.275 0.143 0.05 0 0 3.66519</pose>
+        <visual name="wall3_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 1.0 1.0</ambient>
+            <diffuse>0.0 0.0 1.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall3_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 4 -->
+      <link name="wall4">
+        <pose>-0.30 0.1 0.05 0 0 4.71239</pose>
+        <visual name="wall4_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 1.0 1.0</ambient>
+            <diffuse>0.0 0.0 1.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall4_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 5 -->
+      <link name="wall5">
+        <pose>-0.275 0.057 0.05 0 0 5.75959</pose>
+        <visual name="wall5_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 1.0 1.0</ambient>
+            <diffuse>0.0 0.0 1.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall5_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+      <!-- Caja 6 -->
+      <link name="wall6">
+        <pose>-0.225 0.057 0.05 0 0 0.523599</pose>
+        <visual name="wall6_visual">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 1.0 1.0</ambient>
+            <diffuse>0.0 0.0 1.0 1.0</diffuse>
+          </material>
+          <transparency>0.0</transparency>
+        </visual>
+        <collision name="wall6_collision">
+          <geometry>
+            <box>
+              <size>0.05 0.01 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+    
     <!-- Add any other default elements here -->
   </world>
 </sdf>

@@ -424,11 +424,12 @@ class InverseKinematicsCalculator(Node):
             print("\n❌ NO SE PUEDE EJECUTAR PICK AND PLACE")
         
         print("\n📐 POSICIONES CALCULADAS:")
+        print("  # Formato: [radianes]   |   [grados]")
         for name, pos in strategy.get('positions', {}).items():
             if isinstance(pos, list) and len(pos) == 5:
-                pos_degrees = [f"{math.degrees(p):.1f}°" for p in pos]
-                print(f"  {name}: {pos_degrees}")
-        
+                pos_rounded = [round(float(p), 4) for p in pos]
+                pos_degrees = [round(math.degrees(float(p)), 1) for p in pos]
+                print(f"  {name}: {pos_rounded}   |   {pos_degrees}")
         print("="*60 + "\n")
 
 def main():

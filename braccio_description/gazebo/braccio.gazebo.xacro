@@ -11,89 +11,83 @@
         </gazebo>
 
         <!-- link 0 -->
-        <gazebo reference="joint_base">
+        <gazebo reference="base_link">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
             <material>Gazebo/Grey</material>
         </gazebo>
 
         <!-- link 1 -->
-        <gazebo reference="joint_1">
+        <gazebo reference="link_1">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
             <material>Gazebo/Orange</material>
         </gazebo>
 
         <!-- link 2 -->
-        <gazebo reference="joint_2">
+        <gazebo reference="link_2">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
             <material>Gazebo/Orange</material>
         </gazebo>
 
         <!-- link 3 -->
-        <gazebo reference="joint_3">
+        <gazebo reference="link_3">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
             <material>Gazebo/Orange</material>
         </gazebo>
 
         <!-- link 4 -->
-        <gazebo reference="joint_4">
+        <gazebo reference="link_4">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
             <material>Gazebo/Orange</material>
         </gazebo>
 
         <!-- link 5 -->
-        <gazebo reference="joint_5">
+        <gazebo reference="link_5">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <gazebo reference="right_gripper_joint">
+        <gazebo reference="right_gripper_link">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <gazebo reference="right_gripper_joint2">
+        <gazebo reference="right_gripper_link_aux1">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <gazebo reference="right_gripper_joint5">
+        <gazebo reference="right_gripper_link_aux2">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <gazebo reference="left_gripper_joint">
+        <gazebo reference="left_gripper_link">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <gazebo reference="left_gripper_joint2">
+        <gazebo reference="left_gripper_link_aux1">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <gazebo reference="left_gripper_joint3">
+        <gazebo reference="left_gripper_link_aux2">
             <mu1>0.2</mu1>
             <mu2>0.2</mu2>
-            <material>Gazebo/Orange</material>
+            <material>Gazebo/White</material>
         </gazebo>
 
-        <!-- Plugin LinkAttacher ahora está cargado en el archivo de mundo -->
-        <!-- <gazebo>
-            <plugin name="gazebo_link_attacher" filename="libgazebo_link_attacher.so">
-                <update_rate>10.0</update_rate>
-            </plugin>
-        </gazebo> -->
 
     </xacro:macro>
 </robot>

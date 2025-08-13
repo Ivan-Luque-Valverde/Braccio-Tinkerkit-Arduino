@@ -1,4 +1,12 @@
 cartesian_positions:
+  blue_destination:
+  - -0.26
+  - 0.11
+  - 0.1
+  green_destination:
+  - 0.25
+  - 0.1
+  - 0.1
   home:
   - 0.0
   - 0.0
@@ -21,11 +29,23 @@ cartesian_positions:
   - 0.1
 gripper:
   close_time: 3.0
-  closed_position: 0.7
+  closed_position: 0.75
   grip_force: 0.5
   open_position: 0.0
-  open_time: 2.0
+  open_time: 3.0
 joint_positions:
+  blue_position:
+  - 2.7414
+  - 1.43
+  - 0.562
+  - 1.579
+  - 1.5708
+  green_position:
+  - 0.4002
+  - 2.06
+  - 1.43
+  - 2.78
+  - 1.5708
   home:
   - 0.0
   - 1.57
@@ -33,27 +53,21 @@ joint_positions:
   - 0.0
   - 0.0
   pick_approach:
-  - 2.647356454139517
-  - 2.5603981150634234
-  - 0.29590724974215743
-  - 2.3394908653212663
+  - 2.37060674712753
+  - 2.660387514354469
+  - 0.49588604832424776
+  - 2.239501466030221
   - 1.5707963267948966
   pick_position:
-  - 2.647356454139517
+  - 2.37060674712753
   - 3.041592653589793
-  - 1.5143451193581643
-  - 3.0800111339113423
+  - 1.6303328225357767
+  - 2.9348265261407445
   - 1.5707963267948966
-  place_approach:
+  place_position:
   - 3.0
   - 1.55
   - 0.7
-  - 0.0
-  - 1.8
-  place_position:
-  - 3.0
-  - 1.3
-  - 0.4
   - 0.0
   - 1.8
 movement:
@@ -113,7 +127,7 @@ sequences:
     description: Acercarse al objeto
     target: pick_approach
   - action: move_joints
-    description: "Posici\xF3n de agarre"
+    description: Posicion de agarre
     target: pick_position
   - action: close_gripper
     description: Agarrar objeto
@@ -122,49 +136,56 @@ sequences:
     target: pick_approach
   - action: move_joints
     description: Ir hacia destino
-    target: place_approach
-  - action: move_joints
-    description: "Posici\xF3n de colocaci\xF3n"
     target: place_position
   - action: open_gripper
     description: Soltar objeto
   - action: move_joints
-    description: Alejarse
-    target: place_approach
+    description: Volver a home
+    target: home
+  blue_cube_sequence:
+  - action: move_joints
+    description: Posicion inicial
+    target: home
+  - action: move_joints
+    description: Acercarse al cubo azul
+    target: pick_approach
+  - action: move_joints
+    description: Bajar al cubo azul
+    target: pick_position
+  - action: close_gripper
+    description: Agarrar cubo azul
+  - action: move_joints
+    description: Levantar cubo azul
+    target: pick_approach
+  - action: move_joints
+    description: Ir hacia destino azul
+    target: blue_position
+  - action: open_gripper
+    description: Soltar cubo azul
   - action: move_joints
     description: Volver a home
     target: home
-  cartesian_demo:
-  - action: move_cartesian
-    description: "Posici\xF3n inicial"
+  green_cube_sequence:
+  - action: move_joints
+    description: Posicion inicial
     target: home
-  - action: move_cartesian
-    approach_height: true
-    description: Acercarse al objeto 1
-    target: object_1
-  - action: move_cartesian
-    description: Bajar al objeto 1
-    target: object_1
+  - action: move_joints
+    description: Acercarse al cubo verde
+    target: pick_approach
+  - action: move_joints
+    description: Bajar al cubo verde
+    target: pick_position
   - action: close_gripper
-    description: Agarrar objeto
-  - action: move_cartesian
-    approach_height: true
-    description: Levantar objeto
-    target: object_1
-  - action: move_cartesian
-    approach_height: true
-    description: Ir hacia destino 1
-    target: target_1
-  - action: move_cartesian
-    description: Bajar al destino
-    target: target_1
+    description: Agarrar cubo verde
+  - action: move_joints
+    description: Levantar cubo verde
+    target: pick_approach
+  - action: move_joints
+    description: Ir hacia destino verde
+    target: green_position
   - action: open_gripper
-    description: Soltar objeto
-  - action: move_cartesian
-    approach_height: true
-    description: Alejarse
-    target: target_1
-  - action: move_cartesian
+    description: Soltar cubo verde
+  - action: move_joints
     description: Volver a home
     target: home
 tolerances:

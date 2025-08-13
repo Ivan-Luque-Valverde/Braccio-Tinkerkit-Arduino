@@ -55,39 +55,58 @@ class VisionBasedPickAndPlace(Node):
                 data = json.load(f)
             self.homography_matrix = np.array(data['homography_matrix'])
             self.get_logger().info('✅ Homografía cargada exitosamente')
+            # Debug: mostrar la matriz
+            self.get_logger().info(f'🔍 Matriz de homografía: {self.homography_matrix.tolist()}')
         except Exception as e:
             self.homography_matrix = None
             self.get_logger().warn(f'⚠️  Sin homografía ({e}) - usando mapeo simple')
 
     def transform_pixels_to_world(self, pixel_x, pixel_y):
         """Transformar coordenadas de píxeles a coordenadas del mundo real"""
+        self.get_logger().info(f'🔄 TRANSFORMANDO: píxel({pixel_x},{pixel_y}) usando {"HOMOGRAFÍA" if self.homography_matrix is not None else "MAPEO SIMPLE"}')
+        
         if self.homography_matrix is not None:
             try:
                 # Usar homografía calibrada
                 pixel_point = np.array([[pixel_x, pixel_y]], dtype=np.float32).reshape(-1, 1, 2)
                 world_point = cv2.perspectiveTransform(pixel_point, self.homography_matrix)
                 x, y = float(world_point[0][0][0]), float(world_point[0][0][1])
-                self.get_logger().info(f'🎯 Homografía: píxel ({pixel_x},{pixel_y}) -> mundo ({x:.3f},{y:.3f})')
+                rho = math.sqrt(x**2 + y**2)
+                self.get_logger().info(f'🎯 Homografía: píxel({pixel_x},{pixel_y}) -> mundo({x:.3f},{y:.3f}) rho={rho:.3f}m')
                 return x, y
             except Exception as e:
                 self.get_logger().error(f'❌ Error en homografía: {e}')
         
-        # Mapeo simple como fallback (calibración básica para Braccio)
-        # Asumiendo imagen 640x480 y workspace del Braccio
-        x = (pixel_x - 320) * 0.0008  # Escalado ajustado para posiciones realistas
-        y = (240 - pixel_y) * 0.0008 + 0.20  # Invertir Y y ajustar offset
+        # Mapeo corregido para el workspace real del Braccio
+        # Basado en análisis de posiciones reales vs detectadas
         
-        # Asegurar que esté dentro del workspace válido
-        x = max(0.10, min(0.25, x))  # Limitar X entre 10cm y 25cm
-        y = max(-0.10, min(0.10, y))  # Limitar Y entre -10cm y 10cm
+        # Cálculo base sin limitaciones restrictivas
+        x = (pixel_x - 320) * 0.0008  # Mantener factor de escala
+        y = (240 - pixel_y) * 0.0008  # Mantener factor de escala, invertir Y
         
-        self.get_logger().info(f'🎯 Mapeo simple: píxel ({pixel_x},{pixel_y}) -> mundo ({x:.3f},{y:.3f})')
-        return x, y
+        # Ajuste de offset para centrar en el workspace del Braccio
+        x_offset = 0.30  # Mover el origen más lejos de la base (era 0.20)
+        y_offset = 0.0   # Sin offset en Y (era 0.20)
+        
+        x_world = x + x_offset
+        y_world = y + y_offset
+        
+        # Límites ampliados para el workspace real del Braccio
+        # Basado en posiciones reales: X=[0.24-0.35], Y=[-0.23, 0.18]
+        x_world = max(0.20, min(0.40, x_world))  # Rango ampliado y realista
+        y_world = max(-0.25, min(0.20, y_world))  # Rango ampliado y realista
+        
+        rho = math.sqrt(x_world**2 + y_world**2)
+        self.get_logger().info(f'🎯 Mapeo corregido: píxel({pixel_x},{pixel_y}) -> mundo({x_world:.3f},{y_world:.3f}) rho={rho:.3f}m')
+        return x_world, y_world
 
     def object_detected_callback(self, msg):
         """Añadir nueva detección a la lista si no está ya presente"""
         pixel_x = int(msg.point.x)
         pixel_y = int(msg.point.y)
+        
+        # DEBUG: Mostrar exactamente qué recibimos
+        self.get_logger().info(f'📨 RECIBIDO del object_detector: píxel({pixel_x}, {pixel_y})')
         
         # Verificar si el objeto ya está en la lista (evitar duplicados)
         # Usando un umbral de distancia para evitar ruido de detección
@@ -115,8 +134,11 @@ class VisionBasedPickAndPlace(Node):
                 return
             
             self.detected_objects.append((pixel_x, pixel_y, model_name))
-            self.get_logger().info(f'👁️  Nuevo cubo verde detectado: {model_name} en píxeles ({pixel_x}, {pixel_y})')
+            color_type = "verde" if "green" in model_name else "azul" if "blue" in model_name else "desconocido"
+            self.get_logger().info(f'👁️  Nuevo cubo {color_type} detectado: {model_name} en píxeles ({pixel_x}, {pixel_y})')
             self.get_logger().info(f'📋 Total de cubos en lista: {len(self.detected_objects)}')
+        else:
+            self.get_logger().info(f'🔄 Objeto duplicado ignorado: píxel({pixel_x}, {pixel_y})')
 
     def determine_model_name(self, pixel_x, pixel_y):
         """
@@ -130,7 +152,8 @@ class VisionBasedPickAndPlace(Node):
         real_objects = [
             {"name": "green_cube1", "x": 0.35, "y": 0.05, "z": 0.025},
             {"name": "green_cube2", "x": 0.28, "y": 0.18, "z": 0.025}, 
-            {"name": "green_cube3", "x": 0.28, "y": -0.15, "z": 0.025},
+            {"name": "blue_cube1", "x": 0.28, "y": -0.15, "z": 0.025},
+            {"name": "blue_cube2", "x": 0.24, "y": -0.23, "z": 0.025},  
         ]
         
         # Encontrar el objeto más cercano
@@ -155,10 +178,20 @@ class VisionBasedPickAndPlace(Node):
     def check_for_objects(self):
         """Procesar el primer objeto de la lista si no estamos ocupados"""
         if self.detected_objects and not self.processing:
-            pixel_x, pixel_y, model_name = self.detected_objects[0]  # Tomar el primer objeto de la lista
-            self.get_logger().info(f'🎯 Procesando cubo {model_name} en posición: ({pixel_x}, {pixel_y})')
-            self.get_logger().info(f'📋 Quedan {len(self.detected_objects)-1} cubos en cola')
-            self.process_detected_object(pixel_x, pixel_y, model_name)
+            # Separar verdes y azules
+            green_objects = [(x, y, name) for x, y, name in self.detected_objects if 'green' in name]
+            blue_objects = [(x, y, name) for x, y, name in self.detected_objects if 'blue' in name]
+            # Prioridad: verdes primero
+            if green_objects:
+                pixel_x, pixel_y, model_name = green_objects[0]
+                self.get_logger().info(f'🎯 Procesando cubo verde {model_name} en posición: ({pixel_x}, {pixel_y})')
+                self.get_logger().info(f'📋 Quedan {len(self.detected_objects)-1} cubos en cola')
+                self.process_detected_object(pixel_x, pixel_y, model_name)
+            elif blue_objects:
+                pixel_x, pixel_y, model_name = blue_objects[0]
+                self.get_logger().info(f'🎯 Procesando cubo azul {model_name} en posición: ({pixel_x}, {pixel_y})')
+                self.get_logger().info(f'📋 Quedan {len(self.detected_objects)-1} cubos en cola')
+                self.process_detected_object(pixel_x, pixel_y, model_name)
 
     def process_detected_object(self, pixel_x, pixel_y, model_name):
         """Procesar el objeto detectado y ejecutar pick and place"""
@@ -188,7 +221,19 @@ class VisionBasedPickAndPlace(Node):
             
             # 3. Ejecutar pick and place usando el nodo configurado
             self.get_logger().info(f'🤖 Iniciando secuencia pick and place para {model_name}...')
-            if self.pick_and_place_node.execute_pick_and_place_for_target(model_name):
+            # Seleccionar secuencia según color del cubo
+            if "green" in model_name:
+                sequence_name = 'green_cube_sequence'
+                self.get_logger().info(f'🟢 Usando secuencia para cubos verdes → destino: (0.25, 0.10)')
+            elif "blue" in model_name:
+                sequence_name = 'blue_cube_sequence'
+                self.get_logger().info(f'🔵 Usando secuencia para cubos azules → destino: (-0.25, 0.10)')
+            else:
+                sequence_name = 'basic_demo'  # fallback
+                self.get_logger().info(f'⚪ Usando secuencia por defecto')
+
+            # Llamar al nodo de pick and place con la secuencia específica
+            if self.pick_and_place_node.execute_pick_and_place_for_target(model_name, sequence_name):
                 self.get_logger().info(f'🎉 ¡PICK AND PLACE COMPLETADO EXITOSAMENTE PARA {model_name}!')
                 # Marcar el objeto como procesado
                 self.processed_objects.add(model_name)
