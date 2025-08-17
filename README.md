@@ -93,5 +93,7 @@ ros2 launch braccio_vision vision_auto_pick_and_place.launch.py
 # Terminal 5: Pruebas IK
 python3 braccio_vision/scripts/ik_workspace_tester.py
 
+ros2 launch braccio_gamepad_teleop gamepad_teleop.launch.py
+
 ```
 
