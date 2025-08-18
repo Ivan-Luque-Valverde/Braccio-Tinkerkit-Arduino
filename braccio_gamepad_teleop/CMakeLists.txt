@@ -17,10 +17,7 @@ find_package(tf2_ros REQUIRED)
 find_package(control_msgs REQUIRED)
 
 add_executable(gamepad_teleop src/gamepad_teleop.cpp)
-ament_target_dependencies(gamepad_teleop rclcpp sensor_msgs geometry_msgs trajectory_msgs control_msgs moveit_ros_planning_interface tf2_ros)
-
-add_executable(gamepad_direct src/gamepad_direct.cpp)
-ament_target_dependencies(gamepad_direct rclcpp sensor_msgs trajectory_msgs std_msgs)
+ament_target_dependencies(gamepad_teleop rclcpp sensor_msgs trajectory_msgs)
 
 
 if(BUILD_TESTING)
@@ -38,6 +35,12 @@ endif()
 # Install launch files
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
+)
+
+# Install executables
+install(TARGETS
+  gamepad_teleop
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
