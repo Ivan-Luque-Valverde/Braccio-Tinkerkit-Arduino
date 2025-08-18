@@ -100,7 +100,7 @@ def generate_launch_description() -> LaunchDescription:
     )
     ld.add_action(
         DeclareLaunchArgument(
-            name="rviz", default_value="false", description="Whether to launch RViz."
+            name="rviz", default_value="true", description="Whether to launch RViz."
         )
     )
     ld.add_action(BraccioHardwareInterfaceMixin.arg_arm_ctrl())

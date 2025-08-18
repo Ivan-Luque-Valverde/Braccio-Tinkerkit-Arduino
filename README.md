@@ -29,6 +29,8 @@ Communicates with the Braccio robot via serial communication and launches RViz t
 
      ros2 launch braccio_bringup bringup.launch.py sim:=false
 
+Si falla, añadir el código de braccio_ros_arduino desde la propia IDE de Arduino.
+
 ### Testing communications
 
 In order to test communication with the Arduino, a verbose option is implemented to check serial communication messages.

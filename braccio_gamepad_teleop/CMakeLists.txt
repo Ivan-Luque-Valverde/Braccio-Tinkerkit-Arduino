@@ -22,13 +22,6 @@ ament_target_dependencies(gamepad_teleop rclcpp sensor_msgs geometry_msgs trajec
 add_executable(gamepad_direct src/gamepad_direct.cpp)
 ament_target_dependencies(gamepad_direct rclcpp sensor_msgs trajectory_msgs std_msgs)
 
-add_executable(joint_test src/joint_test.cpp)
-ament_target_dependencies(joint_test rclcpp trajectory_msgs control_msgs)
-
-add_executable(home_verifier src/home_verifier.cpp)
-ament_target_dependencies(home_verifier rclcpp trajectory_msgs control_msgs moveit_ros_planning_interface tf2_ros)
-
-install(TARGETS gamepad_teleop gamepad_direct joint_test home_verifier DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

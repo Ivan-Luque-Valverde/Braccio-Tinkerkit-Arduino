@@ -8,7 +8,9 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include <future>
 #include <chrono>
+
 #include <memory>
+#include <cmath>
 // Añadido para publicar directamente a ros2_control
 #include "trajectory_msgs/msg/joint_trajectory.hpp"
 #include "trajectory_msgs/msg/joint_trajectory_point.hpp"
@@ -104,7 +106,15 @@ private:
   void sendDirectJointCommand(double lx, double ly, double ry, bool btn_a, bool btn_b)
   {
     // Usar estado local en lugar de depender de MoveIt para obtener joints
-    static std::vector<double> current_joint_values = {0.0, 0.0, -1.57, 0.0, 0.0, 0.0}; // Posición inicial segura
+    // Inicializar con la postura actual en Gazebo (imagen): [9°, 45°, 180°, 180°, 9°]
+    static std::vector<double> current_joint_values = {
+        9.0 * M_PI / 180.0,    // joint_base  ~ 0.15708
+        45.0 * M_PI / 180.0,   // joint_1     ~ 0.78540
+        M_PI,                  // joint_2     ~ 3.14159
+        M_PI,                  // joint_3     ~ 3.14159
+        9.0 * M_PI / 180.0,    // joint_4     ~ 0.15708
+        0.0                   // gripper
+    };
     static bool initialized = false;
     
     if (!initialized) {
