@@ -16,8 +16,7 @@ find_package(moveit_ros_planning_interface REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(control_msgs REQUIRED)
 
-add_executable(gamepad_teleop src/gamepad_teleop.cpp)
-ament_target_dependencies(gamepad_teleop rclcpp sensor_msgs trajectory_msgs)
+
 
 
 if(BUILD_TESTING)
@@ -37,10 +36,9 @@ install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}/
 )
 
-# Install executables
-install(TARGETS
-  gamepad_teleop
-  DESTINATION lib/${PROJECT_NAME}
+# Install Python script as executable
+install(PROGRAMS scripts/gamepad_teleop.py
+  DESTINATION libexec/${PROJECT_NAME}
 )
 
 ament_package()

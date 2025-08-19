@@ -11,11 +11,14 @@ def generate_launch_description():
             output='screen',
             parameters=[{'dev': '/dev/input/js0'}]  # cambia si tu mando aparece distinto
         ),
-        # Nodo teleop
+        # Nodo teleop (Python script)
         Node(
             package='braccio_gamepad_teleop',
-            executable='gamepad_teleop',
+            executable='gamepad_teleop.py',
             name='gamepad_teleop',
-            output='screen'
+            output='screen',
+            parameters=[],
+            arguments=[],
+            prefix='python3 '
         )
     ])

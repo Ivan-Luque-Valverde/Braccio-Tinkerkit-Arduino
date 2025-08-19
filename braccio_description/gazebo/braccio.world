@@ -14,6 +14,16 @@
       <update_rate>10.0</update_rate>
     </plugin>
     
+    <!-- Plugin para publicar estados de modelos -->
+    <plugin name="gazebo_ros_state" filename="libgazebo_ros_state.so">
+      <ros>
+        <namespace>/gazebo</namespace>
+        <remapping>model_states:=model_states</remapping>
+        <remapping>link_states:=link_states</remapping>
+      </ros>
+      <update_rate>10.0</update_rate>
+    </plugin>
+    
     <!-- Cilindro hueco como "zona" en el mundo -->
     <!-- Hexágono hueco hecho de 6 cajas verdes -->
     <model name="zona_hexagono">
