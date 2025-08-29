@@ -205,8 +205,8 @@ class ObjectDetector(Node):
             # Usar valores por defecto
             cx = self.config['camera']['width'] / 2
             cy = self.config['camera']['height'] / 2
-            fx = 554.0  # Valor aproximado
-            fy = 554.0
+            fx = 381.346          # Focal length x (calculado: width/2 / tan(FOV/2))
+            fy = 381.346          # Focal length y (igual a fx para píxeles cuadrados)
         else:
             # Usar parámetros de la cámara
             cx = self.camera_info.k[2]  # Principal point x

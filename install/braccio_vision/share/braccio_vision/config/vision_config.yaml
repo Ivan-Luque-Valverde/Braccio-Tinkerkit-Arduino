@@ -11,8 +11,8 @@ camera:
   # Parámetros intrínsecos (calculados basados en FOV=60° y resolución 640x480)
   width: 640
   height: 480
-  fx: 554.382713          # Focal length x (calculado: width/2 / tan(FOV/2))
-  fy: 554.382713          # Focal length y (igual a fx para píxeles cuadrados)
+  fx: 381.346          # Focal length x (calculado: width/2 / tan(FOV/2))
+  fy: 381.346          # Focal length y (igual a fx para píxeles cuadrados)
   cx: 320.0               # Center x (width/2)
   cy: 240.0               # Center y (height/2)
 

@@ -1,7 +1,7 @@
 Sim-to-Real utilities
 
 Scripts:
-- webcam_publisher.py : publica la webcam local en /overhead_camera/image_raw
+- webcam_publisher.py : publica la webcam local en /overhead_camera/image_raw y sus datos de camera_info
 - color_square_detector.py : detecta cuadrados de colores, publica /vision/debug_image y /vision/detections
 - camera_viewer.py : muestra imagen raw y debug usando OpenCV
 

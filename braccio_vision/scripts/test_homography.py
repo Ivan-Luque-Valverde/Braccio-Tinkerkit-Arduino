@@ -69,10 +69,24 @@ print(f"\nError medio de reproyección: {total_error/len(pixel_points):.2f} píx
 
 # === TEST MANUAL DE UN PUNTO ===
 # Cambia estos valores por el punto que quieras probar
-test_pixel = [319, 310]  # Ejemplo: centro de la imagen (y,x)
+test_pixel = [342, 403]  
 
 px_h = np.array([test_pixel[0], test_pixel[1], 1.0])
 world_proj = H @ px_h
 world_proj = world_proj / world_proj[2]
-print(f"\nTest manual: Píxel {test_pixel} -> Mundo estimado: ({world_proj[0]:.4f}, {world_proj[1]:.4f})")
+world_est_x = float(world_proj[0])
+world_est_y = float(world_proj[1])
+# Define aquí el punto real correspondiente (editar si hace falta)
+world_real_x = 0.35
+world_real_y = 0.05
+
+dx = world_real_x - world_est_x
+dy = world_real_y - world_est_y
+error_euclid = (dx**2 + dy**2) ** 0.5
+
+print(f"\nTest manual: Píxel {test_pixel} -> Mundo estimado: ({world_est_x:.6f}, {world_est_y:.6f})")
+print(f"Mundo real: ({world_real_x:.6f}, {world_real_y:.6f})")
+print(f"Error componente: Δx={dx:+.6f} m, Δy={dy:+.6f} m")
+print(f"Error euclidiano total: {error_euclid:.6f} m ({error_euclid*1000:.2f} mm)")
+
 
