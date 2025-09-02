@@ -8,7 +8,7 @@ import math
 
 
 class WebcamPublisher(Node):
-    def __init__(self, topic='/overhead_camera/image_raw', device=0, fps=15):
+    def __init__(self, topic='/overhead_camera/image_raw', device=2, fps=15):
         super().__init__('webcam_publisher')
         self.pub = self.create_publisher(Image, topic, 10)
         self.caminfo_pub = self.create_publisher(CameraInfo, '/overhead_camera/camera_info', 10)

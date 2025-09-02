@@ -98,6 +98,8 @@ python3 braccio_vision/scripts/ik_workspace_tester.py
 # Control por mando usb
 ros2 launch braccio_gamepad_teleop gamepad_teleop.launch.py
 
+python3 sim-to-real/webcam_publisher.py
+
 
 ```
 

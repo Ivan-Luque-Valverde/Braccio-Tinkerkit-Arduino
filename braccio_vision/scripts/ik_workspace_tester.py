@@ -37,7 +37,7 @@ def main():
 
     # Rango ampliado: X desde 0.20 hasta 0.35m, Y desde 0 hasta 0.35m
     x_vals = [round(x, 3) for x in list(frange(0.20, 0.36, 0.01))]
-    y_vals = [round(y, 3) for y in list(frange(-0.35, 0.36, 0.01))]
+    y_vals = [round(y, 3) for y in list(frange(0.15, 0.3, 0.01))]
     # Rango seguro: X desde 0.20 hasta 0.30m, Y desde 0.17 hasta 0.25m 
     pick_directo_count = 0
     total_count = 0

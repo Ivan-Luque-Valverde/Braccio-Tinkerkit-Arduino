@@ -39,7 +39,7 @@ class ObjectSpawner(Node):
         
     def spawn_test_objects(self):
         """Generar 4 cubos pequeños en las esquinas del workspace"""
-        # Definición del cubo pequeño (5cm)
+        # Definición del cubo pequeño (3cm)
         cube_sdf_template = '''
         <?xml version="1.0"?>
         <sdf version="1.4">
