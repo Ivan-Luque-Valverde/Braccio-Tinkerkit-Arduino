@@ -13,7 +13,7 @@ import math
 class GamepadTeleopSimple(Node):
     def __init__(self):
         super().__init__('gamepad_teleop_simple')
-        self.current_joint_positions = [1.573, 0.763, 3.142, 3.127, 1.572, 0.0]
+        self.current_joint_positions = [1.573, 0.763, 3.142, 3.127, 1.572, 0.174]
         self.get_logger().info('🎮 Gamepad Teleop Simple iniciado')
         self.get_logger().info(f'📐 Posiciones iniciales (estado real): {self.current_joint_positions}')
         self.joy_subscription = self.create_subscription(
