@@ -22,6 +22,7 @@ class GamepadTeleopSimple(Node):
             JointTrajectory, '/position_trajectory_controller/joint_trajectory', 10)
         self.gripper_pub = self.create_publisher(
             JointTrajectory, '/gripper_controller/joint_trajectory', 10)
+            
         self.attach_client = self.create_client(AttachLink, '/ATTACHLINK')
         self.detach_client = self.create_client(DetachLink, '/DETACHLINK')
         self.get_logger().info('✅ Publisher configurado usando método pick_and_place')
@@ -98,9 +99,9 @@ class GamepadTeleopSimple(Node):
         if any(abs(x) > 0 for x in [left_x, left_y, right_x, right_y, joint_4_input, gripper_input]):
             velocity_factor = 0.01
             self.current_joint_positions[0] += left_x * velocity_factor
-            self.current_joint_positions[1] += left_y * velocity_factor
-            self.current_joint_positions[2] += right_y * velocity_factor
-            self.current_joint_positions[3] += right_x * velocity_factor
+            self.current_joint_positions[1] += left_y * velocity_factor  # Normal direction - hardware interface handles inversion
+            self.current_joint_positions[2] -= right_y * velocity_factor
+            self.current_joint_positions[3] -= right_x * velocity_factor  # Inverted for joint_3 to match RViz
             self.current_joint_positions[4] += joint_4_input * velocity_factor
             self.current_joint_positions[5] += gripper_input * velocity_factor
             self.apply_joint_limits()
@@ -169,14 +170,17 @@ class GamepadTeleopSimple(Node):
 
     def apply_joint_limits(self):
         min_limits = [0, 0.4, 0.0, 0.0, 0.0, 0.1]
-        max_limits = [3.14, 2.7, 3.14, 3.14, 3.14, 1.0]
+        max_limits = [3.14, 2.7, 3.14, 1.57, 3.14, 1.0]  # joint_3: 0-90° (0-1.57 rad) - TEMPORAL más conservador
         self.current_joint_positions = [max(min(val, max_limits[i]), min_limits[i]) for i, val in enumerate(self.current_joint_positions)]
 
     def send_arm_trajectory_command(self):
         traj = JointTrajectory()
         traj.joint_names = ['joint_base', 'joint_1', 'joint_2', 'joint_3', 'joint_4']
         point = JointTrajectoryPoint()
+        
+        # Hardware interface now handles the offset - send logical positions directly
         point.positions = self.current_joint_positions[:5]
+        
         point.time_from_start = Duration(sec=0, nanosec=50000000)
         traj.points.append(point)
         self.arm_pub.publish(traj)

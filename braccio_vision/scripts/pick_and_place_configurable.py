@@ -81,6 +81,7 @@ class ConfigurablePickAndPlace(Node):
         if duration_sec is None:
             duration_sec = self.config['movement']['default_duration']
         
+        # Hardware interface now handles the offset - send logical positions directly
         traj = JointTrajectory()
         traj.joint_names = [
             "joint_base",

@@ -171,9 +171,9 @@ namespace braccio_hardware
 
         // JointX_.pos (float) in deg to HW_states_position_ (vector<double>) in rads.
         hw_states_position_[0] = joint0_.pos * 3.1416 / 180;
-        hw_states_position_[1] = joint1_.pos * 3.1416 / 180;
+        hw_states_position_[1] = (90.0 - joint1_.pos) * 3.1416 / 180;  // Invert joint_1 around 90° (180° - angle)
         hw_states_position_[2] = joint2_.pos * 3.1416 / 180;
-        hw_states_position_[3] = joint3_.pos * 3.1416 / 180;
+        hw_states_position_[3] = (joint3_.pos - 50.0) * 3.1416 / 180;  // Apply 50° offset compensation for joint_3
         hw_states_position_[4] = joint4_.pos * 3.1416 / 180;
         hw_states_position_[5] = gripper_.pos * 3.1416 / 180;
 
@@ -214,9 +214,9 @@ namespace braccio_hardware
 
         // HW_COOMANDS_ (vector<double>) in rads to JOINTX_.CMD (float) in deg.
         joint0_.cmd = hw_commands_[0] * 180 / 3.1416;
-        joint1_.cmd = hw_commands_[1] * 180 / 3.1416;
+        joint1_.cmd = 90 - (hw_commands_[1] * 180 / 3.1416);  // Invert joint_1 around 90° (180° - angle)
         joint2_.cmd = hw_commands_[2] * 180 / 3.1416;
-        joint3_.cmd = hw_commands_[3] * 180 / 3.1416;
+        joint3_.cmd = (hw_commands_[3] * 180 / 3.1416) + 50.0;  // Add 50° offset for joint_3
         joint4_.cmd = hw_commands_[4] * 180 / 3.1416;
         gripper_.cmd = hw_commands_[5] * 180 / 3.1416;
 
