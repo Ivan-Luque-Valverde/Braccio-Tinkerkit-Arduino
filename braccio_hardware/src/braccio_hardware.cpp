@@ -177,7 +177,9 @@ namespace braccio_hardware
         float joint1_inverted_deg = 2 * joint1_initial_deg - joint1_.pos;
         hw_states_position_[1] = joint1_inverted_deg * 3.1416 / 180;
         
-        hw_states_position_[2] = joint2_.pos * 3.1416 / 180;
+        // JOINT_2: Apply simple directional inversion for read feedback to match initial position
+        hw_states_position_[2] = (180 - joint2_.pos) * 3.1416 / 180;
+        
         hw_states_position_[3] = (joint3_.pos - 50.0) * 3.1416 / 180;  // Apply 50° offset compensation for joint_3
         hw_states_position_[4] = joint4_.pos * 3.1416 / 180;
         hw_states_position_[5] = gripper_.pos * 3.1416 / 180;
@@ -225,7 +227,10 @@ namespace braccio_hardware
         const float joint1_initial_deg = 0.763 * 180 / 3.1416;  // ≈ 44°
         joint1_.cmd = 2 * joint1_initial_deg - joint1_deg;  // Invert direction around initial position
         
-        joint2_.cmd = hw_commands_[2] * 180 / 3.1416;
+        // JOINT_2: Apply simple directional inversion
+        float joint2_deg = hw_commands_[2] * 180 / 3.1416;
+        joint2_.cmd = 180 - joint2_deg;  // Simple inversion
+        
         joint3_.cmd = (hw_commands_[3] * 180 / 3.1416) + 50.0;  // Add 50° offset for joint_3
         joint4_.cmd = hw_commands_[4] * 180 / 3.1416;
         gripper_.cmd = hw_commands_[5] * 180 / 3.1416;
