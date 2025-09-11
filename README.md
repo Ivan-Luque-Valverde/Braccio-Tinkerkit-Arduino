@@ -100,7 +100,13 @@ ros2 launch braccio_gamepad_teleop gamepad_teleop.launch.py
 
 python3 sim-to-real/webcam_publisher.py
 
+ros2 launch braccio_bringup bringup.launch.py sim:=false
+
 python3 sim-to-real/calculate_real_homography.py
+
+sudo apt install v4l2loopback-dkms
+sudo modprobe v4l2loopback
+
 
 
 ```

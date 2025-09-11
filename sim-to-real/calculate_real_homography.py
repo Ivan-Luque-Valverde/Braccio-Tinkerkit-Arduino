@@ -50,7 +50,7 @@ world_points = np.array(world_points, dtype=np.float32)
 # Calcular la homografía usando RANSAC para manejar múltiples puntos
 H, status = cv2.findHomography(pixel_points, world_points, cv2.RANSAC, 0.01)
 
-print("Matriz de homografía calculada (con 5 puntos):")
+print("Matriz de homografía calculada :")
 print(H)
 
 # Verificar el punto problemático

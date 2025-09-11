@@ -37,32 +37,29 @@ workspace:
 
 # Configuración de detección de objetos
 object_detection:
-  # Detección por color HSV
+  # Detección por color HSV - Rangos optimizados para cámara real
   red_cube:
-    enabled: true
-    hsv_lower: [0, 100, 50]      # [H_min, S_min, V_min] - Rango más amplio para rojo
-    hsv_upper: [15, 255, 255]    # [H_max, S_max, V_max] - Expandido para capturar más rojos
-    min_area: 100                # Área mínima en píxeles
-    max_area: 5000               # Área máxima en píxeles
+    enabled: false
+    hsv_lower: [0, 80, 50]       # [H_min, S_min, V_min] - Rojo brillante
+    hsv_upper: [15, 255, 255]    # [H_max, S_max, V_max] 
+    min_area: 150                # Área mínima en píxeles
+    max_area: 8000               # Área máxima en píxeles
     
   green_cube:
     enabled: true
-    hsv_lower: [40, 40, 40]      # [H_min, S_min, V_min] - Rango amplio para detectar verde
-    hsv_upper: [85, 255, 255]    # [H_max, S_max, V_max] - Abarca desde verde oscuro a claro
-    min_area: 100                # Área mínima en píxeles
-    max_area: 5000               # Área máxima en píxeles
+    hsv_lower: [35, 80, 80]      # [H_min, S_min, V_min] - Verde natural
+    hsv_upper: [85, 255, 255]    # [H_max, S_max, V_max] 
+    min_area: 150                # Área mínima en píxeles
+    max_area: 12000               # Área máxima en píxeles
     
   blue_cube:
     enabled: true
-    hsv_lower: [80, 80, 120]     # [H_min, S_min, V_min] - Cyan/azul claro
-    hsv_upper: [120, 255, 255]   # [H_max, S_max, V_max] - Rango ampliado hacia cyan
+    hsv_lower: [90, 80, 80]      # [H_min, S_min, V_min] - Azul puro
+    hsv_upper: [130, 255, 255]   # [H_max, S_max, V_max] 
+    min_area: 150                # Área mínima en píxeles
+    max_area: 8000               # Área máxima en píxeles
     
-    # Simulation
-    #hsv_lower: [100, 120, 70]    # [H_min, S_min, V_min]
-    #hsv_upper: [130, 255, 255]
-
-    min_area: 100                # Área mínima en píxeles
-    max_area: 5000               # Área máxima en píxeles
+    
 
 # Filtros de procesamiento de imagen
 image_processing:
