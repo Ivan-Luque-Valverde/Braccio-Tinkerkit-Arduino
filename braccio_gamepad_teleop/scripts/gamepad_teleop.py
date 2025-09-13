@@ -170,7 +170,7 @@ class GamepadTeleopSimple(Node):
 
     def apply_joint_limits(self):
         min_limits = [0, 0.4, 0.0, 0.0, 0.0, 0.1]
-        max_limits = [3.14, 2.7, 3.14, 1.57, 3.14, 1.0]  
+        max_limits = [3.14, 2.7, 3.14, 2.4, 3.14, 1.0]  
         self.current_joint_positions = [max(min(val, max_limits[i]), min_limits[i]) for i, val in enumerate(self.current_joint_positions)]
 
     def send_arm_trajectory_command(self):

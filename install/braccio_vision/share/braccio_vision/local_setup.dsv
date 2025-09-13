@@ -1,2 +1,1 @@
-source;share/braccio_vision/environment/ament_prefix_path.sh
-source;share/braccio_vision/environment/path.sh
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/ament_cmake_environment_hooks/local_setup.dsv

@@ -35,35 +35,47 @@ gripper:
   open_time: 3.0
 joint_positions:
   blue_position:
-  - 2.7414
-  - 1.43
-  - 0.562
+  - 1.78
+  - 1.25
+  - 2.815
   - 1.579
-  - 1.5708
+  - 0.41
   green_position:
-  - 0.4002
-  - 2.06
-  - 1.43
-  - 2.78
-  - 1.5708
+  - 0.778
+  - 1.25
+  - 2.815
+  - 1.579
+  - 0.41
   home:
+  - 1.27
+  - 0.86
+  - 3.14
+  - 0.24
   - 0.0
+  pick_approach_blue:
+  - 1.84
+  - 0.75
+  - 0.77
   - 1.57
   - 0.0
+  pick_position_blue:
+  - 1.78
+  - 0.64
+  - 0.18
+  - 1.57
   - 0.0
+  pick_approach_green:
+  - 0.54
+  - 0.75
+  - 0.77
+  - 1.57
   - 0.0
-  pick_approach:
-  - 0.9145162688403503
-  - 2.738280137796553
-  - 0.6516712952084159
-  - 2.161608842588137
-  - 1.5707963267948966
-  pick_position:
-  - 0.9145162688403503
-  - 3.041592653589793
-  - 1.7206882657285942
-  - 2.8217264369028383
-  - 1.5707963267948966
+  pick_position_green:
+  - 0.54
+  - 0.64
+  - 0.18
+  - 1.57
+  - 0.0
   place_position:
   - 3.0
   - 1.55
@@ -121,42 +133,65 @@ obstacles:
 sequences:
   basic_demo:
   - action: move_joints
-    description: Ir a posicion inicial
+    description: Posicion inicial
     target: home
   - action: move_joints
-    description: Acercarse al objeto
-    target: pick_approach
+    description: Acercarse al cubo azul
+    target: pick_approach_blue
   - action: move_joints
-    description: Posicion de agarre
-    target: pick_position
+    description: Bajar al cubo azul
+    target: pick_position_blue
   - action: close_gripper
-    description: Agarrar objeto
+    description: Agarrar cubo azul
   - action: move_joints
-    description: Levantar objeto
-    target: pick_approach
+    description: Levantar cubo azul
+    target: pick_approach_blue
   - action: move_joints
-    description: Ir hacia destino
-    target: place_position
+    description: Ir hacia destino azul
+    target: blue_position
   - action: open_gripper
-    description: Soltar objeto
+    description: Soltar cubo azul
   - action: move_joints
     description: Volver a home
     target: home
+  - action: move_joints
+    description: Volver a home
+    target: home
+  - action: move_joints
+    description: Acercarse al cubo verde
+    target: pick_approach_green
+  - action: move_joints
+    description: Bajar al cubo verde
+    target: pick_position_green
+  - action: close_gripper
+    description: Agarrar cubo verde
+  - action: move_joints
+    description: Levantar cubo verde
+    target: pick_approach_green
+  - action: move_joints
+    description: Ir hacia destino verde
+    target: green_position
+  - action: open_gripper
+    description: Soltar cubo verde
+  - action: move_joints
+    description: Volver a home
+    target: home
+
   blue_cube_sequence:
   - action: move_joints
     description: Posicion inicial
     target: home
   - action: move_joints
     description: Acercarse al cubo azul
-    target: pick_approach
+    target: pick_approach_blue
   - action: move_joints
     description: Bajar al cubo azul
-    target: pick_position
+    target: pick_position_blue
   - action: close_gripper
     description: Agarrar cubo azul
   - action: move_joints
     description: Levantar cubo azul
-    target: pick_approach
+    target: pick_approach_blue
   - action: move_joints
     description: Ir hacia destino azul
     target: blue_position
@@ -171,15 +206,15 @@ sequences:
     target: home
   - action: move_joints
     description: Acercarse al cubo verde
-    target: pick_approach
+    target: pick_approach_green
   - action: move_joints
     description: Bajar al cubo verde
-    target: pick_position
+    target: pick_position_green
   - action: close_gripper
     description: Agarrar cubo verde
   - action: move_joints
     description: Levantar cubo verde
-    target: pick_approach
+    target: pick_approach_green
   - action: move_joints
     description: Ir hacia destino verde
     target: green_position

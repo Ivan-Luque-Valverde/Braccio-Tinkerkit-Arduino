@@ -1,1 +1,1 @@
-rclpy;rclcpp;std_msgs;geometry_msgs;sensor_msgs;cv_bridge;image_transport;tf2;tf2_ros;tf2_geometry_msgs;trajectory_msgs;control_msgs;moveit_msgs;moveit_core;moveit_ros_planning_interface;image_geometry;camera_calibration_parsers;gazebo_ros;gazebo_plugins;urdf;xacro;python3-opencv;python3-numpy;python3-yaml;ament_lint_auto;ament_lint_common
+/home/ivan/Escritorio/Braccio-Tinkerkit-Arduino/build/braccio_vision/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/braccio_vision
